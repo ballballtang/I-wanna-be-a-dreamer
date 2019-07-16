@@ -22,7 +22,7 @@ function Boss(texture,atX,atY,w,h){
     this.mUIbar.setMaxValue(50);
     this.mUIbar.setVisible(false);
     this.setVisibility(false);
-
+    this.mParticleNum = 0;
 }
 gEngine.Core.inheritPrototype(Boss,GameObject);
 
@@ -46,6 +46,10 @@ Boss.prototype.update = function(visible){
     //this.mUIbar.setBGVisible(visible);
     //this.mUIbar.setMidVisible(visible);
     //all the KeyClicked event is used for testing
+    if(this.mParticleNum > 1000){
+        this.mDust.endLife();
+    }
+    this.mParticleNum += 1;
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.J)){
         this.setVisibility(true);
         this.mUIbar.setVisible(true);

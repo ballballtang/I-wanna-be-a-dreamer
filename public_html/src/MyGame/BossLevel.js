@@ -93,5 +93,9 @@ BossLevel.prototype.update = function () {
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.M)){
         gEngine.GameLoop.stop();
     }
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.J)){
+        console.log("shaking");
+        this.mCamera.shake(-1500,-600,20,30);
+    }
     //this.mSolveCol.update();
 };
