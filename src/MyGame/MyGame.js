@@ -57,6 +57,9 @@ MyGame.prototype.unloadScene = function () {
     if (this.LevelSelect === "restart") {
         gEngine.Core.startScene(new MyGame());
     }
+    if (this.LevelSelect === "boss") {
+        gEngine.Core.startScene(new BossLevel());
+    }
 };
 
 MyGame.prototype.initialize = function () {
@@ -120,6 +123,10 @@ MyGame.prototype.draw = function () {
 MyGame.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.LevelSelect = "restart";
+        gEngine.GameLoop.stop();
+	}
+	if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+		this.LevelSelect = "boss";
         gEngine.GameLoop.stop();
     }
     if (this.mHero.mIsDead) return;

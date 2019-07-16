@@ -12,16 +12,17 @@ function Boss(texture,atX,atY,w,h){
     this.mBoss.getXform().setPosition(atX,atY);
     this.mBoss.getXform().setSize(w,h);
     GameObject.call(this,this.mBoss);
-    this.mBlood = 100;
+    this.mBlood = 50;
     this.mDeath = false;
-    this.mdelta = 0.2;//moving distance
-    var dustParams = new DustParams(false,50,40,50,-2.5,200,0,0,1,1,0,1,40);
+    this.mdelta = 3;//moving distance
+    var dustParams = new DustParams(false,0,280,600,-20,500,0,0,1,2,0,10,100);
     this.mDust = new Dust(dustParams);
     this.mXParticles = new ParticleGameObjectSet();
-    this.mUIbar = new UIBar([400,500],[800,20]);
+    this.mUIbar = new UIBar([430,633],[800,25]);
+    this.mUIbar.setMaxValue(50);
     this.mUIbar.setVisible(false);
     this.setVisibility(false);
-
+    this.mParticleNum = 0;
 }
 gEngine.Core.inheritPrototype(Boss,GameObject);
 
@@ -45,6 +46,10 @@ Boss.prototype.update = function(visible){
     //this.mUIbar.setBGVisible(visible);
     //this.mUIbar.setMidVisible(visible);
     //all the KeyClicked event is used for testing
+    if(this.mParticleNum > 1000){
+        this.mDust.endLife();
+    }
+    this.mParticleNum += 1;
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.J)){
         this.setVisibility(true);
         this.mUIbar.setVisible(true);
@@ -53,6 +58,9 @@ Boss.prototype.update = function(visible){
         this.setVisibility(false);
         this.mUIbar.setVisible(false);
         this.mDust.startLife();
+        if(this.mParticleNum > 1000){
+            this.mDust.endLife();
+        }
     }
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.K)){
         this.DecBlood();
@@ -61,10 +69,11 @@ Boss.prototype.update = function(visible){
     //control the moving
     var xf = this.getXform();
     xf.incYPosBy(this.mdelta);
-    if(xf.getYPos()<=5){
+    //console.log(xf.getYPos());
+    if(xf.getYPos()<=-268){
         this.mdelta = -1*this.mdelta;
     }
-    if(xf.getYPos()>=60){
+    if(xf.getYPos()>=268){
         this.mdelta = -1*this.mdelta;
     }
     this.mUIbar.setCurrentValue(this.mBlood);

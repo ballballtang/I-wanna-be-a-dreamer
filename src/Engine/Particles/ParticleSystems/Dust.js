@@ -69,7 +69,7 @@ Dust.prototype.update = function(){
         var p = this.createParticle(this.xPos, this.yPos);
         this.mAllParticles.addToSet(p);
         }
-    
+    }
         gEngine.ParticleSystem.update(this.mAllParticles);
         var pSet = this.getSet().mSet;
         var setLength = pSet.length;    
@@ -77,11 +77,14 @@ Dust.prototype.update = function(){
             this.applyDrift(pSet[i]);
             this.applySizeDelta(pSet[i]);
         }
-    }
+    
 };
 
 Dust.prototype.startLife = function(){
     this.Begin = true;
+};
+Dust.prototype.endLife = function(){
+    this.Begin = false;
 };
 
 Dust.prototype.applyDrift = function(pGO){
