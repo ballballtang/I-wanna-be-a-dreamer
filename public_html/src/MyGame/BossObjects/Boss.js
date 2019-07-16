@@ -58,6 +58,9 @@ Boss.prototype.update = function(visible){
         this.setVisibility(false);
         this.mUIbar.setVisible(false);
         this.mDust.startLife();
+        if(this.mParticleNum > 1000){
+            this.mDust.endLife();
+        }
     }
     if(gEngine.Input.isKeyClicked(gEngine.Input.keys.K)){
         this.DecBlood();
