@@ -15,7 +15,7 @@ function MyGame() {
     this.kTestTexture = "assets/JustForTest.png";
     this.kStabTexture = "assets/TestStab.png";
     this.kWood = "assets/RigidShape/Wood.png";
-    this.kIce = "assets/RigidShape/Ice.png"
+    this.kIce = "assets/RigidShape/Ice.png";
 
     // The camera to view the scene
     this.mCamera = null;
@@ -46,9 +46,9 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
 
-    if (this.LevelSelect === "") {
-        gEngine.Core.startScene(new xxx());
-    }
+    //if (this.LevelSelect === "") {
+        gEngine.Core.startScene(new BossLevel());
+    //}
 };
 
 MyGame.prototype.initialize = function () {
@@ -106,7 +106,9 @@ MyGame.prototype.update = function () {
     this.mHero.update();
     this.mMirrorHero.update();
     this.mPlatSet.update();
-    
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.M)){
+        gEngine.GameLoop.stop();
+    }
     this.mSolveCol.update();
     this.mTips.update(this.mHero.getXform());
 };

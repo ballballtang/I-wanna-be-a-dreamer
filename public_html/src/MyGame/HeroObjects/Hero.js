@@ -51,6 +51,8 @@ Hero.prototype.update = function () {
         this.mHoldSpace = 10;
     }
     
+
+    
     this.mVP.update();
     
     console.log(this.getXform().getPosition());
