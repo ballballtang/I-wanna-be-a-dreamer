@@ -22,14 +22,14 @@ function MyGame() {
     // The camera to view the scene
     this.mCamera = null;
     this.LevelSelect = null;
-    
+
     // Objects
     this.mHero = null;
     this.mMirrorHero = null;
     this.mPlatSet = new GameObjectSet();
     this.mBrokeSet = new GameObjectSet();
     this.mStabSetSet = new GameObjectSet();
-    
+
     //Tools
     this.mSolveCol = null;
     this.mTips = null;
@@ -71,31 +71,31 @@ MyGame.prototype.initialize = function () {
             );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
-    
+
     this.mHero = new Hero(this.kTestTexture, -500, -200, 1);
     this.mMirrorHero = new Hero(this.kTestTexture, 500, 200, -1);
-    
+
     //bounds
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, -600, -76.25, 60, 580) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, 600, 0, 60, 675) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, -300, -337.5, 600, 60) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, 0, 337.5, 1200, 60) );
-    
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -600, -76.25, 60, 580));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 600, 0, 60, 675));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -300, -337.5, 600, 60));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 0, 337.5, 1200, 60));
+
     //platforms
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, 65, -180, 270, 30) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, 390, -240, 150, 30) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, 455, 60, 140, 30) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, 100, 200, 130, 30) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, -140, 140, 180, 30) );
-    this.mPlatSet.addToSet( new NormalPlatform(this.kWood, -480, 200, 240, 30) );
-    
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 65, -180, 270, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 390, -240, 150, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 455, 60, 140, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 100, 200, 130, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -140, 140, 180, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -480, 200, 240, 30));
+
     //broken platforms
-    this.mBrokeSet.addToSet( new BrokenPlatform(this.kDirt, -375, 261.25, 30, 92.5));
-    
+    this.mBrokeSet.addToSet(new BrokenPlatform(this.kDirt, -375, 261.25, 30, 92.5));
+
     //stabs
-    this.mStabSetSet.addToSet( new StabSet(this.kStabTexture, 4, -350, -307.5) );
-    this.mStabSetSet.addToSet( new StabSet(this.kStabTexture, 1, 50, -165) );
-    
+    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 4, -350, -307.5));
+    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, 50, -165));
+
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mTips = new Sentence(this.kIce);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
@@ -108,35 +108,37 @@ MyGame.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
 
     this.mCamera.setupViewProjection();
-    
+
     this.mStabSetSet.draw(this.mCamera);
     this.mHero.draw(this.mCamera);
     this.mMirrorHero.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
     this.mBrokeSet.draw(this.mCamera);
-    
+
     this.mTips.draw(this.mCamera);
-    
-    if (this.mHero.mIsDead) this.mShowDeath.draw(this.mCamera);
+
+    if (this.mHero.mIsDead)
+        this.mShowDeath.draw(this.mCamera);
 };
 
 MyGame.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
-	}
-	if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
-		this.LevelSelect = "boss";
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+        this.LevelSelect = "boss";
         gEngine.GameLoop.stop();
     }
-    if (this.mHero.mIsDead) return;
-    
+    if (this.mHero.mIsDead)
+        return;
+
     this.mStabSetSet.update();
     this.mHero.update();
     this.mMirrorHero.update();
     this.mPlatSet.update();
     this.mBrokeSet.update();
-    
+
     this.mTips.update(this.mHero.getXform());
     this.mSolveCol.update();
 };

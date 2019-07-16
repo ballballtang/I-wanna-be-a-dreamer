@@ -16,7 +16,7 @@ function MovePlatform(t, atX, atY, w, h, s, e) {
     this.getRigidBody().setRestitution(.7);
     
     this.mVP = new VProcessor(this.getXform(), 0);
-    this.mVP.setXV(12);
+    this.mVP.setXV(120);
     this.mstart = s;
     this.mend = e;
 }

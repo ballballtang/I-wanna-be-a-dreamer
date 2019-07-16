@@ -31,7 +31,7 @@ Boss.prototype.DecBlood = function(){
         this.mDeath = true;
         return;
     }//to check the death
-    this.mBlood = this.mBlood-1;
+    this.mBlood = this.mBlood-5;
 };
 
 Boss.prototype.draw = function(aCamera){
