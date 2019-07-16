@@ -1,8 +1,10 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Bullet(spriteTexture, atX, atY) {
-    this.kWdith = 5;
-    this.kHeight = 5;
+function Bullet(spriteTexture, atX, atY, direction) {
+    this.kWdith = 10;
+    this.kHeight = 10;
+    
+    this.mIsDead = false;
     
     this.mBullet = new SpriteRenderable(spriteTexture);
     this.mBullet.setColor([1, 1, 1, 0]);
@@ -13,38 +15,14 @@ function Bullet(spriteTexture, atX, atY) {
     GameObject.call(this, this.mBullet);
     
     this.mVP = new VProcessor(this.getXform(), 0);
+    this.mVP.setXV(600 * direction);
 }
-gEngine.Core.inheritPrototype(Hero, GameObject);
+gEngine.Core.inheritPrototype(Bullet, GameObject);
 
-Hero.prototype.draw = function (Camera) {
-    GameObject.prototype.draw.call(this, Camera);
+Bullet.prototype.draw = function (aCamera) {
+    GameObject.prototype.draw.call(this, aCamera);
 };
 
-Hero.prototype.update = function () {
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
-        this.mVP.setXV(-120 * this.kMirror);
-    }
-    if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Left)) {
-        this.mVP.setXV(0);
-    }
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
-        this.mVP.setXV(120 * this.kMirror);
-    }
-    if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Right)) {
-        this.mVP.setXV(0);
-    }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-        if (this.mInAir && this.mJumpTime == 0) this.mJumpTime = 1;
-        this.mJumpTime++;
-    }
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= 2) {
-        this.mHoldSpace--;
-        if (this.mJumpTime == 1) this.mVP.setYV(370 * this.kMirror);
-        if (this.mJumpTime == 2) this.mVP.setYV(280 * this.kMirror);
-    }
-    if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Space)) {
-        this.mHoldSpace = 9;
-    }
-    
+Bullet.prototype.update = function () {
     this.mVP.update();
 };

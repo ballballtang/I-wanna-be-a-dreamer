@@ -30,7 +30,6 @@ NormalPlatform.prototype.open = function () {
     this.getRigidBody().setAngularVelocity(0.8);
 };
 
-//平台上长刺的function可以定义在stab类里，把stab先setinvisible,当有collision的时候，stab visible
 NormalPlatform.prototype.draw = function (aCamera) {
     Platform.prototype.draw.call(this, aCamera);
 };
