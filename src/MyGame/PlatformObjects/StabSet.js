@@ -8,18 +8,36 @@
 "use strict";
 
 //llX -> lower left X
-function StabSet(t, n, llX, llY) {
+function StabSet(t, n, llX, llY, isVertical, isReverse) {
     GameObjectSet.call(this);
     
     this.kW = 46;
     this.kH = 46;
     
-    this.stX = llX + this.kW / 2;
-    this.stY = llY + this.kH / 2;
+    if (isVertical) {
+        this.stX = llX + this.kH / 2 * (isReverse ? -1 : 1);
+        this.stY = llY + this.kW / 2;
+    }
+    else {
+        this.stX = llX + this.kW / 2;
+        this.stY = llY + this.kH / 2 * (isReverse ? -1 : 1);
+    }
     
-    for (var i = 0; i < n; i++) {
-        var nowX = this.stX + i * this.kW;
-        this.addToSet( new Stab(t, nowX, this.stY, this.kW, this.kH) );
+    this.mRot = 0;
+    if (isVertical) this.mRot -= 90;
+    if (isReverse) this.mRot -= 180;
+    
+    if (isVertical) {
+        for (var i = 0; i < n; i++) {
+            var nowY = this.stY + i * this.kW;
+            this.addToSet( new Stab(t, this.stX, nowY, this.kW, this.kH, this.mRot) );
+        }
+    }
+    else {
+        for (var i = 0; i < n; i++) {
+            var nowX = this.stX + i * this.kW;
+            this.addToSet( new Stab(t, nowX, this.stY, this.kW, this.kH, this.mRot) );
+        }
     }
 }
 gEngine.Core.inheritPrototype(StabSet, GameObjectSet);

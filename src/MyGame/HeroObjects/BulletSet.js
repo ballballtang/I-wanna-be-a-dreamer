@@ -23,6 +23,10 @@ BulletSet.prototype.deleteBullet = function (index) {
     this.mSet.splice(index, 1);
 };
 
+BulletSet.prototype.clean = function() {
+    this.mSet = [];
+}
+
 BulletSet.prototype.update = function (dir) {
     GameObjectSet.prototype.update.call(this);
     for (var i = 0; i < this.size(); i++) {

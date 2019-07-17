@@ -74,6 +74,12 @@ gEngine.Core = (function () {
         gEngine.LoadingIconConfig.loadCountSet();
         gEngine.GameLoop.start(scene); // will wait until async loading is done and call scene.initialize()
     };
+    
+    var changeScene = function (scene, clean) {
+        if (clean) gEngine.Core.clearCanvas([0,0,0,1]);
+        scene.loadScene.call(scene);
+        gEngine.GameLoop.start(scene);
+    };
 
     /**
      * initialize all of the EngineCore components
@@ -136,6 +142,7 @@ gEngine.Core = (function () {
         clearCanvas: clearCanvas,
         inheritPrototype: inheritPrototype,
         startScene: startScene,
+        changeScene: changeScene,
         cleanUp: cleanUp
     };
 

@@ -7,7 +7,7 @@
 
 /* global Scene, gEngine */
 
-function BossLevel() {
+function BossLevel(aHero) {
     this.kTestTexture = "assets/JustForTest.png";
     this.kWood = "assets/RigidShape/Wood.png";
 
@@ -16,12 +16,12 @@ function BossLevel() {
     this.LevelSelect = null;
 
     // Objects
-    //this.mHero = null;
+    this.mHero = aHero;
     this.mBoss = null;
     this.mPlatSet = new GameObjectSet();
 
     //Tools
-    //this.mSolveCol = null;
+    this.mSolveCol = null;
 }
 gEngine.Core.inheritPrototype(BossLevel, Scene);
 
@@ -34,8 +34,7 @@ BossLevel.prototype.loadScene = function () {
 BossLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kTestTexture);
     gEngine.Textures.unloadTexture(this.kWood);
-    gEngine.Core.startScene(new MyGame());
-
+    gEngine.Core.changeScene(new MyGame(this.mHero), false);
 };
 
 BossLevel.prototype.initialize = function () {
@@ -48,21 +47,27 @@ BossLevel.prototype.initialize = function () {
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
-    //this.mHero = new Hero(this.kTestTexture, 1);
+    if (this.mHero === null)
+        this.mHero = new Hero(this.kTestTexture, 1);
+    else
+        this.mHero.cleanStatus(this.mCamera);
     //this.mMirrorHero = new Hero(this.kTestTexture, -1);
     this.mBoss = new Boss(this.kTestTexture, 530, 266, 80, 80);
-    
+
     //bounds
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -600, -76.25, 60, 780));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 600, 0, 60, 675));
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 600, 0, 60, 675));
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -300, -337.5, 1800, 60));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 0, 337.5, 1200, 60));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 0, 337.5, 1400, 60));
 
     //platforms
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 65, -200, 270, 30));
     this.mPlatSet.addToSet(new MovePlatform(this.kWood, -350, -100, 280, 30, -400, -200));
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -140, 50, 300, 30));
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -300, 200, 240, 30));
+
+    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mPlatSet.mSet, [], []);
+
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -73,17 +78,21 @@ BossLevel.prototype.draw = function () {
 
     this.mCamera.setupViewProjection();
 
-    //this.mHero.draw(this.mCamera);
+    this.mHero.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
     this.mBoss.draw(this.mCamera);
 };
 
 BossLevel.prototype.update = function () {
+    if (this.mHero.mIsGoingRight) {
+        gEngine.GameLoop.stop();
+    }
+
     this.mBoss.update(true);
-    //this.mHero.update();
+    this.mHero.update();
     this.mPlatSet.update();
     this.mCamera.update();
-    
+
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
         gEngine.GameLoop.stop();
     }
@@ -91,6 +100,6 @@ BossLevel.prototype.update = function () {
         console.log("shaking");
         this.mCamera.shake(80, 80, 20, 30);
     }
-    
-    //this.mSolveCol.update();
+
+    this.mSolveCol.update();
 };

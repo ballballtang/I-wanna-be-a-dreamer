@@ -15,6 +15,8 @@ function Platform(t, atX, atY, w, h) {
     GameObject.call(this, this.mPlatform);
     var r = new RigidRectangle(this.getXform(), w, h);
     this.setRigidBody(r);
+    
+    this.mVP = new VProcessor(this.getXform(), 0);
 }
 gEngine.Core.inheritPrototype(Platform, GameObject);
 

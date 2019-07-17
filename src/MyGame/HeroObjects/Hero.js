@@ -6,6 +6,9 @@ function Hero(spriteTexture, atX, atY, mirror) {
     this.kMirror = mirror;
     
     this.mIsDead = false;
+    this.mIsGoingLeft = false;
+    this.mIsGoingUp = false;
+    this.mIsGoingRight = false;
     
     this.mHoldSpace = 10;
     this.mJumpTime = 0;
@@ -26,13 +29,35 @@ function Hero(spriteTexture, atX, atY, mirror) {
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
+Hero.prototype.cleanStatus = function (aCamera) {
+    var cHeight = aCamera.getWCHeight();
+    var cWidth = aCamera.getWCWidth();
+    
+    this.mIsDead = false;
+    if (this.mIsGoingUp) {
+        this.mIsGoingUp = false;
+        this.getXform().incYPosBy(-cHeight);
+    }
+    if (this.mIsGoingLeft) {
+        this.mIsGoingLeft = false;
+        this.getXform().incXPosBy(cWidth);
+    }
+    if (this.mIsGoingRight) {
+        this.mIsGoingRight = false;
+        this.getXform().incXPosBy(-cWidth);
+    }
+    
+    this.mVP.setV(0, 0);
+    this.mBulletSet.clean();
+}
+
 Hero.prototype.draw = function (aCamera) {
     GameObject.prototype.draw.call(this, aCamera);
     this.mBulletSet.draw(aCamera);
 };
 
 Hero.prototype.update = function () {
-    if (this.mIsDead) return;
+    if (this.mIsDead || this.mIsGoingLeft || this.mIsGoingRight) return;
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         this.mFacing = - this.kMirror;
@@ -61,6 +86,9 @@ Hero.prototype.update = function () {
         this.mHoldSpace = 10;
     }
     
+    if (this.mInAir) this.mVP.setAddV(0, 0);
+    
     this.mBulletSet.update(this.mFacing);
     this.mVP.update();
+    //console.log(this.getXform().getPosition()[1] - this.getXform().getHeight() / 2);
 };

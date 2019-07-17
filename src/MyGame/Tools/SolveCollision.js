@@ -3,7 +3,7 @@ function SolveCollision(Camera, Hero, MirrorHero, Platforms, Brokens, StabSets) 
     this.mHero = Hero;
     this.mBulletSet = Hero.mBulletSet;
     this.mMirrorHero = MirrorHero;
-    this.mMirrorBullet = MirrorHero.mBulletSet;
+    if(this.mMirrorHero !== null) this.mMirrorBullet = MirrorHero.mBulletSet;
     this.mPlatforms = Platforms;
     this.mBrokens = Brokens;
     this.mStabSets = StabSets;
@@ -13,11 +13,25 @@ SolveCollision.prototype.update = function () {
     this.solveHero(this.mHero, false);
     this.SolveBullets(this.mBulletSet, false);
     this.checkDeath(this.mHero);
+    this.checkSceneChange(this.mHero);
     if (this.mMirrorHero !== null) {
         this.solveHero(this.mMirrorHero, true);
         this.SolveBullets(this.mMirrorBullet, true);
     }
 };
+
+SolveCollision.prototype.checkSceneChange = function (aHero) {
+    var hBottom = aHero.getBBox().minY();
+    var hLeft = aHero.getBBox().minX();
+    var hRight = aHero.getBBox().maxX();
+    var cUp = this.mCamera.getWCCenter()[1] + this.mCamera.getWCHeight() / 2;
+    var cLeft = this.mCamera.getWCCenter()[0] - this.mCamera.getWCWidth() / 2;
+    var cRight = this.mCamera.getWCCenter()[0] + this.mCamera.getWCWidth() / 2;
+    
+    if (hBottom > cUp) aHero.mIsGoingUp = true;
+    if (hLeft > cRight) aHero.mIsGoingRight = true;
+    if (hRight < cLeft) aHero.mIsGoingLeft = true;
+}
 
 SolveCollision.prototype.checkDeath = function (aHero) {
     //fall out
@@ -70,6 +84,7 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                     hasLRCol = true;
                 }
             }
+            var isOnThisPlat = false;
             if ((status & 4) && !(status & 8) && !hasLRCol) {
                 if (hPos[1] + dh - dv[1] <= pBox.minY() + 0.0001) {
                     hPos[1] = pBox.minY() - dh;
@@ -77,6 +92,9 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                     if (isMirror) {
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
+                        
+                        isOnThisPlat = true;
+                        aHero.mVP.setAddV(plats[i].mVP.mV[0], plats[i].mVP.mV[1]);
                     } else {
                         if (aHero.mHoldSpace > 1 && aHero.mHoldSpace < 10)
                             aHero.mHoldSpace = 1;
@@ -84,12 +102,15 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                 }
             }
             if ((status & 8) && !(status & 4) && !hasLRCol) {
-                if (hPos[1] - dh - dv[1] >= pBox.maxY() - 0.0001) {
+                if (hPos[1] - dh - dv[1] * 2 >= pBox.maxY() - 0.0001) {
                     hPos[1] = pBox.maxY() + dh;
                     aHero.mVP.cleanYV();
                     if (!isMirror) {
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
+                        
+                        isOnThisPlat = true;
+                        aHero.mVP.setAddV(plats[i].mVP.mV[0], plats[i].mVP.mV[1]);
                     } else {
                         if (aHero.mHoldSpace > 1 && aHero.mHoldSpace < 10)
                             aHero.mHoldSpace = 1;

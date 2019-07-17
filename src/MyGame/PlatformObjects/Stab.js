@@ -7,12 +7,14 @@
 
 "use strict";
 
-function Stab(t, atX, atY, w, h) {
+function Stab(t, atX, atY, w, h, rotate) {
     Platform.call(this, t, atX, atY, w, h);
     this.getRigidBody().setMass(0.0);
     this.getRigidBody().setInertia(2);
     this.getRigidBody().setFriction(.2);
     this.getRigidBody().setRestitution(.7);
+    
+    this.getXform().incRotationByDegree(rotate);
 }
 gEngine.Core.inheritPrototype(Stab, GameObject);
 
