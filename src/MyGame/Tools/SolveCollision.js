@@ -3,7 +3,10 @@ function SolveCollision(Camera, Hero, MirrorHero, Platforms, Brokens, StabSets) 
     this.mHero = Hero;
     this.mBulletSet = Hero.mBulletSet;
     this.mMirrorHero = MirrorHero;
-    this.mMirrorBullet = MirrorHero.mBulletSet;
+    if(this.mMirrorHero){
+        this.mMirrorBullet = MirrorHero.mBulletSet;
+    }
+
     this.mPlatforms = Platforms;
     this.mBrokens = Brokens;
     this.mStabSets = StabSets;
@@ -14,6 +17,7 @@ SolveCollision.prototype.update = function () {
     this.SolveBullets(this.mBulletSet, false);
     this.checkDeath(this.mHero);
     if (this.mMirrorHero !== null) {
+        console.log(this.mMirrorHero);
         this.solveHero(this.mMirrorHero, true);
         this.SolveBullets(this.mMirrorBullet, true);
     }
