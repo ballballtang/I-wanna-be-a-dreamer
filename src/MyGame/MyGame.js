@@ -72,6 +72,9 @@ MyGame.prototype.unloadScene = function () {
     if (this.LevelSelect === "SecondLevel") {
         gEngine.Core.startScene(new SecondLevel());
     }
+    if (this.LevelSelect === "StartScene") {
+        gEngine.Core.startScene(new StartScene());
+    }
 };
 
 MyGame.prototype.initialize = function () {
@@ -145,10 +148,10 @@ MyGame.prototype.update = function () {
         if (!gEngine.AudioClips.isBackgroundAudioPlaying())
             gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
     }
-//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
-//        this.LevelSelect = "boss";
-//        gEngine.GameLoop.stop();
-//    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+        this.LevelSelect = "StartScene";
+        gEngine.GameLoop.stop();
+    }
 
     if (this.mHero.mIsGoingLeft) {
         this.LevelSelect = "second";
