@@ -17,6 +17,10 @@ function BossLevel(aHero) {
     this.kHero = "assets/EmptyAction.png";
     //this.kWood = "assets/RigidShape/Wood.png";
 
+    //the hint
+    this.kPaper = "assets/clue_s.png";
+	this.kContent = "assets/clue_b2.png";
+	
     // The camera to view the scene
     this.mCamera = null;
     this.LevelSelect = null;
@@ -26,6 +30,9 @@ function BossLevel(aHero) {
     this.mBoss = null;
     this.mPlatSet = new GameObjectSet();
 
+    //Trap
+    this.mTraps = new GameObjectSet();
+    this.mTrapP = null;
     //Tools
     this.mSolveCol = null;
     this.mShowDeath = null;
@@ -41,6 +48,9 @@ BossLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBullet);
     gEngine.Textures.loadTexture(this.kHero);
     //gEngine.Textures.loadTexture(this.kWood);
+    gEngine.Textures.loadTexture(this.kPaper);
+    gEngine.Textures.loadTexture(this.kContent);
+
 };
 
 BossLevel.prototype.unloadScene = function () {
@@ -51,7 +61,9 @@ BossLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kYouDied);
     gEngine.Textures.unloadTexture(this.kBullet);
     gEngine.Textures.unloadTexture(this.kHero);
-    //gEngine.Textures.unloadTexture(this.kWood);
+	//gEngine.Textures.unloadTexture(this.kWood);
+	gEngine.Textures.unloadTexture(this.kPaper);
+    gEngine.Textures.unloadTexture(this.kContent);
 
     if (this.LevelSelect === "restart") {
         gEngine.Core.changeScene(new BossLevel(), true);
@@ -85,13 +97,24 @@ BossLevel.prototype.initialize = function () {
 
     //platforms
     //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -280, 270, 60));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -200, 270, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 280, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 300, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, 200, 240, 30));
-
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -200, 270, 30));
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 280, 30));
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 300, 30));
+	//this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, 200, 240, 30));
+	
+    this.mPlatSet.addToSet(new Platform(this.kPaper,520,-290,30,30)); //纸团 7,3
+    this.mPlatSet.addToSet(new Platform(this.kContent,0,0,500,500));//纸团内容 8,4
+    this.mPlatSet.getObjectAt(4).setVisibility(false);
+    
+    this.mTraps.addToSet(new NormalPlatform(this.kPaper,520,-290,40,40));//打开纸团
+    var ss = this.mTraps.size();
+    var i;
+    for(i=0;i<ss;i++){
+        this.mTraps.getObjectAt(i).setVisibility(false);
+    }
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mPlatSet.mSet, [], []);
-    this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
+	this.mTrapP = new BossTrap(this.mTraps,this.mHero,this.mPlatSet,null);
+	this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -128,7 +151,8 @@ BossLevel.prototype.update = function () {
     if (this.mHero.mIsDead) {
         return;
     }
-
+    
+    this.mTrapP.update();
     this.mBoss.update(true);
     this.mHero.update();
     this.mPlatSet.update();

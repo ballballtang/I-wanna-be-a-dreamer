@@ -14,6 +14,8 @@ function FirstTrap(TrapArea,Hero,Platforms,Stabs,noCols){
     this.mWhere = -1;
     this.mTime = false;
     this.mTimer = 0;
+    this.mPaperTime = false;
+    this.mPaperTimer = 0;//计时纸条出现的时间
 }
 
 FirstTrap.prototype.isTrigger = function(){
@@ -29,6 +31,7 @@ FirstTrap.prototype.isTrigger = function(){
             this.mWhere = i;
         }
     }
+
 };
 
 FirstTrap.prototype.trapProcess = function(num){
@@ -52,6 +55,13 @@ FirstTrap.prototype.trapProcess = function(num){
             break;
         case 5:
             this.mStabs.getObjectAt(7).moveLeft(200);
+            break;
+        case 6:
+            if(this.mPaperTimer < 200){
+                this.mPlatforms.getObjectAt(14).setVisibility(true); //两秒后不会再setvisible了
+            }            
+            this.mPlatforms.getObjectAt(13).setVisibility(false);
+            this.mPaperTime = true;
             break;
         default:
             return;
@@ -78,4 +88,13 @@ FirstTrap.prototype.update = function(){
     if(this.mTimer === 80){
         this.mStabs.getObjectAt(4).setVisibility(true);
     }
+    if(this.mPaperTime === true){
+        this.mPaperTimer +=1;
+        console.log(this.mPaperTimer);
+    }
+    if(this.mPaperTimer === 200){
+        this.mPlatforms.getObjectAt(14).setVisibility(false);
+        this.mPaperTime = false;
+    }
+    
 };

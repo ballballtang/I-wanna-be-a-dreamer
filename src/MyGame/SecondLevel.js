@@ -17,6 +17,9 @@ function SecondLevel(aHero) {
     this.kYouDied = "assets/YouDied.png";
     this.kBullet = "assets/bullet.png";
     this.kHero = "assets/EmptyAction.png";
+    //the hint
+    this.kPaper = "assets/clue_s.png";
+    this.kContent = "assets/clue_b1.png";
     //this.kStabTexture = "assets/TestStab.png";
     //this.kWood = "assets/RigidShape/Wood.png";
     this.kIce = "assets/RigidShape/Ice.png";
@@ -37,6 +40,7 @@ function SecondLevel(aHero) {
     this.mTrapSet = new GameObjectSet();
     this.mNoCollisionStab = new GameObjectSet(); //不参与碰撞检测的刺
     this.mButton = null;//button
+    
 
     //Tools
     this.mSolveCol = null;
@@ -53,6 +57,8 @@ SecondLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kYouDied);
     gEngine.Textures.loadTexture(this.kBullet);
     gEngine.Textures.loadTexture(this.kHero);
+    gEngine.Textures.loadTexture(this.kPaper);
+    gEngine.Textures.loadTexture(this.kContent);
     //gEngine.Textures.loadTexture(this.kStabTexture);
     //gEngine.Textures.loadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
@@ -68,6 +74,8 @@ SecondLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kYouDied);
     gEngine.Textures.unloadTexture(this.kBullet);
     gEngine.Textures.unloadTexture(this.kHero);
+    gEngine.Textures.unloadTexture(this.kPaper);
+    gEngine.Textures.unloadTexture(this.kContent);
     //gEngine.Textures.unloadTexture(this.kStabTexture);
     //gEngine.Textures.unloadTexture(this.kWood);
     gEngine.Textures.unloadTexture(this.kIce);
@@ -114,8 +122,12 @@ SecondLevel.prototype.initialize = function () {
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 150, 130, 30));//大平台旁边第二个看上去不正常其实可以踩的小平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -230, 40, 50, 180));//第三个竖着的长方形平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -580, 240, 60, 135, true));//左上角竖着的平台
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -380, 240, 30, 135, true));//左上角胖平台上长方形障碍物
-    //this.mPlatSet.getObjectAt(12).setVisibility(false);
+	//this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -380, 240, 30, 135, true));//左上角胖平台上长方形障碍物
+	//this.mPlatSet.getObjectAt(12).setVisibility(false);
+	
+    this.mPlatSet.addToSet(new Platform(this.kPaper,480,230,30,30)); //纸团
+    this.mPlatSet.addToSet(new Platform(this.kContent,0,0,500,500));//纸团内容 14
+    this.mPlatSet.getObjectAt(14).setVisibility(false);
 
     //broken platforms
     this.mBrokeSet.addToSet(new BrokenPlatform(this.kBrokenTexture, -389, -18, 40, 121));
@@ -145,7 +157,8 @@ SecondLevel.prototype.initialize = function () {
     this.mTrapSet.addToSet((new NormalPlatform(this.kIce, -554, -219, 100, 92)));//进入该区域，invisible的刺出现
     this.mTrapSet.addToSet((new NormalPlatform(this.kIce, -394, -219, 46, 92)));//进入该区域，invisible的刺出现
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce, -20, -230, 110, 160));//进入该区域，上面有个刺掉下来
-    this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 525, -172, 160, 185));//进入该区域，右下角最右边出现一排刺，并且飞出
+	this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 525, -172, 160, 185));//进入该区域，右下角最右边出现一排刺，并且飞出
+	this.mTrapSet.addToSet(new NormalPlatform(this.kIce,480,230,40,40));//打开纸团
     var ss = this.mTrapSet.size();
     var i;
     for (i = 0; i < ss; i++) {
