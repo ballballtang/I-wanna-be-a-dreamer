@@ -14,6 +14,7 @@
 function FirstLevel(aHero) {
     this.kTestTexture = "assets/TestTexture.png";
     this.kStabTexture = "assets/TestStab.png";
+    this.kSceneObj = "assets/SceneObjects.png"
     this.kYouDied = "assets/YouDied.png";
     this.kWood = "assets/RigidShape/Wood.png";
     this.kIce = "assets/RigidShape/Ice.png";
@@ -40,6 +41,7 @@ gEngine.Core.inheritPrototype(FirstLevel, Scene);
 FirstLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kTestTexture);
     gEngine.Textures.loadTexture(this.kStabTexture);
+    gEngine.Textures.loadTexture(this.kSceneObj);
     gEngine.Textures.loadTexture(this.kYouDied);
     gEngine.Textures.loadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
@@ -49,6 +51,7 @@ FirstLevel.prototype.loadScene = function () {
 FirstLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kTestTexture);
     gEngine.Textures.unloadTexture(this.kStabTexture);
+    gEngine.Textures.unloadTexture(this.kSceneObj);
     gEngine.Textures.unloadTexture(this.kYouDied);
     gEngine.Textures.unloadTexture(this.kWood);
     gEngine.Textures.unloadTexture(this.kIce);
@@ -104,8 +107,8 @@ FirstLevel.prototype.initialize = function () {
     this.mBrokeSet.addToSet(new BrokenPlatform(this.kDirt, -375, 261.25, 30, 92.5));
 
     //stabs
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 4, -350, -307.5, false, false));
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, 50, -165, false, false));
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 4, -350, -307.5, false, false));
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, 50, -165, false, false));
 
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mTips = new Sentence(this.kIce);
@@ -135,6 +138,10 @@ FirstLevel.prototype.draw = function () {
 FirstLevel.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
         this.LevelSelect = "StartScene";
+        gEngine.GameLoop.stop();
+    }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+        this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
     }
     

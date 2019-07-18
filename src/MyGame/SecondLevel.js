@@ -11,6 +11,7 @@
 function SecondLevel(aHero) {
     this.kTestTexture = "assets/TestTexture.png";
     this.kStabTexture = "assets/TestStab.png";
+    this.kSceneObj = "assets/SceneObjects.png"
     this.kYouDied = "assets/YouDied.png";
     this.kWood = "assets/RigidShape/Wood.png";
     this.kIce = "assets/RigidShape/Ice.png";
@@ -39,6 +40,7 @@ gEngine.Core.inheritPrototype(SecondLevel, Scene);
 SecondLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kTestTexture);
     gEngine.Textures.loadTexture(this.kStabTexture);
+    gEngine.Textures.loadTexture(this.kSceneObj);
     gEngine.Textures.loadTexture(this.kYouDied);
     gEngine.Textures.loadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
@@ -48,6 +50,7 @@ SecondLevel.prototype.loadScene = function () {
 SecondLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kTestTexture);
     gEngine.Textures.unloadTexture(this.kStabTexture);
+    gEngine.Textures.unloadTexture(this.kSceneObj);
     gEngine.Textures.unloadTexture(this.kYouDied);
     gEngine.Textures.unloadTexture(this.kWood);
     gEngine.Textures.unloadTexture(this.kIce);
@@ -60,7 +63,7 @@ SecondLevel.prototype.unloadScene = function () {
         gEngine.Core.changeScene(new BossLevel(this.mHero), false);
     }
     if (this.LevelSelect === "FirstLevel") {
-        gEngine.Core.changeScene(new MyGame(this.mHero), false);
+        gEngine.Core.changeScene(new FirstLevel(this.mHero), false);
     }
 };
 
@@ -101,15 +104,15 @@ SecondLevel.prototype.initialize = function () {
     this.mBrokeSet.addToSet(new BrokenPlatform(this.kDirt, -380, -18, 30, 124));
 
     //stabs
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 14, -192, -50));//第一层平台上的14个刺
-    //this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, -463, -265));
-    this.mNoCollisionStab.addToSet(new StabSet(this.kStabTexture,1,-483,-265));//看的见但是是一个假刺,不参与collision处理
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, -417, -265));//要设置成看不见
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture,2,-600,-265)); //要设置成看不见
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture,14,-228,-80,false,true));//倒着的一排刺，触发trap后第五个刺会掉下来
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 14, -192, -50));//第一层平台上的14个刺
+    //this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -463, -265));
+    this.mNoCollisionStab.addToSet(new StabSet(this.kSceneObj,1,-483,-265));//看的见但是是一个假刺,不参与collision处理
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -417, -265));//要设置成看不见
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj,2,-600,-265)); //要设置成看不见
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj,14,-228,-80,false,true));//倒着的一排刺，触发trap后第五个刺会掉下来
     
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture,1,-365,125,true,false));//左上角胖平台侧着的刺
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture,1,-255,30,true,true));//左上角胖平台侧着的刺
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj,1,-365,125,true,false));//左上角胖平台侧着的刺
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj,1,-255,30,true,true));//左上角胖平台侧着的刺
 
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null,this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);

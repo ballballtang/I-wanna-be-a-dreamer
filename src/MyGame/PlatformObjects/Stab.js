@@ -8,21 +8,21 @@
 "use strict";
 
 function Stab(t, atX, atY, w, h, rotate) {
-    Platform.call(this, t, atX, atY, w, h);
+    SpriteObj.call(this, t, atX, atY, w, h, [0, 39, 48, 87]);
     
     this.getXform().incRotationByDegree(rotate);
 }
-gEngine.Core.inheritPrototype(Stab, Platform);
+gEngine.Core.inheritPrototype(Stab, SpriteObj);
 
 Stab.prototype.setInvisible = function () {
     this.setVisibility(false);
 };
 
 Stab.prototype.draw = function (aCamera) {
-    Platform.prototype.draw.call(this, aCamera);
+    SpriteObj.prototype.draw.call(this, aCamera);
 };
 
 Stab.prototype.update = function () {
-    Platform.prototype.update.call(this);
+    SpriteObj.prototype.update.call(this);
 };
 
