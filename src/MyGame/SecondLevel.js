@@ -21,10 +21,12 @@ function SecondLevel(aHero) {
     this.LevelSelect = null;
 
     // Objects
-    this.mHero = aHero ? aHero : null;
+	this.mHero = aHero ? aHero : null;
+
     this.mPlatSet = new GameObjectSet();
     this.mBrokeSet = new GameObjectSet();
     this.mStabSetSet = new GameObjectSet();
+    this.mTrapSet = new GameObjectSet();
 
     //Tools
     this.mSolveCol = null;
@@ -91,16 +93,28 @@ SecondLevel.prototype.initialize = function () {
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 0, 150, 130, 30));//大平台旁边第二个看上去不正常其实可以踩的小平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -230, 40, 80, 180));//第三个竖着的长方形平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -580, 240, 60, 135));//左上角竖着的平台
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood,-380,240,30,135));//左上角胖平台上长方形障碍物
 
     //broken platforms
     this.mBrokeSet.addToSet(new BrokenPlatform(this.kDirt, -380, -18, 30, 124));
 
     //stabs
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 14, -185, -50));
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, -410, -265));
+    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 14, -185, -50));//第一层平台上的14个刺
+    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, -463, -265));//看的见但是是一个假刺
+    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, -417, -265));//要设置成看不见
+    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture,3,-600,-265)); //要设置成看不见
 
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null,this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
+    
+    //trapArea
+    this.mTrapSet.addToSet((new NormalPlatform(this.kIce,260, 150, 130, 30))); //进入该区域后，this.mPlatSet[8].fall
+    //第二个trap，碰到按钮之后，按钮改变样子，this.mPlatSet[5]open,this.mPlatSet[12]出现，过几秒后最左边出现一排刺fly out
+    this.mTrapSet.addToSet((new NormalPlatform(this.kIce,-531, -242, 138, 46)));//进入该区域，invisible的刺出现
+    this.mTrapSet.addToSet((new NormalPlatform(this.kIce,-394, -242, 46, 46)));//进入该区域，invisible的刺出现
+    this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 0, -240, 100, 30));//进入该区域，上面有个刺掉下来
+    this.mTrapSet.addToSet(new NormalPlatform(this.kIce,525,-172,160,185));//进入该区域，右下角最右边出现一排刺，并且飞出
+    
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -115,6 +129,7 @@ SecondLevel.prototype.draw = function () {
     this.mHero.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
     this.mBrokeSet.draw(this.mCamera);
+    this.mTrapSet.draw(this.mCamera);
 
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
@@ -140,6 +155,7 @@ SecondLevel.prototype.update = function () {
     this.mHero.update();
     this.mPlatSet.update();
     this.mBrokeSet.update();
+    this.mTrapSet.update();
     //console.log(this.mHero.getXform().getPosition());
     this.mSolveCol.update();
 };

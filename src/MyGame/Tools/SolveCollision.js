@@ -15,6 +15,7 @@ SolveCollision.prototype.update = function () {
     this.checkDeath(this.mHero);
     this.checkSceneChange(this.mHero);
     if (this.mMirrorHero !== null) {
+        console.log(this.mMirrorHero);
         this.solveHero(this.mMirrorHero, true);
         this.SolveBullets(this.mMirrorBullet, true);
     }

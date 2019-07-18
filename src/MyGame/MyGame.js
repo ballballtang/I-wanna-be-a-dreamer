@@ -69,6 +69,9 @@ MyGame.prototype.unloadScene = function () {
         //console.log("-------");
         gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
     }
+    if (this.LevelSelect === "SecondLevel") {
+        gEngine.Core.startScene(new SecondLevel());
+    }
 };
 
 MyGame.prototype.initialize = function () {
