@@ -8,7 +8,7 @@
 /* global Scene, gEngine */
 
 function BossLevel(aHero) {
-    this.kTestTexture = "assets/JustForTest.png";
+    this.kTestTexture = "assets/TestTexture.png";
     this.kWood = "assets/RigidShape/Wood.png";
 
     // The camera to view the scene
@@ -34,7 +34,7 @@ BossLevel.prototype.loadScene = function () {
 BossLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kTestTexture);
     gEngine.Textures.unloadTexture(this.kWood);
-    gEngine.Core.changeScene(new MyGame(this.mHero), false);
+    gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
 };
 
 BossLevel.prototype.initialize = function () {
@@ -97,7 +97,7 @@ BossLevel.prototype.update = function () {
         gEngine.GameLoop.stop();
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.J)) {
-        console.log("shaking");
+        //console.log("shaking");
         this.mCamera.shake(80, 80, 20, 30);
     }
 

@@ -9,7 +9,7 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function SecondLevel(aHero) {
-    this.kTestTexture = "assets/JustForTest.png";
+    this.kTestTexture = "assets/TestTexture.png";
     this.kStabTexture = "assets/TestStab.png";
     this.kYouDied = "assets/YouDied.png";
     this.kWood = "assets/RigidShape/Wood.png";
