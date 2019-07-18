@@ -101,7 +101,7 @@ SecondLevel.prototype.initialize = function () {
     this.mBrokeSet.addToSet(new BrokenPlatform(this.kDirt, -380, -18, 30, 124));
 
     //stabs
-    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 14, -185, -50));//第一层平台上的14个刺
+    this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 14, -192, -50));//第一层平台上的14个刺
     //this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, -463, -265));
     this.mNoCollisionStab.addToSet(new StabSet(this.kStabTexture,1,-483,-265));//看的见但是是一个假刺,不参与collision处理
     this.mStabSetSet.addToSet(new StabSet(this.kStabTexture, 1, -417, -265));//要设置成看不见
