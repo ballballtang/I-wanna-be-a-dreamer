@@ -5,11 +5,12 @@
  */
 
 
-function FirstTrap(TrapArea,Hero,Platforms,Stabs){
+function FirstTrap(TrapArea,Hero,Platforms,Stabs,noCols){
     this.mTrap = TrapArea;
     this.mHero = Hero;
     this.mPlatforms = Platforms;
     this.mStabs = Stabs;
+    this.mNoCols = noCols;
     this.mWhere = -1;
     this.mTime = false;
     this.mTimer = 0;
@@ -38,7 +39,7 @@ FirstTrap.prototype.trapProcess = function(num){
             break;
         case 1:
             this.mPlatforms.getObjectAt(5).disappear();
-            
+            this.mNoCols[0].push();
             break;
         case 2:
             this.mStabs.getObjectAt(2).setVisibility(true);
@@ -47,10 +48,10 @@ FirstTrap.prototype.trapProcess = function(num){
             this.mStabs.getObjectAt(1).setVisibility(true);
             break;
         case 4:
-            this.mStabs.getObjectAt(3).getObjectAt(4).moveDown(200);
+            this.mStabs.getObjectAt(3).getObjectAt(4).moveDown(300);
             break;
         case 5:
-            this.mStabs.getObjectAt(6).moveLeft(200);
+            this.mStabs.getObjectAt(7).moveLeft(200);
             break;
         default:
             return;
@@ -60,7 +61,11 @@ FirstTrap.prototype.trapProcess = function(num){
 FirstTrap.prototype.update = function(){
     this.mWhere = -1;
     this.isTrigger();
-    console.log(this.mWhere);
+    //console.log(this.mWhere);
+    if(this.mHero.pixelTouches(this.mNoCols[1], [])) {
+        this.mNoCols[1].setVisibility(false);
+    }
+    
     if(this.mWhere !== -1){
         this.trapProcess(this.mWhere);
     }
@@ -71,6 +76,6 @@ FirstTrap.prototype.update = function(){
         this.mTimer +=1;
     }
     if(this.mTimer === 80){
-        this.mPlatforms.getObjectAt(12).setVisibility(true);
+        this.mStabs.getObjectAt(4).setVisibility(true);
     }
 };

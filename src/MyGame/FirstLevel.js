@@ -17,6 +17,8 @@ function FirstLevel(aHero) {
     this.kPlatTexture = "assets/platform.png";
     this.kBrokenTexture = "assets/broken.png";
     this.kYouDied = "assets/YouDied.png";
+    this.kBullet = "assets/bullet.png";
+    this.kHero = "assets/EmptyAction.png";
     //this.kStabTexture = "assets/TestStab.png";
     //this.kWood = "assets/RigidShape/Wood.png";
     this.kIce = "assets/RigidShape/Ice.png";
@@ -46,9 +48,11 @@ FirstLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kPlatTexture);
     gEngine.Textures.loadTexture(this.kBrokenTexture);
     gEngine.Textures.loadTexture(this.kYouDied);
+    gEngine.Textures.loadTexture(this.kBullet);
+    gEngine.Textures.loadTexture(this.kHero);
     //gEngine.Textures.loadTexture(this.kStabTexture);
     //gEngine.Textures.loadTexture(this.kWood);
-    gEngine.Textures.loadTexture(this.kIce);
+    //gEngine.Textures.loadTexture(this.kIce);
     //gEngine.Textures.loadTexture(this.kDirt);
 };
 
@@ -58,13 +62,19 @@ FirstLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kPlatTexture);
     gEngine.Textures.unloadTexture(this.kBrokenTexture);
     gEngine.Textures.unloadTexture(this.kYouDied);
+    gEngine.Textures.unloadTexture(this.kBullet);
+    gEngine.Textures.unloadTexture(this.kHero);
     //gEngine.Textures.unloadTexture(this.kStabTexture);
     //gEngine.Textures.unloadTexture(this.kWood);
-    gEngine.Textures.unloadTexture(this.kIce);
+    //gEngine.Textures.unloadTexture(this.kIce);
     //gEngine.Textures.unloadTexture(this.kDirt);
 
     if (this.LevelSelect === "restart") {
         gEngine.Core.changeScene(new FirstLevel(), true);
+    }
+    if (this.LevelSelect === "StartScene") {
+        gEngine.AudioClips.stopBackgroundAudio();
+        gEngine.Core.changeScene(new MyGame(), true);
     }
     if (this.LevelSelect === "BossLevel") {
         gEngine.Core.changeScene(new BossLevel(this.mHero), false);
@@ -72,10 +82,6 @@ FirstLevel.prototype.unloadScene = function () {
     if (this.LevelSelect === "SecondLevel") {
         //console.log("-------");
         gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
-    }
-    if (this.LevelSelect === "StartScene") {
-        gEngine.AudioClips.stopBackgroundAudio();
-        gEngine.Core.changeScene(new MyGame(), true);
     }
 };
 
@@ -90,10 +96,10 @@ FirstLevel.prototype.initialize = function () {
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
     if (this.mHero === null)
-        this.mHero = new Hero(this.kTestTexture, -500, -200, 1);
+        this.mHero = new Hero(this.kHero, this.kBullet, -500, -200, 1);
     else
         this.mHero.cleanStatus(this.mCamera);
-    //this.mMirrorHero = new Hero(this.kTestTexture, 500, 200, -1);
+    //this.mMirrorHero = new Hero(this.kHero, this.kBullet, 500, 200, -1);
 
     //bounds
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 580, true));
@@ -117,7 +123,7 @@ FirstLevel.prototype.initialize = function () {
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, 50, -165, false, false));
 
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
-    this.mTips = new Sentence(this.kIce);
+    this.mTips = new Sentence(this.kTestTexture);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
 };
 
@@ -130,10 +136,12 @@ FirstLevel.prototype.draw = function () {
     this.mCamera.setupViewProjection();
 
     this.mStabSetSet.draw(this.mCamera);
-    this.mHero.draw(this.mCamera);
-    //this.mMirrorHero.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
     this.mBrokeSet.draw(this.mCamera);
+    this.mHero.draw(this.mCamera);
+    //this.mHero.drawBBox(this.mCamera);
+    //this.mMirrorHero.draw(this.mCamera);
+    //this.mMirrorHero.drawBBox(this.mCamera);
 
     this.mTips.draw(this.mCamera);
 

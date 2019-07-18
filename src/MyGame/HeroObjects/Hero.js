@@ -1,8 +1,8 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Hero(spriteTexture, atX, atY, mirror) {
-    this.kWdith = 28;
-    this.kHeight = 40;
+function Hero(spriteTexture, bulletTexture, atX, atY, mirror, faceLeft) {
+    this.kWidth = 33.6;
+    this.kHeight = 48;
     this.kMirror = mirror;
     
     this.mIsDead = false;
@@ -13,17 +13,35 @@ function Hero(spriteTexture, atX, atY, mirror) {
     this.mHoldSpace = 10;
     this.mJumpTime = 0;
     this.mInAir = true;
+    this.mAirFrames = 0;
     this.mFacing = mirror;
     
     this.mHero = new SpriteRenderable(spriteTexture);
     this.mHero.setColor([1, 1, 1, 0]);
     this.mHero.getXform().setPosition(atX, atY);
-    this.mHero.getXform().setSize(this.kWdith, this.kHeight);
-    this.mHero.setElementPixelPositions(0, 16, 0, 16);
+    this.mHero.getXform().setSize(this.kWidth, this.kHeight);
+    this.mHero.setElementPixelPositions(0, 56, 177, 256);
+    if (faceLeft) {
+        this.mFacing = -mirror;
+        this.mHero.setElementPixelPositions(0, 56, 97, 175);
+    }
+    
+    this.mTexLeft = 0;
+    this.mTexDown = 177;
+    this.mKeepMoving = 0;
+    this.mIsShooting = 0;
 
     GameObject.call(this, this.mHero);
     
-    this.mBulletSet = new BulletSet(spriteTexture, this.getXform().getPosition());
+    this.mBulletSet = new BulletSet(bulletTexture, this.getXform().getPosition());
+    
+    this.kBOffset = 1.8;
+    this.kBWidthDec = 16;
+    this.mBLines = [];
+    for (var i = 0; i < 4; i++) {
+        this.mBLines[i] = new LineRenderable();
+        this.mBLines[i].setColor([1, 1, 1, 1]);
+    }
     
     this.mVP = new VProcessor(this.getXform(), -2300 * this.kMirror);
 }
@@ -53,14 +71,48 @@ Hero.prototype.cleanStatus = function (aCamera) {
     this.mBulletSet.clean();
 }
 
+Hero.prototype.drawBBox = function (aCamera) {
+    var box = this.getBBox();
+    this.mBLines[0].setFirstVertex(box.minX(), box.minY());
+    this.mBLines[0].setSecondVertex(box.minX(), box.maxY());
+    this.mBLines[1].setFirstVertex(box.minX(), box.maxY());
+    this.mBLines[1].setSecondVertex(box.maxX(), box.maxY());
+    this.mBLines[2].setFirstVertex(box.maxX(), box.maxY());
+    this.mBLines[2].setSecondVertex(box.maxX(), box.minY());
+    this.mBLines[3].setFirstVertex(box.maxX(), box.minY());
+    this.mBLines[3].setSecondVertex(box.minX(), box.minY());
+    
+    for (var i = 0; i < 4; i++) {
+        this.mBLines[i].draw(aCamera);
+    }
+};
+
+Hero.prototype.getBBox = function() {
+    var xform = this.getXform();
+    var pos = xform.getPosition();
+    var b = new BoundingBox(vec2.fromValues(pos[0] + this.kBOffset * this.mFacing, pos[1]), xform.getWidth() - this.kBWidthDec, xform.getHeight());
+    return b;
+}
+
 Hero.prototype.draw = function (aCamera) {
     GameObject.prototype.draw.call(this, aCamera);
     this.mBulletSet.draw(aCamera);
 };
 
+Hero.prototype.youDied = function () {
+    this.mIsDead = true;
+    if (this.kMirror > 0) this.mHero.setElementPixelPositions(112, 168, 17, 96);
+    else this.mHero.setElementPixelPositions(168, 112, 96, 17);
+    this.getXform().incRotationByDegree(-90);
+    this.getXform().incYPosBy(- (this.kHeight - this.kWidth * 0.89) / 2 * this.kMirror);
+}
+
 Hero.prototype.update = function () {
     if (this.mIsDead || this.mIsGoingLeft || this.mIsGoingRight) return;
     
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.C)) {
+        this.mIsShooting = 9;
+    }
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         this.mFacing = - this.kMirror;
         this.mVP.setXV(-210 * this.kMirror);
@@ -77,7 +129,7 @@ Hero.prototype.update = function () {
     }
     
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-        if (this.mInAir && this.mJumpTime == 0) this.mJumpTime = 1;
+        if (this.mAirFrames >= 3 && this.mJumpTime == 0) this.mJumpTime = 1;
         this.mJumpTime++;
     }
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= 2) {
@@ -93,5 +145,29 @@ Hero.prototype.update = function () {
     
     this.mBulletSet.update(this.mFacing);
     this.mVP.update();
+    //console.log(this.getXform().getPosition()[1]);
     //console.log(this.getXform().getPosition()[1] - this.getXform().getHeight() / 2, this.mVP.mLastFrameV[1]);
+    
+    this.mKeepMoving++;
+    if (this.mIsShooting > 0) this.mIsShooting--;
+    if (this.mKeepMoving >= 5 * 6) this.mKeepMoving = 0;
+    if (this.mVP.mV[0] === 0) this.mKeepMoving = 0;
+    if (this.mFacing > 0) this.mTexDown = 177;
+    else this.mTexDown = 97;
+    
+    this.mTexLeft = Math.floor(this.mKeepMoving / 5) * 56;
+    if (this.mAirFrames >= 3) {
+        if (this.mVP.mV[1] > 0) this.mTexLeft = 6 * 56;
+        if (this.mVP.mV[1] < 0) this.mTexLeft = 8 * 56;
+        if (Math.abs(this.mVP.mV[1]) <= 200) this.mTexLeft = 7 * 56; 
+        //console.log(Math.abs(this.mVP.mV[1]));
+    }
+    if (this.mIsShooting) {
+        this.mTexDown = 17;
+        if (this.mFacing > 0) this.mTexLeft = 0;
+        else this.mTexLeft = 56;
+    }
+    
+    if (this.kMirror > 0) this.mHero.setElementPixelPositions(this.mTexLeft, this.mTexLeft + 56, this.mTexDown, this.mTexDown + 78 );
+    else this.mHero.setElementPixelPositions(this.mTexLeft, this.mTexLeft + 56, this.mTexDown + 78, this.mTexDown);
 };

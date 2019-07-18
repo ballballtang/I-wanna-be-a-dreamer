@@ -16,7 +16,7 @@ function BulletSet(spriteTexture, pos) {
 gEngine.Core.inheritPrototype(BulletSet, GameObjectSet);
 
 BulletSet.prototype.addABullet = function (dir) {
-    this.addToSet(new Bullet(this.kTex, this.kPos[0] + dir * 10, this.kPos[1] + 6, dir));
+    this.addToSet(new Bullet(this.kTex, this.kPos[0] + dir * 17, this.kPos[1], dir));
 };
 
 BulletSet.prototype.deleteBullet = function (index) {

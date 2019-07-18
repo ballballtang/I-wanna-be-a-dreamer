@@ -45,6 +45,11 @@ ObjectProto.prototype.moveTo = function (toX, toY, V) {
     this.mVP.setV(V * disX / disH, V * disY / disH);
 }
 
+ObjectProto.prototype.moveUp = function (V) {
+    var pos = this.getXform().getPosition();
+    this.moveTo(pos[0], 675, V);
+}
+
 ObjectProto.prototype.moveDown = function (V) {
     var pos = this.getXform().getPosition();
     this.moveTo(pos[0], -675, V);

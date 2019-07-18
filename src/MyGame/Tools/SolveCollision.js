@@ -15,7 +15,6 @@ SolveCollision.prototype.update = function () {
     this.checkDeath(this.mHero);
     this.checkSceneChange(this.mHero);
     if (this.mMirrorHero !== null) {
-        console.log(this.mMirrorHero);
         this.solveHero(this.mMirrorHero, true);
         this.SolveBullets(this.mMirrorBullet, true);
     }
@@ -39,15 +38,17 @@ SolveCollision.prototype.checkDeath = function (aHero) {
     var hUp = aHero.getBBox().maxY();
     var cBottom = this.mCamera.getWCCenter()[1] - this.mCamera.getWCHeight() / 2;
     if (hUp < cBottom) {
-        aHero.mIsDead = true;
+        aHero.youDied();
         return;
     }
     
     //hit a stab
     for (var i = 0; i < this.mStabSets.length; i++) {
         for (var j = 0; j < this.mStabSets[i].size(); j++) {
+            if (!this.mStabSets[i].getObjectAt(j).isVisible()) continue;
+            
             if (aHero.pixelTouches(this.mStabSets[i].getObjectAt(j), [])) {
-                aHero.mIsDead = true;
+                aHero.youDied();
                 return;
             }
         }
@@ -55,10 +56,12 @@ SolveCollision.prototype.checkDeath = function (aHero) {
 }
 
 SolveCollision.prototype.solveHero = function (aHero, isMirror) {
-    var dw = aHero.kWdith / 2;
+    var ldw = aHero.kWidth / 2 - aHero.kBWidthDec / 2 - aHero.kBOffset * aHero.mFacing;
+    var rdw = aHero.kWidth / 2 - aHero.kBWidthDec / 2 + aHero.kBOffset * aHero.mFacing;  
     var dh = aHero.kHeight / 2;
     var dv = aHero.mVP.mLastFrameV;
-
+    
+    if (aHero.mAirFrames < 3) aHero.mAirFrames++;
     aHero.mInAir = true;
     var plats = this.mPlatforms.concat(this.mBrokens);
     for (var repeat = 0; repeat < 2; repeat++) {
@@ -73,24 +76,25 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
             var status = hBox.boundCollideStatus(pBox);
             var hasLRCol = false;
             if ((status & 1) && !(status & 2)) {
-                if (hPos[0] - dw - dv[0] >= pBox.maxX() - pv[0] - 0.0001) {
-                    hPos[0] = pBox.maxX() + dw;
+                if (hBox.minX() - dv[0] * 2 >= pBox.maxX() - pv[0] - 0.1) {
+                    hPos[0] = pBox.maxX() + ldw;
                     aHero.mVP.cleanXV();
                     hasLRCol = true;
                 }
             }
             if ((status & 2) && !(status & 1)) {
-                if (hPos[0] + dw - dv[0] <= pBox.minX() - pv[0] + 0.0001) {
-                    hPos[0] = pBox.minX() - dw;
+                if (hBox.maxX() - dv[0] * 2 <= pBox.minX() - pv[0] + 0.1) {
+                    hPos[0] = pBox.minX() - rdw;
                     aHero.mVP.cleanXV();
                     hasLRCol = true;
                 }
             }
             if ((status & 4) && !(status & 8) && !hasLRCol) {
-                if (hPos[1] + dh - dv[1] <= pBox.minY() - pv[1] + 0.0001) {
+                if (hBox.maxY() - dv[1] * 2 <= pBox.minY() - pv[1] + 0.1) {
                     hPos[1] = pBox.minY() - dh;
                     aHero.mVP.cleanYV();
                     if (isMirror) {
+                        aHero.mAirFrames = 0;
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
                         
@@ -102,10 +106,11 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                 }
             }
             if ((status & 8) && !(status & 4) && !hasLRCol) {
-                if (hPos[1] - dh - dv[1] * 2 >= pBox.maxY() - pv[1] - 0.1) {
+                if (hBox.minY() - dv[1] * 2 >= pBox.maxY() - pv[1] - 0.1) {
                     hPos[1] = pBox.maxY() + dh;
                     aHero.mVP.cleanYV();
                     if (!isMirror) {
+                        aHero.mAirFrames = 0;
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
                         
@@ -135,6 +140,8 @@ SolveCollision.prototype.SolveBullets = function (aBulletSet, isMirror) {
         if (tb.mIsDead) continue;
         
         for (var j = 0; j < this.mPlatforms.length; j++) {
+            if (!this.mPlatforms[j].isVisible()) continue;
+            
             if (tb.pixelTouches(this.mPlatforms[j], [])) {
                 tb.mIsDead = true;
             }
@@ -161,6 +168,8 @@ SolveCollision.prototype.SolveBullets = function (aBulletSet, isMirror) {
         
         for (var j = 0; j < this.mStabSets.length; j++) {
             for (var k = 0; k < this.mStabSets[j].size(); k++) {
+                if (!this.mStabSets[j].getObjectAt(k).isVisible()) continue;
+                
                 if (tb.pixelTouches(this.mStabSets[j].getObjectAt(k), [])) {
                     tb.mIsDead = true;
                 }

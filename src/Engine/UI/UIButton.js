@@ -92,7 +92,7 @@ UIButton.prototype.update = function () {
     var uiXform = this.getUIXform();
    
     //make sure the button text stays on the button
-    this.mText.getUIXform().setPosition(uiXform.getXPos(), uiXform.getYPos());
+    this.mText.getUIXform().setPosition(uiXform.getXPos(), uiXform.getYPos() + 3);
     
     //get the mouse position, and if its over the button
     var mousePos = vec2.fromValues(gEngine.Input.getMousePosX(),

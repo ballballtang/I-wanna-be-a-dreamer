@@ -10,7 +10,7 @@
 function MovePlatform(t, atX, atY, w, h, s, e) {
     SpriteObj.call(this, t, atX, atY, w, h, [0, w, 0, 32])
     
-    this.mVP.setXV(120);
+    this.mVP.setXV(150);
     this.mstart = s;
     this.mend = e;
 }
