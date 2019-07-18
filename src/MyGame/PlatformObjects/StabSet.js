@@ -40,5 +40,31 @@ function StabSet(t, n, llX, llY, isVertical, isReverse) {
         }
     }
 }
+
 gEngine.Core.inheritPrototype(StabSet, GameObjectSet);
 
+StabSet.prototype.setVisibility = function(visible){
+    var num = this.size();
+    var i;
+    for(i=0;i<num;i++){
+        this.getObjectAt(i).setVisibility(visible);
+    }
+};
+
+StabSet.prototype.moveTo = function(toX,toY,V){
+    var num = this.size();
+    var i;
+    for(i=0;i<num;i++){
+        this.getObjectAt(i).moveTo(toX,toY,V);
+        //-700,-270
+    }
+};
+
+StabSet.prototype.moveLeft = function(V){
+    var num = this.size();
+    var i;
+    for(i=0;i<num;i++){
+        this.getObjectAt(i).moveLeft(V);
+        //-700,-270
+    }
+};
