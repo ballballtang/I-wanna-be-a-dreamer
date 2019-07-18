@@ -81,7 +81,7 @@ FirstLevel.prototype.unloadScene = function () {
     }
     if (this.LevelSelect === "SecondLevel") {
         //console.log("-------");
-        gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
+        gEngine.Core.changeScene(new SecondLevel(this.mHero, true), false);
     }
 };
 
@@ -150,14 +150,14 @@ FirstLevel.prototype.draw = function () {
 };
 
 FirstLevel.prototype.update = function () {
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
         this.LevelSelect = "StartScene";
         gEngine.GameLoop.stop();
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
-    }
+    }*/
     
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.LevelSelect = "restart";

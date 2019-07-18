@@ -12,10 +12,11 @@
  */
 
 
-function BossTrap(TrapArea,Hero,Platforms,Stabs){
+function BossTrap(TrapArea, Hero, Platforms, Stabs, noCols) {
     this.mTrap = TrapArea;
     this.mHero = Hero;
     this.mPlatforms = Platforms;
+    this.mNoCols = noCols;
     this.mStabs = Stabs;
     this.mWhere = -1;
 
@@ -23,29 +24,29 @@ function BossTrap(TrapArea,Hero,Platforms,Stabs){
     this.mPaperTimer = 0;//计时纸条出现的时间
 }
 
-BossTrap.prototype.isTrigger = function(){
+BossTrap.prototype.isTrigger = function () {
     var num = this.mTrap.size();
     var i;
-    
-    for(i=0;i<num;i++){
+
+    for (i = 0; i < num; i++) {
         var tt = this.mTrap.getObjectAt(i);
         var hBox = this.mHero.getBBox();
         var tBox = tt.getBBox();
         var status = hBox.boundCollideStatus(tBox);
-        if(status){
+        if (status) {
             this.mWhere = i;
         }
     }
 
 };
 
-BossTrap.prototype.trapProcess = function(num){
+BossTrap.prototype.trapProcess = function (num) {
     switch (num)
     {
         case 0:
-            if(this.mPaperTimer < 200){
-                this.mPlatforms.getObjectAt(4).setVisibility(true); //两秒后不会再setvisible了
-            }            
+            if (this.mPaperTimer < 200) {
+                this.mNoCols[0].setVisibility(true); //两秒后不会再setvisible了
+            }
             this.mPlatforms.getObjectAt(3).setVisibility(false);
             this.mPaperTime = true;
             break;
@@ -54,21 +55,21 @@ BossTrap.prototype.trapProcess = function(num){
     }
 };
 
-BossTrap.prototype.update = function(){
+BossTrap.prototype.update = function () {
     this.mWhere = -1;
     this.isTrigger();
-    console.log(this.mWhere);
-    if(this.mWhere !== -1){
+    //console.log(this.mWhere);
+    if (this.mWhere !== -1) {
         this.trapProcess(this.mWhere);
     }
 
-    if(this.mPaperTime === true){
-        this.mPaperTimer +=1;
-        console.log(this.mPaperTimer);
+    if (this.mPaperTime === true) {
+        this.mPaperTimer += 1;
+        //console.log(this.mPaperTimer);
     }
-    if(this.mPaperTimer === 200){
-        this.mPlatforms.getObjectAt(4).setVisibility(false);
+    if (this.mPaperTimer === 200) {
+        this.mNoCols[0].setVisibility(false);
         this.mPaperTime = false;
     }
-    
+
 };

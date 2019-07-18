@@ -5,7 +5,7 @@
  */
 
 
-function FirstTrap(TrapArea,Hero,Platforms,Stabs,noCols){
+function FirstTrap(TrapArea, Hero, Platforms, Stabs, noCols) {
     this.mTrap = TrapArea;
     this.mHero = Hero;
     this.mPlatforms = Platforms;
@@ -18,23 +18,23 @@ function FirstTrap(TrapArea,Hero,Platforms,Stabs,noCols){
     this.mPaperTimer = 0;//计时纸条出现的时间
 }
 
-FirstTrap.prototype.isTrigger = function(){
+FirstTrap.prototype.isTrigger = function () {
     var num = this.mTrap.size();
     var i;
-    
-    for(i=0;i<num;i++){
+
+    for (i = 0; i < num; i++) {
         var tt = this.mTrap.getObjectAt(i);
         var hBox = this.mHero.getBBox();
         var tBox = tt.getBBox();
         var status = hBox.boundCollideStatus(tBox);
-        if(status){
+        if (status) {
             this.mWhere = i;
         }
     }
 
 };
 
-FirstTrap.prototype.trapProcess = function(num){
+FirstTrap.prototype.trapProcess = function (num) {
     switch (num)
     {
         case 0:
@@ -57,44 +57,48 @@ FirstTrap.prototype.trapProcess = function(num){
             this.mStabs.getObjectAt(7).moveLeft(200);
             break;
         case 6:
-            if(this.mPaperTimer < 200){
-                this.mPlatforms.getObjectAt(14).setVisibility(true); //两秒后不会再setvisible了
-            }            
-            this.mPlatforms.getObjectAt(13).setVisibility(false);
-            this.mPaperTime = true;
+            if (this.mNoCols[2]) {
+                if (this.mPaperTimer < 200) {
+                    this.mNoCols[2].setVisibility(true); //两秒后不会再setvisible了
+                }
+                this.mPlatforms.getObjectAt(12).setVisibility(false);
+                this.mPaperTime = true;
+            }
             break;
         default:
             return;
     }
 };
 
-FirstTrap.prototype.update = function(){
+FirstTrap.prototype.update = function () {
     this.mWhere = -1;
     this.isTrigger();
     //console.log(this.mWhere);
-    if(this.mHero.pixelTouches(this.mNoCols[1], [])) {
-        this.mNoCols[1].setVisibility(false);
+    if (this.mNoCols[1].isVisible()) {
+        if (this.mHero.pixelTouches(this.mNoCols[1], [])) {
+            this.mNoCols[1].setVisibility(false);
+        }
     }
-    
-    if(this.mWhere !== -1){
+
+    if (this.mWhere !== -1) {
         this.trapProcess(this.mWhere);
     }
-    if(this.mWhere === 1){
+    if (this.mWhere === 1) {
         this.mTime = true;
     }
-    if(this.mTime === true){
-        this.mTimer +=1;
+    if (this.mTime === true) {
+        this.mTimer += 1;
     }
-    if(this.mTimer === 80){
+    if (this.mTimer === 80) {
         this.mStabs.getObjectAt(4).setVisibility(true);
     }
-    if(this.mPaperTime === true){
-        this.mPaperTimer +=1;
-        console.log(this.mPaperTimer);
+    if (this.mPaperTime === true) {
+        this.mPaperTimer += 1;
+        //console.log(this.mPaperTimer);
     }
-    if(this.mPaperTimer === 200){
-        this.mPlatforms.getObjectAt(14).setVisibility(false);
+    if (this.mNoCols[2] && this.mPaperTimer === 200) {
+        this.mNoCols[2].setVisibility(false);
         this.mPaperTime = false;
     }
-    
+
 };
