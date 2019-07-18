@@ -27,7 +27,10 @@ function UIButton(callback, context, position, size, text, textSize) {
     this.mStencil = new UITexture("assets/UI/ButtonStencil.png", position, size);
     
     // default Text colors = black or white depending on state
-    this.mTextColor = [0,0,0,1];
+    this.mTextColor = [0.7,
+        0.5,
+        0.6,
+        1];
     this.mHoverTextColor = this.mTextColor;
     this.mClickTextColor = [1,1,1,1];
     
