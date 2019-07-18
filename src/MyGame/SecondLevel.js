@@ -50,10 +50,10 @@ SecondLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kDirt);
 
     if (this.LevelSelect === "restart") {
-        gEngine.Core.startScene(new SecondLevel(), true);
+        gEngine.Core.changeScene(new SecondLevel(), true);
     }
     if (this.LevelSelect === "boss") {
-        gEngine.Core.startScene(new BossLevel(this.mHero), false);
+        gEngine.Core.changeScene(new BossLevel(this.mHero), false);
     }
     if (this.LevelSelect === "FirstLevel") {
         gEngine.Core.changeScene(new MyGame(this.mHero), false);
@@ -123,6 +123,10 @@ SecondLevel.prototype.draw = function () {
 SecondLevel.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.LevelSelect = "restart";
+        gEngine.GameLoop.stop();
+    }
+    if (this.mHero.mIsGoingLeft) {
+        this.LevelSelect = "boss";
         gEngine.GameLoop.stop();
     }
     if (this.mHero.mIsGoingRight) {

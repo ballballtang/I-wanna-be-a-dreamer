@@ -47,7 +47,9 @@ Hero.prototype.cleanStatus = function (aCamera) {
         this.getXform().incXPosBy(-cWidth);
     }
     
-    this.mVP.setV(0, 0);
+    if (!gEngine.Input.isKeyPressed(gEngine.Input.keys.Left) && !gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+        this.mVP.setXV(0);
+    }
     this.mBulletSet.clean();
 }
 
@@ -73,6 +75,7 @@ Hero.prototype.update = function () {
     if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Right)) {
         this.mVP.setXV(0);
     }
+    
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
         if (this.mInAir && this.mJumpTime == 0) this.mJumpTime = 1;
         this.mJumpTime++;
@@ -90,5 +93,5 @@ Hero.prototype.update = function () {
     
     this.mBulletSet.update(this.mFacing);
     this.mVP.update();
-    //console.log(this.getXform().getPosition()[1] - this.getXform().getHeight() / 2);
+    //console.log(this.getXform().getPosition()[1] - this.getXform().getHeight() / 2, this.mVP.mLastFrameV[1]);
 };

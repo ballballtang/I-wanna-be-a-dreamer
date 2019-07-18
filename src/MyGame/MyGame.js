@@ -19,6 +19,8 @@ function MyGame(aHero) {
     this.kIce = "assets/RigidShape/Ice.png";
     this.kDirt = "assets/RigidShape/Dirt.png";
 
+    this.kBgClip = "assets/MEGALOVANIA.mp3";
+
     // The camera to view the scene
     this.mCamera = null;
     this.LevelSelect = null;
@@ -44,6 +46,9 @@ MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
     gEngine.Textures.loadTexture(this.kDirt);
+
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kBgClip)))
+        gEngine.AudioClips.loadAudio(this.kBgClip);
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -61,6 +66,7 @@ MyGame.prototype.unloadScene = function () {
         gEngine.Core.changeScene(new BossLevel(this.mHero), false);
     }
     if (this.LevelSelect === "second") {
+        //console.log("-------");
         gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
     }
 };
@@ -79,7 +85,7 @@ MyGame.prototype.initialize = function () {
         this.mHero = new Hero(this.kTestTexture, -500, -200, 1);
     else
         this.mHero.cleanStatus(this.mCamera);
-    this.mMirrorHero = new Hero(this.kTestTexture, 500, 200, -1);
+    //this.mMirrorHero = new Hero(this.kTestTexture, 500, 200, -1);
 
     //bounds
     //this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -600, -76.25, 60, 580));
@@ -93,7 +99,7 @@ MyGame.prototype.initialize = function () {
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 455, 60, 140, 30));
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 100, 200, 130, 30));
     this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -140, 140, 180, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -480, 200, 240, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -500, 200, 280, 30));
 
     //broken platforms
     this.mBrokeSet.addToSet(new BrokenPlatform(this.kDirt, -375, 261.25, 30, 92.5));
@@ -117,7 +123,7 @@ MyGame.prototype.draw = function () {
 
     this.mStabSetSet.draw(this.mCamera);
     this.mHero.draw(this.mCamera);
-    this.mMirrorHero.draw(this.mCamera);
+    //this.mMirrorHero.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
     this.mBrokeSet.draw(this.mCamera);
 
@@ -132,10 +138,15 @@ MyGame.prototype.update = function () {
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
-        this.LevelSelect = "boss";
-        gEngine.GameLoop.stop();
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+        if (!gEngine.AudioClips.isBackgroundAudioPlaying())
+            gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
     }
+//    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+//        this.LevelSelect = "boss";
+//        gEngine.GameLoop.stop();
+//    }
+
     if (this.mHero.mIsGoingLeft) {
         this.LevelSelect = "second";
         gEngine.GameLoop.stop();

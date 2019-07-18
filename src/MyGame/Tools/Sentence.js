@@ -9,7 +9,7 @@
 function Sentence(t) {
     this.visible = true;
     this.mSentence = null;
-    this.mString = "Press A/D to move and Space to jump.";
+    this.mString = "Press Left/Right to move and Space to jump.";
     this.mIcon = new Platform(t, -560, 262, 20, 20);
     this.mIcon.setVisibility(this.visible);
     this.mSentence = new UIText(this.mString, [65, 620], 30, 0, 0, [

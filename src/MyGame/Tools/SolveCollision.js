@@ -67,33 +67,32 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
             var hBox = aHero.getBBox();
             var hPos = aHero.getXform().getPosition();
             var pBox = plats[i].getBBox();
+            var pv = plats[i].mVP.mLastFrameV;
 
             var status = hBox.boundCollideStatus(pBox);
             var hasLRCol = false;
             if ((status & 1) && !(status & 2)) {
-                if (hPos[0] - dw - dv[0] >= pBox.maxX() - 0.0001) {
+                if (hPos[0] - dw - dv[0] >= pBox.maxX() - pv[0] - 0.0001) {
                     hPos[0] = pBox.maxX() + dw;
                     aHero.mVP.cleanXV();
                     hasLRCol = true;
                 }
             }
             if ((status & 2) && !(status & 1)) {
-                if (hPos[0] + dw - dv[0] <= pBox.minX() + 0.0001) {
+                if (hPos[0] + dw - dv[0] <= pBox.minX() - pv[0] + 0.0001) {
                     hPos[0] = pBox.minX() - dw;
                     aHero.mVP.cleanXV();
                     hasLRCol = true;
                 }
             }
-            var isOnThisPlat = false;
             if ((status & 4) && !(status & 8) && !hasLRCol) {
-                if (hPos[1] + dh - dv[1] <= pBox.minY() + 0.0001) {
+                if (hPos[1] + dh - dv[1] <= pBox.minY() - pv[1] + 0.0001) {
                     hPos[1] = pBox.minY() - dh;
                     aHero.mVP.cleanYV();
                     if (isMirror) {
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
                         
-                        isOnThisPlat = true;
                         aHero.mVP.setAddV(plats[i].mVP.mV[0], plats[i].mVP.mV[1]);
                     } else {
                         if (aHero.mHoldSpace > 1 && aHero.mHoldSpace < 10)
@@ -102,14 +101,13 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                 }
             }
             if ((status & 8) && !(status & 4) && !hasLRCol) {
-                if (hPos[1] - dh - dv[1] * 2 >= pBox.maxY() - 0.0001) {
+                if (hPos[1] - dh - dv[1] * 2 >= pBox.maxY() - pv[1] - 0.1) {
                     hPos[1] = pBox.maxY() + dh;
                     aHero.mVP.cleanYV();
                     if (!isMirror) {
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
                         
-                        isOnThisPlat = true;
                         aHero.mVP.setAddV(plats[i].mVP.mV[0], plats[i].mVP.mV[1]);
                     } else {
                         if (aHero.mHoldSpace > 1 && aHero.mHoldSpace < 10)
