@@ -9,25 +9,12 @@
 
 function NormalPlatform(t, atX, atY, w, h) {
     Platform.call(this, t, atX, atY, w, h);
-      
-    this.getRigidBody().setMass(0.0);
-    this.getRigidBody().setInertia(2);
-    this.getRigidBody().setFriction(.2);
-    this.getRigidBody().setRestitution(.7);
 }
-gEngine.Core.inheritPrototype(NormalPlatform, GameObject);
+gEngine.Core.inheritPrototype(NormalPlatform, Platform);
 
 NormalPlatform.prototype.disappear = function () {
     this.setVisibility(false);
     //console.log("disappear");
-};
-
-NormalPlatform.prototype.fall = function () {
-    this.getRigidBody().setVelocity(0, -10);
-};
-
-NormalPlatform.prototype.open = function () {
-    this.getRigidBody().setAngularVelocity(0.8);
 };
 
 NormalPlatform.prototype.draw = function (aCamera) {
@@ -35,18 +22,7 @@ NormalPlatform.prototype.draw = function (aCamera) {
 };
 
 NormalPlatform.prototype.update = function () {
-//    this.getRigidBody().travel();
-//    var rad = this.getXform().getRotationInDegree();
-    //console.log(rad);
-    
-//    if (rad >= 90) {
-//        this.getRigidBody().setAngularVelocity(0);
-//        this.disappear();
-//    }
-//    if (this.getXform().getYPos() <= 5) {
-//        this.disappear();
-//    }
-    //gEngine.Physics.processCollision(this.mNormalPlatform,[]);
+    Platform.prototype.update.call(this);
 };
 
 

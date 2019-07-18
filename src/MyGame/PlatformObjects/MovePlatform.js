@@ -10,25 +10,20 @@
 function MovePlatform(t, atX, atY, w, h, s, e) {
     Platform.call(this, t, atX, atY, w, h)
     
-    this.getRigidBody().setMass(0);
-    this.getRigidBody().setInertia(2);
-    this.getRigidBody().setFriction(.2);
-    this.getRigidBody().setRestitution(.7);
-    
     this.mVP.setXV(120);
     this.mstart = s;
     this.mend = e;
 }
-gEngine.Core.inheritPrototype(MovePlatform, GameObject);
+gEngine.Core.inheritPrototype(MovePlatform, Platform);
 
 MovePlatform.prototype.draw = function (aCamera) {
     Platform.prototype.draw.call(this, aCamera);
 };
 
 MovePlatform.prototype.update = function () {
+    Platform.prototype.update.call(this);
+    
     var xf = this.getXform();
-
-    this.mVP.update();
     if (xf.getXPos() <= this.mstart) {
         this.mVP.setXV(- this.mVP.mV[0])
     }

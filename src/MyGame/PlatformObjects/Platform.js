@@ -12,16 +12,15 @@ function Platform(t, atX, atY, w, h) {
     this.mPlatform.setColor([1, 1, 1, 0]);
     this.mPlatform.getXform().setPosition(atX, atY);
     this.mPlatform.getXform().setSize(w, h);
-    GameObject.call(this, this.mPlatform);
-    var r = new RigidRectangle(this.getXform(), w, h);
-    this.setRigidBody(r);
-    
+    ObjectProto.call(this, this.mPlatform);
+
     this.mVP = new VProcessor(this.getXform(), 0);
+    this.mDestination = vec2.fromValues(0, 0);
+    this.mToDes = false;
 }
-gEngine.Core.inheritPrototype(Platform, GameObject);
+gEngine.Core.inheritPrototype(Platform, ObjectProto);
 
 Platform.prototype.update = function () {
-    GameObject.prototype.update.call(this);
+    ObjectProto.prototype.update.call(this);
 };
-
 

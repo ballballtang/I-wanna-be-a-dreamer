@@ -13,8 +13,6 @@ function NonTexture(atX, atY, w, h) {
     this.mNonTexture.getXform().setPosition(atX, atY);
     this.mNonTexture.getXform().setSize(w, h);
     GameObject.call(this, this.mNonTexture);
-    var r = new RigidRectangle(this.getXform(), w, h);
-    this.setRigidBody(r);
 }
 gEngine.Core.inheritPrototype(NonTexture, GameObject);
 
