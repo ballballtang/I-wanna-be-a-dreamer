@@ -7,10 +7,13 @@
 
 "use strict";
 
-function NormalPlatform(t, atX, atY, w, h) {
-    Platform.call(this, t, atX, atY, w, h);
+function NormalPlatform(t, atX, atY, w, h, atBottom) {
+    if (atBottom) 
+        SpriteObj.call(this, t, atX, atY, w, h, [0, w, 0, h]);
+    else
+        SpriteObj.call(this, t, atX, atY, w, h, [0, w, 1024 - h, 1024]);
 }
-gEngine.Core.inheritPrototype(NormalPlatform, Platform);
+gEngine.Core.inheritPrototype(NormalPlatform, SpriteObj);
 
 NormalPlatform.prototype.disappear = function () {
     this.setVisibility(false);
@@ -18,11 +21,11 @@ NormalPlatform.prototype.disappear = function () {
 };
 
 NormalPlatform.prototype.draw = function (aCamera) {
-    Platform.prototype.draw.call(this, aCamera);
+    SpriteObj.prototype.draw.call(this, aCamera);
 };
 
 NormalPlatform.prototype.update = function () {
-    Platform.prototype.update.call(this);
+    SpriteObj.prototype.update.call(this);
 };
 
 

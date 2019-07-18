@@ -13,12 +13,14 @@
 
 function FirstLevel(aHero) {
     this.kTestTexture = "assets/TestTexture.png";
-    this.kStabTexture = "assets/TestStab.png";
-    this.kSceneObj = "assets/SceneObjects.png"
+    this.kSceneObj = "assets/SceneObjects.png";
+    this.kPlatTexture = "assets/platform.png";
+    this.kBrokenTexture = "assets/broken.png";
     this.kYouDied = "assets/YouDied.png";
-    this.kWood = "assets/RigidShape/Wood.png";
+    //this.kStabTexture = "assets/TestStab.png";
+    //this.kWood = "assets/RigidShape/Wood.png";
     this.kIce = "assets/RigidShape/Ice.png";
-    this.kDirt = "assets/RigidShape/Dirt.png";
+    //this.kDirt = "assets/RigidShape/Dirt.png";
 
     // The camera to view the scene
     this.mCamera = null;
@@ -40,22 +42,26 @@ gEngine.Core.inheritPrototype(FirstLevel, Scene);
 
 FirstLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kTestTexture);
-    gEngine.Textures.loadTexture(this.kStabTexture);
     gEngine.Textures.loadTexture(this.kSceneObj);
+    gEngine.Textures.loadTexture(this.kPlatTexture);
+    gEngine.Textures.loadTexture(this.kBrokenTexture);
     gEngine.Textures.loadTexture(this.kYouDied);
-    gEngine.Textures.loadTexture(this.kWood);
+    //gEngine.Textures.loadTexture(this.kStabTexture);
+    //gEngine.Textures.loadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
-    gEngine.Textures.loadTexture(this.kDirt);
+    //gEngine.Textures.loadTexture(this.kDirt);
 };
 
 FirstLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kTestTexture);
-    gEngine.Textures.unloadTexture(this.kStabTexture);
     gEngine.Textures.unloadTexture(this.kSceneObj);
+    gEngine.Textures.unloadTexture(this.kPlatTexture);
+    gEngine.Textures.unloadTexture(this.kBrokenTexture);
     gEngine.Textures.unloadTexture(this.kYouDied);
-    gEngine.Textures.unloadTexture(this.kWood);
+    //gEngine.Textures.unloadTexture(this.kStabTexture);
+    //gEngine.Textures.unloadTexture(this.kWood);
     gEngine.Textures.unloadTexture(this.kIce);
-    gEngine.Textures.unloadTexture(this.kDirt);
+    //gEngine.Textures.unloadTexture(this.kDirt);
 
     if (this.LevelSelect === "restart") {
         gEngine.Core.changeScene(new FirstLevel(), true);
@@ -90,21 +96,21 @@ FirstLevel.prototype.initialize = function () {
     //this.mMirrorHero = new Hero(this.kTestTexture, 500, 200, -1);
 
     //bounds
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -600, -76.25, 60, 580));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 600, 0, 60, 675));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -300, -337.5, 600, 60));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 0, 337.5, 1400, 60));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 580, true));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, 0, 60, 675, true));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, -337.5, 600, 60));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 337.5, 1400, 60, true));
 
     //platforms
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 65, -180, 270, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 390, -240, 150, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 455, 60, 140, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, 100, 200, 130, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -140, 140, 180, 30));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kWood, -500, 200, 280, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -180, 270, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 390, -240, 150, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 455, 60, 140, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 100, 200, 130, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 140, 180, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -500, 200, 280, 30));
 
     //broken platforms
-    this.mBrokeSet.addToSet(new BrokenPlatform(this.kDirt, -375, 261.25, 30, 92.5));
+    this.mBrokeSet.addToSet(new BrokenPlatform(this.kBrokenTexture, -375, 261.25, 40, 81));
 
     //stabs
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 4, -350, -307.5, false, false));

@@ -8,7 +8,7 @@
 "use strict";
 
 function Stab(t, atX, atY, w, h, rotate) {
-    SpriteObj.call(this, t, atX, atY, w, h, [0, 39, 48, 87]);
+    SpriteObj.call(this, t, atX, atY, w, h, [0, 39, 25, 64]);
     
     this.getXform().incRotationByDegree(rotate);
 }

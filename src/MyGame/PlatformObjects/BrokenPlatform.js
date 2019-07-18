@@ -8,16 +8,16 @@
 "use strict";
 
 function BrokenPlatform(t, atX, atY, w, h) {
-    Platform.call(this, t, atX, atY, w, h);
+    SpriteObj.call(this, t, atX, atY, w, h, [0, 40, 1024 - h, 1024]);
 }
-gEngine.Core.inheritPrototype(BrokenPlatform, Platform);
+gEngine.Core.inheritPrototype(BrokenPlatform, SpriteObj);
 
 BrokenPlatform.prototype.beingHit = function () {
     this.setVisibility(false);
 };
 
 BrokenPlatform.prototype.draw = function (aCamera) {
-    Platform.prototype.draw.call(this, aCamera);
+    SpriteObj.prototype.draw.call(this, aCamera);
 };
 
 
