@@ -1,4 +1,4 @@
-/* global gEngine */
+/* global gEngine, GameObject, vec2 */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
@@ -19,6 +19,8 @@ function Hero(spriteTexture, bulletTexture, atX, atY, mirror, faceLeft) {
     this.mInAir = true;
     this.mAirFrames = 0;
     this.mFacing = mirror;
+    
+    this.mControl = true;
     
     this.mHero = new SpriteRenderable(spriteTexture);
     if (mirror < 0) this.mHero.setTexture(this.kRTex);
@@ -97,7 +99,7 @@ Hero.prototype.getBBox = function() {
     var pos = xform.getPosition();
     var b = new BoundingBox(vec2.fromValues(pos[0] + this.kBOffset * this.mFacing, pos[1]), xform.getWidth() - this.kBWidthDec, xform.getHeight());
     return b;
-}
+};
 
 Hero.prototype.draw = function (aCamera) {
     GameObject.prototype.draw.call(this, aCamera);
@@ -116,42 +118,49 @@ Hero.prototype.setMirror = function (mirror){
     this.kMirror = mirror;
     this.mVP.setYA( -2300 * this.kMirror);
 };
-
+Hero.prototype.setControl = function(control){
+    this.mControl = control;
+};
+Hero.prototype.getControl = function(){
+    return this.mControl ;
+};
 Hero.prototype.update = function () {
     if (this.mIsDead || this.mIsGoingLeft || this.mIsGoingRight) return;
+    if(this.mControl){
+        
     
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.C)) {
-        this.mIsShooting = 9;
+        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.C)) {
+            this.mIsShooting = 9;
+        }
+        if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
+            this.mFacing = - this.kMirror;
+            this.mVP.setXV(-210 * this.kMirror);
+        }
+        if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Left)) {
+            this.mVP.setXV(0);
+        }
+        if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+            this.mFacing = this.kMirror;
+            this.mVP.setXV(210 * this.kMirror);
+        }
+        if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Right)) {
+            this.mVP.setXV(0);
+        }
+
+        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+            if (this.mAirFrames >= 3 && this.mJumpTime === 0) this.mJumpTime = 1;
+            this.mJumpTime++;
+        }
+        var maxJump = gEngine.Mine.saveStatus.tribleJump ? 3 : 2;
+        if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= maxJump) {
+            this.mHoldSpace--;
+            if (this.mJumpTime === 1) this.mVP.setYV(580 * this.kMirror);
+            else this.mVP.setYV(450 * this.kMirror);
+        }
+        if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Space)) {
+            this.mHoldSpace = 10;
+        }
     }
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
-        this.mFacing = - this.kMirror;
-        this.mVP.setXV(-210 * this.kMirror);
-    }
-    if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Left)) {
-        this.mVP.setXV(0);
-    }
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
-        this.mFacing = this.kMirror;
-        this.mVP.setXV(210 * this.kMirror);
-    }
-    if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Right)) {
-        this.mVP.setXV(0);
-    }
-    
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-        if (this.mAirFrames >= 3 && this.mJumpTime == 0) this.mJumpTime = 1;
-        this.mJumpTime++;
-    }
-    var maxJump = gEngine.Mine.saveStatus.tribleJump ? 3 : 2;
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= maxJump) {
-        this.mHoldSpace--;
-        if (this.mJumpTime == 1) this.mVP.setYV(580 * this.kMirror);
-        else this.mVP.setYV(450 * this.kMirror);
-    }
-    if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Space)) {
-        this.mHoldSpace = 10;
-    }
-    
     if (this.mInAir) this.mVP.setAddV(0, 0);
     
     this.mBulletSet.update(this.mFacing);

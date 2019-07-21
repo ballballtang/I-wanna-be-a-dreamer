@@ -23,6 +23,7 @@ function Boss(texture,atX,atY,w,h){
     this.mUIbar.setVisible(false);
     this.setVisibility(false);
     this.mParticleNum = 0;
+    this.mMove = false;
 }
 gEngine.Core.inheritPrototype(Boss,GameObject);
 
@@ -41,7 +42,11 @@ Boss.prototype.draw = function(aCamera){
     this.mUIbar.draw(aCamera);
 };
 
-Boss.prototype.update = function(visible){
+Boss.prototype.setMove = function (move){
+    this.mMove =move;
+};
+
+Boss.prototype.update = function(){
     //this.setVisibility(visible);
     //this.mUIbar.setBGVisible(visible);
     //this.mUIbar.setMidVisible(visible);
@@ -68,7 +73,10 @@ Boss.prototype.update = function(visible){
     }
     //control the moving
     var xf = this.getXform();
-    xf.incYPosBy(this.mdelta);
+    if(this.mMove){
+        xf.incYPosBy(this.mdelta);
+    }
+    
     //console.log(xf.getYPos());
     if(xf.getYPos()<=-268){
         this.mdelta = -1*this.mdelta;
