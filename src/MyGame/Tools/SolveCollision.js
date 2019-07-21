@@ -48,8 +48,13 @@ SolveCollision.prototype.checkDeath = function (aHero) {
             if (!this.mStabSets[i].getObjectAt(j).isVisible()) continue;
             
             if (aHero.pixelTouches(this.mStabSets[i].getObjectAt(j), [])) {
-                aHero.youDied();
-                return;
+                if (this.mStabSets[i].getObjectAt(j).mCanTouch) {
+                    this.mStabSets[i].getObjectAt(j).setVisibility(false);
+                }
+                else {
+                    aHero.youDied();
+                    return;
+                }
             }
         }
     }

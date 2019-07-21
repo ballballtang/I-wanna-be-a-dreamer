@@ -38,7 +38,8 @@ ObjectProto.prototype.moveTo = function (toX, toY, V) {
     var disX = toX - this.getXform().getPosition()[0];
     var disY = toY - this.getXform().getPosition()[1];
     var disH = Math.sqrt(disX * disX + disY * disY);
-    if (disH <= 1e-6) return;
+    if (disH <= 1e-6)
+        return;
 
     this.mDestination = vec2.fromValues(toX, toY);
     this.mToDes = true;
@@ -55,9 +56,13 @@ ObjectProto.prototype.moveDown = function (V) {
     this.moveTo(pos[0], -675, V);
 }
 
-ObjectProto.prototype.moveLeft = function (V) {
+ObjectProto.prototype.moveLeft = function (V, des) {
     var pos = this.getXform().getPosition();
-    this.moveTo(-1200, pos[1], V);
+    if (des) {
+        this.moveTo(des, pos[1], V);
+    } else {
+        this.moveTo(-1200, pos[1], V);
+    }
 }
 
 ObjectProto.prototype.moveRight = function (V) {

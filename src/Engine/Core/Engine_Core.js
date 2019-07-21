@@ -143,7 +143,7 @@ gEngine.Core = (function () {
         inheritPrototype: inheritPrototype,
         startScene: startScene,
         changeScene: changeScene,
-        cleanUp: cleanUp
+        cleanUp: cleanUp,
     };
 
     return mPublic;

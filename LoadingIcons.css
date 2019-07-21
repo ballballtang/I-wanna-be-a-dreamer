@@ -136,11 +136,20 @@ p {
         z-index: 0;
     }
     
+    #LeftSpan{
+        display: none;
+        width: 80px;
+        margin-right: 5px;
+    }
+    
+    #RightSpan{
+        display: none;
+        width: 80px;
+        margin-left: 5px;
+    }
+    
     #LoadingIconParent{
         position: relative;
-        margin-left: 50%;
-        top: 50%;
-        transform: translateX(-50%) translateY(-50%);
     }
     
     table, th, td {

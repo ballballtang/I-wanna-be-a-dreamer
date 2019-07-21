@@ -51,6 +51,12 @@ StabSet.prototype.setVisibility = function(visible){
     }
 };
 
+StabSet.prototype.setTouchable = function () {
+    for (var i = 0; i < this.size(); i++) {
+        this.getObjectAt(i).setTouchable();
+    }
+}
+
 StabSet.prototype.moveTo = function(toX,toY,V){
     var num = this.size();
     var i;
@@ -60,11 +66,11 @@ StabSet.prototype.moveTo = function(toX,toY,V){
     }
 };
 
-StabSet.prototype.moveLeft = function(V){
+StabSet.prototype.moveLeft = function(V, des){
     var num = this.size();
     var i;
     for(i=0;i<num;i++){
-        this.getObjectAt(i).moveLeft(V);
+        this.getObjectAt(i).moveLeft(V, des);
         //-700,-270
     }
 };

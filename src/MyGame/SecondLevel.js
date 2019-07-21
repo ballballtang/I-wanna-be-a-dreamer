@@ -9,8 +9,9 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function SecondLevel(aHero, hasPaper) {
-    this.kTestTexture = "assets/TestTexture.png";
+    //this.kTestTexture = "assets/TestTexture.png";
     this.kSceneObj = "assets/SceneObjects.png";
+    this.kSceneObj2 = "assets/SceneObjects2.png";
     this.kPlatTexture = "assets/platform.png";
     this.kBrokenTexture = "assets/broken.png";
     this.kMoveTexture = "assets/moving.png";
@@ -39,10 +40,10 @@ function SecondLevel(aHero, hasPaper) {
     this.mBrokeSet = new GameObjectSet();
     this.mStabSetSet = new GameObjectSet();
     this.mTrapSet = new GameObjectSet();
-    this.mNoCollisionStab = new GameObjectSet(); //不参与碰撞检测的刺
     this.mButton = null;//button
     this.mPaper = null;
     this.mNoRoad = null;
+    this.mGetItem = null;
 
     //Tools
     this.mSolveCol = null;
@@ -52,8 +53,9 @@ function SecondLevel(aHero, hasPaper) {
 gEngine.Core.inheritPrototype(SecondLevel, Scene);
 
 SecondLevel.prototype.loadScene = function () {
-    gEngine.Textures.loadTexture(this.kTestTexture);
+    //gEngine.Textures.loadTexture(this.kTestTexture);
     gEngine.Textures.loadTexture(this.kSceneObj);
+    gEngine.Textures.loadTexture(this.kSceneObj2);
     gEngine.Textures.loadTexture(this.kPlatTexture);
     gEngine.Textures.loadTexture(this.kBrokenTexture);
     gEngine.Textures.loadTexture(this.kMoveTexture);
@@ -70,8 +72,9 @@ SecondLevel.prototype.loadScene = function () {
 };
 
 SecondLevel.prototype.unloadScene = function () {
-    gEngine.Textures.unloadTexture(this.kTestTexture);
+    //gEngine.Textures.unloadTexture(this.kTestTexture);
     gEngine.Textures.unloadTexture(this.kSceneObj);
+    gEngine.Textures.unloadTexture(this.kSceneObj2);
     gEngine.Textures.unloadTexture(this.kPlatTexture);
     gEngine.Textures.unloadTexture(this.kBrokenTexture);
     gEngine.Textures.unloadTexture(this.kMoveTexture);
@@ -87,13 +90,13 @@ SecondLevel.prototype.unloadScene = function () {
     //gEngine.Textures.unloadTexture(this.kDirt);
 
     if (this.LevelSelect === "restart") {
-        gEngine.Core.changeScene(new SecondLevel(), true);
-    }
-    if (this.LevelSelect === "BossLevel") {
-        gEngine.Core.changeScene(new BossLevel(this.mHero), false);
+        gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
     }
     if (this.LevelSelect === "FirstLevel") {
         gEngine.Core.changeScene(new FirstLevel(this.mHero), false);
+    }
+    if (this.LevelSelect === "BossLevel") {
+        gEngine.Core.changeScene(new BossLevel(this.mHero), false);
     }
 };
 
@@ -121,7 +124,7 @@ SecondLevel.prototype.initialize = function () {
     //platforms
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 550, -300, 270, 70));//右下角的矮胖平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 430, -172, 30, 186, true));//右下角的矮胖平台上的瘦高平台（触发按钮后消失）
-    this.mPlatSet.addToSet(new MovePlatform(this.kMoveTexture, 0, -280, 158, 32, -250, 300));//会动的平台
+    this.mPlatSet.addToSet(new MovePlatform(this.kMoveTexture, 290, -280, 158, 32, -250, 300));//会动的平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 135, -65, 1000, 30));//右边平台伸出来的小平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 260, 150, 130, 30));//大平台旁边第一个消失的小平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 150, 130, 30));//大平台旁边第二个看上去不正常其实可以踩的小平台
@@ -131,11 +134,12 @@ SecondLevel.prototype.initialize = function () {
     //this.mPlatSet.getObjectAt(12).setVisibility(false);
 
     if (this.mHasPaper) {
-        this.mPlatSet.addToSet(new Platform(this.kPaper, 480, 230, 30, 30)); //纸团
+        this.mPlatSet.addToSet(new Platform(this.kPaper, 470, 230, 30, 30)); //纸团
         this.mPaper = new Platform(this.kContent, 0, 0, 1000, 500);//纸团内容
         this.mPaper.setVisibility(false);
     }
     this.mNoRoad = new Platform(this.kNoRoad, -545, -205, 100, 50);
+    this.mGetItem = new SpriteObj(this.kSceneObj, 500, -246, 38, 38, [120, 159, 25, 64]);
 
     //broken platforms
     this.mBrokeSet.addToSet(new BrokenPlatform(this.kBrokenTexture, -389, -18, 40, 121));
@@ -143,7 +147,6 @@ SecondLevel.prototype.initialize = function () {
     //stabs
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 14, -192, -50));//第一层平台上的14个刺
     //this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -463, -265));
-    this.mNoCollisionStab.addToSet(new StabSet(this.kSceneObj, 1, -486, -265));//看的见但是是一个假刺,不参与collision处理
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -417, -265));//要设置成看不见
     this.mStabSetSet.getObjectAt(1).setVisibility(false);
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 2, -600, -265)); //要设置成看不见
@@ -155,6 +158,11 @@ SecondLevel.prototype.initialize = function () {
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -365, 90, true, false));//左上角胖平台侧着的刺
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -255, 60, true, true));//左上角胖平台侧着的刺
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 4, 645, -270, true, true));//右下角触发trap后飞出的一排刺
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 3, 192, 307.5, false, true));
+    this.mStabSetSet.getObjectAt(8).setVisibility(false);
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 5, -600, -184, true, false)); //最左边一排刺
+    this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -486, -265));//看的见但是是一个假刺,不参与collision处理
+    this.mStabSetSet.getObjectAt(10).setTouchable();
 
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
@@ -173,7 +181,7 @@ SecondLevel.prototype.initialize = function () {
         this.mTrapSet.getObjectAt(i).setVisibility(false);
     }
     this.mButton = new Button(this.kSceneObj, -520, 245, 60, 60)//button;
-    this.mTrapP = new FirstTrap(this.mTrapSet, this.mHero, this.mPlatSet, this.mStabSetSet, [this.mButton, this.mNoCollisionStab.getObjectAt(0).getObjectAt(0), this.mPaper]);
+    this.mTrapP = new FirstTrap(this.mTrapSet, this.mHero, this.mPlatSet, this.mStabSetSet, [this.mButton, this.mPaper, this.mGetItem]);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -189,11 +197,11 @@ SecondLevel.prototype.draw = function () {
     this.mPlatSet.draw(this.mCamera);
     this.mBrokeSet.draw(this.mCamera);
     this.mTrapSet.draw(this.mCamera);
-    this.mNoCollisionStab.draw(this.mCamera);
     this.mButton.draw(this.mCamera);
     this.mHero.draw(this.mCamera);
 
     if (this.mPaper) this.mPaper.draw(this.mCamera);
+    this.mGetItem.draw(this.mCamera);
 
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
@@ -227,7 +235,6 @@ SecondLevel.prototype.update = function () {
     this.mPlatSet.update();
     this.mBrokeSet.update();
     //this.mTrapSet.update();
-    this.mNoCollisionStab.update();
     this.mButton.update();
     //console.log(this.mHero.getXform().getPosition());
     this.mSolveCol.update();

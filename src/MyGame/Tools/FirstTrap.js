@@ -14,8 +14,7 @@ function FirstTrap(TrapArea, Hero, Platforms, Stabs, noCols) {
     this.mWhere = -1;
     this.mTime = false;
     this.mTimer = 0;
-    this.mPaperTime = false;
-    this.mPaperTimer = 0;//计时纸条出现的时间
+    this.mHasShownPaper = false;
 }
 
 FirstTrap.prototype.isTrigger = function () {
@@ -38,7 +37,8 @@ FirstTrap.prototype.trapProcess = function (num) {
     switch (num)
     {
         case 0:
-            this.mPlatforms.getObjectAt(8).moveDown(100);
+            this.mPlatforms.getObjectAt(8).moveUp(90);
+            this.mStabs.getObjectAt(8).setVisibility(true);
             break;
         case 1:
             this.mPlatforms.getObjectAt(5).disappear();
@@ -54,16 +54,14 @@ FirstTrap.prototype.trapProcess = function (num) {
             this.mStabs.getObjectAt(3).getObjectAt(4).moveDown(300);
             break;
         case 5:
-            this.mStabs.getObjectAt(7).moveLeft(200);
+            this.mStabs.getObjectAt(7).moveLeft(240, 470);
             break;
         case 6:
-            if (this.mNoCols[2]) {
-                if (this.mPaperTimer < 200) {
-                    this.mNoCols[2].setVisibility(true); //两秒后不会再setvisible了
-                }
+            if (this.mNoCols[1] && !this.mHasShownPaper) {
+                this.mNoCols[1].setVisibility(true); //两秒后不会再setvisible了
                 this.mPlatforms.getObjectAt(12).setVisibility(false);
-                this.mPaperTime = true;
             }
+            this.mHasShownPaper = true;
             break;
         default:
             return;
@@ -74,11 +72,6 @@ FirstTrap.prototype.update = function () {
     this.mWhere = -1;
     this.isTrigger();
     //console.log(this.mWhere);
-    if (this.mNoCols[1].isVisible()) {
-        if (this.mHero.pixelTouches(this.mNoCols[1], [])) {
-            this.mNoCols[1].setVisibility(false);
-        }
-    }
 
     if (this.mWhere !== -1) {
         this.trapProcess(this.mWhere);
@@ -92,13 +85,14 @@ FirstTrap.prototype.update = function () {
     if (this.mTimer === 80) {
         this.mStabs.getObjectAt(4).setVisibility(true);
     }
-    if (this.mPaperTime === true) {
-        this.mPaperTimer += 1;
-        //console.log(this.mPaperTimer);
+    if (this.mNoCols[1] && gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)) {
+        this.mNoCols[1].setVisibility(false);
     }
-    if (this.mNoCols[2] && this.mPaperTimer === 200) {
-        this.mNoCols[2].setVisibility(false);
-        this.mPaperTime = false;
+    
+    if (this.mNoCols[2].isVisible()) {
+        if (this.mHero.pixelTouches(this.mNoCols[2], [])) {
+            this.mNoCols[2].setVisibility(false);
+            this.mStabs.getObjectAt(9).setTouchable();
+        }
     }
-
 };

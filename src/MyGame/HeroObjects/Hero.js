@@ -132,10 +132,11 @@ Hero.prototype.update = function () {
         if (this.mAirFrames >= 3 && this.mJumpTime == 0) this.mJumpTime = 1;
         this.mJumpTime++;
     }
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= 2) {
+    var maxJump = gEngine.Mine.saveStatus.tribleJump ? 3 : 2;
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= maxJump) {
         this.mHoldSpace--;
         if (this.mJumpTime == 1) this.mVP.setYV(580 * this.kMirror);
-        if (this.mJumpTime == 2) this.mVP.setYV(450 * this.kMirror);
+        else this.mVP.setYV(450 * this.kMirror);
     }
     if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Space)) {
         this.mHoldSpace = 10;
@@ -145,7 +146,7 @@ Hero.prototype.update = function () {
     
     this.mBulletSet.update(this.mFacing);
     this.mVP.update();
-    //console.log(this.getXform().getPosition()[1]);
+    //console.log(this.getXform().getPosition()[0]);
     //console.log(this.getXform().getPosition()[1] - this.getXform().getHeight() / 2, this.mVP.mLastFrameV[1]);
     
     this.mKeepMoving++;
