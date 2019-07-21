@@ -42,6 +42,7 @@ function ThirdLevel(aHero, hasPaper) {
     this.mStabSetSet = new GameObjectSet();
     this.mTrapSet = new GameObjectSet();
     this.mNoCollisionStab = new GameObjectSet(); //不参与碰撞检测的刺
+    this.mDoor = null;
     this.mButton = null;//button
     this.mPaper = null;
     this.mNoRoad = null;
@@ -134,6 +135,8 @@ ThirdLevel.prototype.initialize = function () {
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, -20, 200, 30));//门的下平台 12
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -85, 65, 30, 140, true));//门的左平台 13
     
+    //this.mPlatSet.getObjectAt(13).setVisibility(false); //测试门用，正式版需要注释
+    
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture,400,0,46,46)); //充满刺的小平台 14
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture,220,-130,46,46));//充满刺的小平台 15
     
@@ -182,6 +185,9 @@ ThirdLevel.prototype.initialize = function () {
     
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
+    
+    //Door
+    this.mDoor = new NormalPlatform(this.kIce,0,65,100,100);
 
     //trapArea
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 450, -250, 40, 40));//打开纸        0
@@ -191,6 +197,7 @@ ThirdLevel.prototype.initialize = function () {
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 550,280,40,40));//黑色勾玉触发 20   4
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce,-490, -60, 170, 100));//下面飞出一排刺 7   5
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce,0, 190, 200, 50));//0 号刺出现   6
+
 
     var ss = this.mTrapSet.size();
     var i;
@@ -216,6 +223,8 @@ ThirdLevel.prototype.draw = function () {
     this.mTrapSet.draw(this.mCamera);
     this.mNoCollisionStab.draw(this.mCamera);
     this.mButton.draw(this.mCamera);
+    
+    this.mDoor.draw(this.mCamera);
     this.mHero.draw(this.mCamera);
     this.mMirrorHero.draw(this.mCamera);
     if (this.mPaper) this.mPaper.draw(this.mCamera);
@@ -223,7 +232,19 @@ ThirdLevel.prototype.draw = function () {
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
 };
-
+ThirdLevel.prototype.doorOpen = function(){
+    var hBox = this.mHero.getBBox();
+    var mhBox = this.mMirrorHero.getBBox();
+    var dBox = this.mDoor.getBBox();
+    var status1 = hBox.boundCollideStatus(dBox);
+    var status2 = mhBox.boundCollideStatus(dBox);
+    if(status1 || status2){
+        return true;
+    }else{
+        return false;
+    }
+    
+};
 ThirdLevel.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "BossLevel";
@@ -234,7 +255,7 @@ ThirdLevel.prototype.update = function () {
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
-    if (this.mHero.mIsGoingLeft) {
+    if (this.doorOpen() || gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "BossLevel";
         gEngine.GameLoop.stop();
     }
@@ -252,6 +273,7 @@ ThirdLevel.prototype.update = function () {
     this.mMirrorHero.update();
     this.mPlatSet.update();
     this.mBrokeSet.update();
+    this.mDoor.update();
     this.mTrapSet.update();
     this.mNoCollisionStab.update();
     this.mButton.update();

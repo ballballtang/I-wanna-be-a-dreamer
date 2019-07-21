@@ -1,3 +1,5 @@
+/* global gEngine */
+
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function Hero(spriteTexture, bulletTexture, atX, atY, mirror, faceLeft) {
@@ -105,7 +107,12 @@ Hero.prototype.youDied = function () {
     else this.mHero.setElementPixelPositions(168, 112, 96, 17);
     this.getXform().incRotationByDegree(-90);
     this.getXform().incYPosBy(- (this.kHeight - this.kWidth * 0.89) / 2 * this.kMirror);
-}
+};
+
+Hero.prototype.setMirror = function (mirror){
+    this.kMirror = mirror;
+    this.mVP.setA( -2300 * this.kMirror);
+};
 
 Hero.prototype.update = function () {
     if (this.mIsDead || this.mIsGoingLeft || this.mIsGoingRight) return;

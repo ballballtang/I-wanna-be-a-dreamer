@@ -60,6 +60,8 @@ SecondTrap.prototype.trapProcess = function (num) {
             break;
         case 1:
             this.mNoCols[0].push();
+            this.mHero.setMirror(-1);
+            this.mMirrorHero.setMirror(1);
             break;
         case 2:
             this.mStabs.getObjectAt(4).moveRight(200);
@@ -114,6 +116,13 @@ SecondTrap.prototype.update = function () {
     if (this.mNoCols[1] && this.mPaperTimer === 200) {
         this.mNoCols[1].setVisibility(false);
         this.mPaperTime = false;
+    }
+    
+    if(this.mButtonCount >= 2){
+        //console.log(this.mButtonCount);
+        this.mPlatforms.getObjectAt(11).setVisibility(false);
+        this.mPlatforms.getObjectAt(13).setVisibility(false);
+        this.mHero.setVisibility(false);
     }
 
 };

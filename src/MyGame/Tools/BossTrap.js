@@ -47,7 +47,7 @@ BossTrap.prototype.trapProcess = function (num) {
             if (this.mPaperTimer < 200) {
                 this.mNoCols[0].setVisibility(true); //两秒后不会再setvisible了
             }
-            this.mPlatforms.getObjectAt(3).setVisibility(false);
+            this.mPlatforms.getObjectAt(7).setVisibility(false);
             this.mPaperTime = true;
             break;
         default:
