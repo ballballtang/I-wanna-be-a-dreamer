@@ -18,6 +18,7 @@ function SecondLevel(aHero, hasPaper) {
     this.kYouDied = "assets/YouDied.png";
     this.kBullet = "assets/bullet.png";
     this.kHero = "assets/EmptyAction.png";
+    this.kMirrorHero = "assets/EmptyActionR.png";
     this.kNoRoad = "assets/NoRoad.png";
     //the hint
     this.kPaper = "assets/clue_s.png";
@@ -62,6 +63,7 @@ SecondLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kYouDied);
     gEngine.Textures.loadTexture(this.kBullet);
     gEngine.Textures.loadTexture(this.kHero);
+    gEngine.Textures.loadTexture(this.kMirrorHero);
     gEngine.Textures.loadTexture(this.kPaper);
     gEngine.Textures.loadTexture(this.kContent);
     gEngine.Textures.loadTexture(this.kNoRoad);
@@ -81,6 +83,7 @@ SecondLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kYouDied);
     gEngine.Textures.unloadTexture(this.kBullet);
     gEngine.Textures.unloadTexture(this.kHero);
+    gEngine.Textures.unloadTexture(this.kMirrorHero);
     gEngine.Textures.unloadTexture(this.kPaper);
     gEngine.Textures.unloadTexture(this.kContent);
     gEngine.Textures.unloadTexture(this.kNoRoad);
@@ -93,13 +96,12 @@ SecondLevel.prototype.unloadScene = function () {
         gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
     }
     if (this.LevelSelect === "ThirdLevel") {
-        gEngine.Core.changeScene(new ThirdLevel(this.mHero,true), false);
+        gEngine.Mine.saveStatus.finishSecond = true;
+        gEngine.Mine.restartLevel = () => new ThirdLevel();
+        gEngine.Core.changeScene(new ThirdLevel(this.mHero, true), false);
     }
     if (this.LevelSelect === "FirstLevel") {
         gEngine.Core.changeScene(new FirstLevel(this.mHero), false);
-    }
-    if (this.LevelSelect === "BossLevel") {
-        gEngine.Core.changeScene(new BossLevel(this.mHero), false);
     }
 };
 
@@ -115,17 +117,19 @@ SecondLevel.prototype.initialize = function () {
 
     if (this.mHero === null)
         this.mHero = new Hero(this.kHero, this.kBullet, 522, 238.4, 1, true);
-    else
+    else {
         this.mHero.cleanStatus(this.mCamera);
+        this.mHero.setMirror(1);
+    }
 
     //bounds
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -500, 110, 270, 126));//左边的胖平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 589, 70, 250, 290));//右边的大平台
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -500, -300, 270, 70));//左下角的矮胖平台
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -500, -315, 270, 100));//左下角的矮胖平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 337.5, 1400, 60, true));//最上面的边界
 
     //platforms
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 550, -300, 270, 70));//右下角的矮胖平台
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 550, -315, 270, 100));//右下角的矮胖平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 430, -172, 30, 186, true));//右下角的矮胖平台上的瘦高平台（触发按钮后消失）
     this.mPlatSet.addToSet(new MovePlatform(this.kMoveTexture, 290, -280, 158, 32, -250, 300));//会动的平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 135, -65, 1000, 30));//右边平台伸出来的小平台
@@ -215,7 +219,10 @@ SecondLevel.prototype.update = function () {
         this.LevelSelect = "ThirdLevel";
         gEngine.GameLoop.stop();
     }
-
+    
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
+        gEngine.Mine.letsCheat();
+    }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
@@ -229,6 +236,8 @@ SecondLevel.prototype.update = function () {
         gEngine.GameLoop.stop();
     }
     if (this.mHero.mIsDead) {
+        this.mHero.update();
+        this.mSolveCol.update();
         return;
     }
 
@@ -237,7 +246,6 @@ SecondLevel.prototype.update = function () {
     this.mHero.update();
     this.mPlatSet.update();
     this.mBrokeSet.update();
-    //this.mTrapSet.update();
     this.mButton.update();
     //console.log(this.mHero.getXform().getPosition());
     this.mSolveCol.update();

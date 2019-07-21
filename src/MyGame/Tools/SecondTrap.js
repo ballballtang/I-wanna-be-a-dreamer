@@ -15,10 +15,11 @@ function SecondTrap(TrapArea, Hero, MirrorHero, Platforms, Stabs, BrokenPlat, no
     this.mBp = 0;
     this.mCollect1 = false;
     this.mCollect2 = false;
-    this.mWhere = -1;
     this.mTime = false;
     this.mTimer = 0;
     this.mHasShownPaper = false;
+
+    this.mTriggerOn = [];
 }
 
 SecondTrap.prototype.isTrigger = function () {
@@ -26,6 +27,8 @@ SecondTrap.prototype.isTrigger = function () {
     var i;
 
     for (i = 0; i < num; i++) {
+        this.mTriggerOn[i] = false;
+
         var tt = this.mTrap.getObjectAt(i);
         var hBox = this.mHero.getBBox();
         var mhBox = this.mMirrorHero.getBBox();
@@ -34,65 +37,62 @@ SecondTrap.prototype.isTrigger = function () {
         var status2 = mhBox.boundCollideStatus(tBox);
         var status = status1 | status2;
         if (status) {
-            this.mWhere = i;
+            this.mTriggerOn[i] = true;
         }
     }
-
 };
 
-SecondTrap.prototype.trapProcess = function (num) {
-    switch (num)
-    {
-        case 0:
-            if (this.mNoCols[1] && !this.mHasShownPaper) {
-                this.mNoCols[1].setVisibility(true); 
-                this.mPlatforms.getObjectAt(22).setVisibility(false);
+SecondTrap.prototype.trapProcess = function () {
+    for (var num = 0; num < this.mTrap.size(); num++) {
+        if (this.mTriggerOn[num]) {
+            switch (num)
+            {
+                case 0:
+                    if (this.mNoCols[1] && !this.mHasShownPaper) {
+                        this.mNoCols[1].setVisibility(true);
+                        this.mPlatforms.getObjectAt(22).setVisibility(false);
+                    }
+                    this.mHasShownPaper = true;
+
+                    if (this.mBp === 0) {
+                        this.mBrokenPlat.getObjectAt(3).setVisibility(true);
+                        this.mBp += 1;
+                    }
+
+                    break;
+                case 1:
+                    this.mNoCols[0].push();
+                    this.mHero.setMirror(-1);
+                    this.mMirrorHero.setMirror(1);
+                    break;
+                case 2:
+                    this.mStabs.getObjectAt(4).moveRight(300);
+                    break;
+                case 3:
+                    this.mPlatforms.getObjectAt(19).setVisibility(false);
+                    this.mCollect1 = true;
+                    break;
+                case 4:
+                    this.mPlatforms.getObjectAt(20).setVisibility(false);
+                    this.mCollect2 = true;
+                    break;
+                case 5:
+                    this.mStabs.getObjectAt(7).moveUp(330);
+                    break;
+                case 6:
+                    this.mStabs.getObjectAt(0).setVisibility(true);
+                    break;
+                default:
+                    return;
             }
-            this.mHasShownPaper = true;
-            
-            if(this.mBp === 0){
-                this.mBrokenPlat.getObjectAt(3).setVisibility(true);
-                this.mBp +=1;
-            }
-            
-            break;
-        case 1:
-            this.mNoCols[0].push();
-            this.mHero.setMirror(-1);
-            this.mMirrorHero.setMirror(1);
-            break;
-        case 2:
-            this.mStabs.getObjectAt(4).moveRight(200);
-            break;
-        case 3:
-            this.mPlatforms.getObjectAt(19).setVisibility(false);
-            this.mCollect1 = true;
-            break;
-        case 4:
-            this.mPlatforms.getObjectAt(20).setVisibility(false);
-            this.mCollect2 = true;
-            break;
-        case 5:
-            this.mStabs.getObjectAt(7).moveUp(300);
-            break;
-        case 6:
-            this.mStabs.getObjectAt(0).setVisibility(true);
-            break;
-        default:
-            return;
+        }
     }
 };
 
 SecondTrap.prototype.update = function () {
-    this.mWhere = -1;
     this.isTrigger();
-
-    console.log(this.mWhere);
-
-    if (this.mWhere !== -1) {
-        this.trapProcess(this.mWhere);
-    }
-    if (this.mWhere === 1) {
+    this.trapProcess();
+    if (this.mTriggerOn[1]) {
         this.mTime = true;
     }
     if (this.mTime === true) {
@@ -101,6 +101,13 @@ SecondTrap.prototype.update = function () {
     //console.log("mTimer: " + this.mTimer);
     if (this.mTimer === 80) {
         this.mPlatforms.getObjectAt(18).setVisibility(true);
+        var mhx = this.mMirrorHero.getXform().getPosition()[0];
+        if (this.mMirrorHero.pixelTouches(this.mPlatforms.getObjectAt(18), [])) {
+            if (mhx >= -405 && mhx <= -379.4)
+                this.mMirrorHero.getXform().setXPos(-379.4);
+            if (mhx <= -405 && mhx >= -430.6)
+                this.mMirrorHero.getXform().setXPos(-430.6);
+        }
     }
 
     if (this.mNoCols[1] && gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)) {
@@ -109,7 +116,7 @@ SecondTrap.prototype.update = function () {
 
     if (this.mCollect1 && this.mCollect2) {
         //console.log(this.mButtonCount);
-        this.mPlatforms.getObjectAt(11).setVisibility(false);
+        this.mPlatforms.getObjectAt(12).setVisibility(false);
         this.mPlatforms.getObjectAt(13).setVisibility(false);
         this.mHero.setVisibility(false);
     }

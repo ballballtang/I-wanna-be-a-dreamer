@@ -29,6 +29,7 @@ gEngine.Mine = (function () {
         saveStatus: {
             tribleJump: false,
             finishFirst: false,
+            finishSecond: false,
         },
         restartLevel: () => new FirstLevel(),
     };

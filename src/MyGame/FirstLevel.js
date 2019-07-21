@@ -169,6 +169,8 @@ FirstLevel.prototype.update = function () {
         gEngine.GameLoop.stop();
     }
     if (this.mHero.mIsDead) {
+        this.mHero.update();
+        this.mSolveCol.update();
         return;
     }
 

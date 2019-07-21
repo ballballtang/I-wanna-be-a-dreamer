@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-
 function FirstTrap(TrapArea, Hero, Platforms, Stabs, noCols) {
     this.mTrap = TrapArea;
     this.mHero = Hero;

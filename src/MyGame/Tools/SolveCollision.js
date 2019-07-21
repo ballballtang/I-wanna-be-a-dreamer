@@ -44,8 +44,14 @@ SolveCollision.prototype.checkSceneChange = function (aHero) {
 SolveCollision.prototype.checkDeath = function (aHero) {
     //fall out
     var hUp = aHero.getBBox().maxY();
+    var hBottom = aHero.getBBox().minY();
     var cBottom = this.mCamera.getWCCenter()[1] - this.mCamera.getWCHeight() / 2;
-    if (hUp < cBottom) {
+    var cTop = this.mCamera.getWCCenter()[1] + this.mCamera.getWCHeight() / 2;
+    if (hUp < cBottom && aHero.kMirror > 0) {
+        aHero.youDied();
+        return;
+    }
+    if (hBottom > cTop && aHero.kMirror < 0) {
         aHero.youDied();
         return;
     }
@@ -90,18 +96,39 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
 
             var status = hBox.boundCollideStatus(pBox);
             var hasLRCol = false;
+            var hasTBCol = false;
+
             if ((status & 1) && !(status & 2)) {
                 if (hBox.minX() - dv[0] * 2 >= pBox.maxX() - pv[0] - 0.1) {
-                    hPos[0] = pBox.maxX() + ldw;
-                    aHero.mVP.cleanXV();
                     hasLRCol = true;
                 }
             }
             if ((status & 2) && !(status & 1)) {
                 if (hBox.maxX() - dv[0] * 2 <= pBox.minX() - pv[0] + 0.1) {
+                    hasLRCol = true;
+                }
+            }
+            if ((status & 4) && !(status & 8)) {
+                if (hBox.maxY() - dv[1] * 2 <= pBox.minY() - pv[1] + 0.1) {
+                    hasTBCol = true;
+                }
+            }
+            if ((status & 8) && !(status & 4)) {
+                if (hBox.minY() - dv[1] * 2 >= pBox.maxY() - pv[1] - 0.1) {
+                    hasTBCol = true;
+                }
+            }
+
+            if ((status & 1) && !(status & 2) && !hasTBCol) {
+                if (hBox.minX() - dv[0] * 2 >= pBox.maxX() - pv[0] - 0.1) {
+                    hPos[0] = pBox.maxX() + ldw;
+                    aHero.mVP.cleanXV();
+                }
+            }
+            if ((status & 2) && !(status & 1) && !hasTBCol) {
+                if (hBox.maxX() - dv[0] * 2 <= pBox.minX() - pv[0] + 0.1) {
                     hPos[0] = pBox.minX() - rdw;
                     aHero.mVP.cleanXV();
-                    hasLRCol = true;
                 }
             }
             if ((status & 4) && !(status & 8) && !hasLRCol) {

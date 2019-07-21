@@ -1,4 +1,4 @@
-/* global gEngine */
+ /* global gEngine */
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
@@ -57,10 +57,10 @@ Hero.prototype.cleanStatus = function (aCamera) {
     var cWidth = aCamera.getWCWidth();
     
     this.mIsDead = false;
-    if (this.mIsGoingUp) {
-        this.mIsGoingUp = false;
-        this.getXform().incYPosBy(-cHeight);
-    }
+//    if (this.mIsGoingUp) {
+//        this.mIsGoingUp = false;
+//        this.getXform().incYPosBy(-cHeight);
+//    }
     if (this.mIsGoingLeft) {
         this.mIsGoingLeft = false;
         this.getXform().incXPosBy(cWidth);
@@ -105,11 +105,14 @@ Hero.prototype.draw = function (aCamera) {
 };
 
 Hero.prototype.youDied = function () {
+    if(this.mIsDead) return;
+    
     this.mIsDead = true;
-    this.mHero.setElementPixelPositions(112, 168, 17, 96);
+    this.mVP.setYV(0);
+    this.mHero.setElementPixelPositions(112, 168, 17, 95);
     if(this.kMirror > 0) this.getXform().incRotationByDegree(-90);
     else this.getXform().incRotationByDegree(90);
-    this.getXform().incYPosBy(- (this.kHeight - this.kWidth * 0.89) / 2 * this.kMirror);
+    //this.getXform().incYPosBy(- (this.kHeight - this.kWidth * 0.89) / 2 * this.kMirror);
 };
 
 Hero.prototype.setMirror = function (mirror){
@@ -118,7 +121,14 @@ Hero.prototype.setMirror = function (mirror){
 };
 
 Hero.prototype.update = function () {
-    if (this.mIsDead || this.mIsGoingLeft || this.mIsGoingRight) return;
+    if (!this.isVisible()) return;
+    if (this.mIsDead) {
+        this.mVP.setXV(0);
+        this.mVP.setAddV(0, 0);
+        if(this.getXform().getPosition()[1] > -500 && this.getXform().getPosition()[1] < 500) this.mVP.update();
+        return;
+    }
+    if (this.mIsGoingLeft || this.mIsGoingRight) return;
     
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.C)) {
         this.mIsShooting = 9;
