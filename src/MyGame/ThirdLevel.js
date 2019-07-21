@@ -18,6 +18,7 @@ function ThirdLevel(aHero, hasPaper) {
     this.kYouDied = "assets/YouDied.png";
     this.kBullet = "assets/bullet.png";
     this.kHero = "assets/EmptyAction.png";
+    this.kMirrorHero = "assets/EmptyActionR.png";
     this.kNoRoad = "assets/NoRoad.png";
     //the hint
     this.kPaper = "assets/clue_s.png";
@@ -63,6 +64,7 @@ ThirdLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kYouDied);
     gEngine.Textures.loadTexture(this.kBullet);
     gEngine.Textures.loadTexture(this.kHero);
+    gEngine.Textures.loadTexture(this.kMirrorHero);
     gEngine.Textures.loadTexture(this.kPaper);
     gEngine.Textures.loadTexture(this.kContent);
     gEngine.Textures.loadTexture(this.kNoRoad);
@@ -81,6 +83,7 @@ ThirdLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kYouDied);
     gEngine.Textures.unloadTexture(this.kBullet);
     gEngine.Textures.unloadTexture(this.kHero);
+    gEngine.Textures.unloadTexture(this.kMirrorHero);
     gEngine.Textures.unloadTexture(this.kPaper);
     gEngine.Textures.unloadTexture(this.kContent);
     gEngine.Textures.unloadTexture(this.kNoRoad);
@@ -90,7 +93,7 @@ ThirdLevel.prototype.unloadScene = function () {
     //gEngine.Textures.unloadTexture(this.kDirt);
 
     if (this.LevelSelect === "restart") {
-        gEngine.Core.changeScene(new ThirdLevel(), true);
+        gEngine.Core.changeScene(new ThirdLevel(null, true), true);
     }
     if (this.LevelSelect === "BossLevel") {
         gEngine.Core.changeScene(new BossLevel(this.mHero,true), false);
@@ -160,7 +163,7 @@ ThirdLevel.prototype.initialize = function () {
     this.mBrokeSet.getObjectAt(3).setVisibility(false);
 
     if (this.mHasPaper) {
-        this.mPlatSet.addToSet(new Platform(this.kPaper, 450, -250, 30, 30)); //纸团 //22
+        this.mPlatSet.addToSet(new Platform(this.kPaper, 434, -250, 30, 30)); //纸团 //22
         this.mPaper = new Platform(this.kContent, 0, 0, 1000, 500);//纸团内容
         this.mPaper.setVisibility(false);
     }
@@ -190,7 +193,7 @@ ThirdLevel.prototype.initialize = function () {
     this.mDoor = new NormalPlatform(this.kIce,0,65,100,100);
 
     //trapArea
-    this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 450, -250, 40, 40));//打开纸        0
+    this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 434, -250, 40, 40));//打开纸        0
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce,-275, -250, 60, 60));//触发按钮      1  18
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 350, -150, 80, 80));//4号刺飞出     2
     this.mTrapSet.addToSet(new NormalPlatform(this.kIce, 225,-170,40,40));//白色勾玉触发 19  3
@@ -229,7 +232,7 @@ ThirdLevel.prototype.draw = function () {
     this.mMirrorHero.draw(this.mCamera);
     if (this.mPaper) this.mPaper.draw(this.mCamera);
 
-    if (this.mHero.mIsDead)
+    if (this.mHero.mIsDead || this.mMirrorHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
 };
 ThirdLevel.prototype.doorOpen = function(){
@@ -263,7 +266,7 @@ ThirdLevel.prototype.update = function () {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
     }
-    if (this.mHero.mIsDead) {
+    if (this.mHero.mIsDead || this.mMirrorHero.mIsDead) {
         return;
     }
 

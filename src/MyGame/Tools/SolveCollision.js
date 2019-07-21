@@ -3,20 +3,25 @@ function SolveCollision(Camera, Hero, MirrorHero, Platforms, Brokens, StabSets) 
     this.mHero = Hero;
     this.mBulletSet = Hero.mBulletSet;
     this.mMirrorHero = MirrorHero;
-    if(this.mMirrorHero !== null) this.mMirrorBullet = MirrorHero.mBulletSet;
+    if (this.mMirrorHero !== null)
+        this.mMirrorBullet = MirrorHero.mBulletSet;
     this.mPlatforms = Platforms;
     this.mBrokens = Brokens;
     this.mStabSets = StabSets;
 }
 
 SolveCollision.prototype.update = function () {
-    this.solveHero(this.mHero, false);
-    this.SolveBullets(this.mBulletSet, false);
-    this.checkDeath(this.mHero);
-    this.checkSceneChange(this.mHero);
+    if (this.mHero !== null) {
+        this.solveHero(this.mHero, this.mHero.kMirror < 0);
+        this.SolveBullets(this.mBulletSet, this.mHero.kMirror < 0);
+        this.checkDeath(this.mHero);
+        this.checkSceneChange(this.mHero);
+    }
     if (this.mMirrorHero !== null) {
-        this.solveHero(this.mMirrorHero, true);
-        this.SolveBullets(this.mMirrorBullet, true);
+        this.solveHero(this.mMirrorHero, this.mMirrorHero.kMirror < 0);
+        this.SolveBullets(this.mMirrorBullet, this.mMirrorHero.kMirror < 0);
+        this.checkDeath(this.mMirrorHero);
+        this.checkSceneChange(this.mMirrorHero);
     }
 };
 
@@ -27,10 +32,13 @@ SolveCollision.prototype.checkSceneChange = function (aHero) {
     var cUp = this.mCamera.getWCCenter()[1] + this.mCamera.getWCHeight() / 2;
     var cLeft = this.mCamera.getWCCenter()[0] - this.mCamera.getWCWidth() / 2;
     var cRight = this.mCamera.getWCCenter()[0] + this.mCamera.getWCWidth() / 2;
-    
-    if (hBottom > cUp) aHero.mIsGoingUp = true;
-    if (hLeft > cRight) aHero.mIsGoingRight = true;
-    if (hRight < cLeft) aHero.mIsGoingLeft = true;
+
+    if (hBottom > cUp)
+        aHero.mIsGoingUp = true;
+    if (hLeft > cRight)
+        aHero.mIsGoingRight = true;
+    if (hRight < cLeft)
+        aHero.mIsGoingLeft = true;
 }
 
 SolveCollision.prototype.checkDeath = function (aHero) {
@@ -41,17 +49,17 @@ SolveCollision.prototype.checkDeath = function (aHero) {
         aHero.youDied();
         return;
     }
-    
+
     //hit a stab
     for (var i = 0; i < this.mStabSets.length; i++) {
         for (var j = 0; j < this.mStabSets[i].size(); j++) {
-            if (!this.mStabSets[i].getObjectAt(j).isVisible()) continue;
-            
+            if (!this.mStabSets[i].getObjectAt(j).isVisible())
+                continue;
+
             if (aHero.pixelTouches(this.mStabSets[i].getObjectAt(j), [])) {
                 if (this.mStabSets[i].getObjectAt(j).mCanTouch) {
                     this.mStabSets[i].getObjectAt(j).setVisibility(false);
-                }
-                else {
+                } else {
                     aHero.youDied();
                     return;
                 }
@@ -62,16 +70,18 @@ SolveCollision.prototype.checkDeath = function (aHero) {
 
 SolveCollision.prototype.solveHero = function (aHero, isMirror) {
     var ldw = aHero.kWidth / 2 - aHero.kBWidthDec / 2 - aHero.kBOffset * aHero.mFacing;
-    var rdw = aHero.kWidth / 2 - aHero.kBWidthDec / 2 + aHero.kBOffset * aHero.mFacing;  
+    var rdw = aHero.kWidth / 2 - aHero.kBWidthDec / 2 + aHero.kBOffset * aHero.mFacing;
     var dh = aHero.kHeight / 2;
     var dv = aHero.mVP.mLastFrameV;
-    
-    if (aHero.mAirFrames < 3) aHero.mAirFrames++;
+
+    if (aHero.mAirFrames < 3)
+        aHero.mAirFrames++;
     aHero.mInAir = true;
     var plats = this.mPlatforms.concat(this.mBrokens);
     for (var repeat = 0; repeat < 2; repeat++) {
         for (var i = 0; i < plats.length; i++) {
-            if (!plats[i].isVisible()) continue;
+            if (!plats[i].isVisible())
+                continue;
 
             var hBox = aHero.getBBox();
             var hPos = aHero.getXform().getPosition();
@@ -102,7 +112,7 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                         aHero.mAirFrames = 0;
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
-                        
+
                         aHero.mVP.setAddV(plats[i].mVP.mV[0], plats[i].mVP.mV[1]);
                     } else {
                         if (aHero.mHoldSpace > 1 && aHero.mHoldSpace < 10)
@@ -118,7 +128,7 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                         aHero.mAirFrames = 0;
                         aHero.mInAir = false;
                         aHero.mJumpTime = 0;
-                        
+
                         aHero.mVP.setAddV(plats[i].mVP.mV[0], plats[i].mVP.mV[1]);
                     } else {
                         if (aHero.mHoldSpace > 1 && aHero.mHoldSpace < 10)
@@ -131,50 +141,57 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
 };
 
 SolveCollision.prototype.SolveBullets = function (aBulletSet, isMirror) {
-    for(var i = 0; i < aBulletSet.size(); i++) {
+    for (var i = 0; i < aBulletSet.size(); i++) {
         var tb = aBulletSet.getObjectAt(i);
-        if (tb.mIsDead) continue;
-        
+        if (tb.mIsDead)
+            continue;
+
         if (this.mCamera.collideWCBound(tb.getXform(), 1) !== 16) {
             tb.mIsDead = true;
         }
     }
-    
-    for(var i = 0; i < aBulletSet.size(); i++) {
+
+    for (var i = 0; i < aBulletSet.size(); i++) {
         var tb = aBulletSet.getObjectAt(i);
-        if (tb.mIsDead) continue;
-        
+        if (tb.mIsDead)
+            continue;
+
         for (var j = 0; j < this.mPlatforms.length; j++) {
-            if (!this.mPlatforms[j].isVisible()) continue;
-            
+            if (!this.mPlatforms[j].isVisible())
+                continue;
+
             if (tb.pixelTouches(this.mPlatforms[j], [])) {
                 tb.mIsDead = true;
             }
         }
     }
-    
-    for(var i = 0; i < aBulletSet.size(); i++) {
+
+    for (var i = 0; i < aBulletSet.size(); i++) {
         var tb = aBulletSet.getObjectAt(i);
-        if (tb.mIsDead) continue;
-        
+        if (tb.mIsDead)
+            continue;
+
         for (var j = 0; j < this.mBrokens.length; j++) {
-            if (!this.mBrokens[j].isVisible()) continue;
-            
+            if (!this.mBrokens[j].isVisible())
+                continue;
+
             if (tb.pixelTouches(this.mBrokens[j], [])) {
                 tb.mIsDead = true;
                 this.mBrokens[j].beingHit();
             }
         }
     }
-    
-    for(var i = 0; i < aBulletSet.size(); i++) {
+
+    for (var i = 0; i < aBulletSet.size(); i++) {
         var tb = aBulletSet.getObjectAt(i);
-        if (tb.mIsDead) continue;
-        
+        if (tb.mIsDead)
+            continue;
+
         for (var j = 0; j < this.mStabSets.length; j++) {
             for (var k = 0; k < this.mStabSets[j].size(); k++) {
-                if (!this.mStabSets[j].getObjectAt(k).isVisible()) continue;
-                
+                if (!this.mStabSets[j].getObjectAt(k).isVisible())
+                    continue;
+
                 if (tb.pixelTouches(this.mStabSets[j].getObjectAt(k), [])) {
                     tb.mIsDead = true;
                 }

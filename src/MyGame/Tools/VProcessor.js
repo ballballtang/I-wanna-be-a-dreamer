@@ -51,8 +51,8 @@ VProcessor.prototype.cleanXV = function() {
     this.mV[0] = 0;
 };
 
-VProcessor.prototype.setA = function(a){
-    this.mA = vec2.fromValues(0,a);
+VProcessor.prototype.setYA = function(a){
+    this.mA = vec2.fromValues(0, a);
 };
 
 VProcessor.prototype.cleanYV = function() {

@@ -6,6 +6,8 @@ function Hero(spriteTexture, bulletTexture, atX, atY, mirror, faceLeft) {
     this.kWidth = 33.6;
     this.kHeight = 48;
     this.kMirror = mirror;
+    this.kTex = spriteTexture;
+    this.kRTex = "assets/EmptyActionR.png";
     
     this.mIsDead = false;
     this.mIsGoingLeft = false;
@@ -19,6 +21,7 @@ function Hero(spriteTexture, bulletTexture, atX, atY, mirror, faceLeft) {
     this.mFacing = mirror;
     
     this.mHero = new SpriteRenderable(spriteTexture);
+    if (mirror < 0) this.mHero.setTexture(this.kRTex);
     this.mHero.setColor([1, 1, 1, 0]);
     this.mHero.getXform().setPosition(atX, atY);
     this.mHero.getXform().setSize(this.kWidth, this.kHeight);
@@ -103,15 +106,15 @@ Hero.prototype.draw = function (aCamera) {
 
 Hero.prototype.youDied = function () {
     this.mIsDead = true;
-    if (this.kMirror > 0) this.mHero.setElementPixelPositions(112, 168, 17, 96);
-    else this.mHero.setElementPixelPositions(168, 112, 96, 17);
-    this.getXform().incRotationByDegree(-90);
+    this.mHero.setElementPixelPositions(112, 168, 17, 96);
+    if(this.kMirror > 0) this.getXform().incRotationByDegree(-90);
+    else this.getXform().incRotationByDegree(90);
     this.getXform().incYPosBy(- (this.kHeight - this.kWidth * 0.89) / 2 * this.kMirror);
 };
 
 Hero.prototype.setMirror = function (mirror){
     this.kMirror = mirror;
-    this.mVP.setA( -2300 * this.kMirror);
+    this.mVP.setYA( -2300 * this.kMirror);
 };
 
 Hero.prototype.update = function () {
@@ -176,6 +179,7 @@ Hero.prototype.update = function () {
         else this.mTexLeft = 56;
     }
     
-    if (this.kMirror > 0) this.mHero.setElementPixelPositions(this.mTexLeft, this.mTexLeft + 56, this.mTexDown, this.mTexDown + 78 );
-    else this.mHero.setElementPixelPositions(this.mTexLeft, this.mTexLeft + 56, this.mTexDown + 78, this.mTexDown);
+    if (this.kMirror > 0)  this.mHero.setTexture(this.kTex);
+    else this.mHero.setTexture(this.kRTex);
+    this.mHero.setElementPixelPositions(this.mTexLeft, this.mTexLeft + 56, this.mTexDown, this.mTexDown + 78 );
 };

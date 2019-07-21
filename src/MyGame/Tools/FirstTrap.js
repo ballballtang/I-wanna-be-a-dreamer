@@ -58,7 +58,7 @@ FirstTrap.prototype.trapProcess = function (num) {
             break;
         case 6:
             if (this.mNoCols[1] && !this.mHasShownPaper) {
-                this.mNoCols[1].setVisibility(true); //两秒后不会再setvisible了
+                this.mNoCols[1].setVisibility(true);
                 this.mPlatforms.getObjectAt(12).setVisibility(false);
             }
             this.mHasShownPaper = true;
