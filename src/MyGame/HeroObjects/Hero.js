@@ -20,6 +20,8 @@ function Hero(spriteTexture, bulletTexture, atX, atY, mirror, faceLeft) {
     this.mAirFrames = 0;
     this.mFacing = mirror;
     
+    this.mControl = true;
+    
     this.mHero = new SpriteRenderable(spriteTexture);
     if (mirror < 0) this.mHero.setTexture(this.kRTex);
     this.mHero.setColor([1, 1, 1, 0]);
@@ -97,7 +99,7 @@ Hero.prototype.getBBox = function() {
     var pos = xform.getPosition();
     var b = new BoundingBox(vec2.fromValues(pos[0] + this.kBOffset * this.mFacing, pos[1]), xform.getWidth() - this.kBWidthDec, xform.getHeight());
     return b;
-}
+};
 
 Hero.prototype.draw = function (aCamera) {
     GameObject.prototype.draw.call(this, aCamera);
@@ -119,7 +121,12 @@ Hero.prototype.setMirror = function (mirror){
     this.kMirror = mirror;
     this.mVP.setYA( -2300 * this.kMirror);
 };
-
+Hero.prototype.setControl = function(control){
+    this.mControl = control;
+};
+Hero.prototype.getControl = function(){
+    return this.mControl ;
+};
 Hero.prototype.update = function () {
     if (!this.isVisible()) return;
     if (this.mIsDead) {
@@ -161,7 +168,6 @@ Hero.prototype.update = function () {
     if (gEngine.Input.isKeyReleased(gEngine.Input.keys.Space)) {
         this.mHoldSpace = 10;
     }
-    
     if (this.mInAir) this.mVP.setAddV(0, 0);
     
     this.mBulletSet.update(this.mFacing);
