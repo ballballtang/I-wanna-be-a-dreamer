@@ -33,8 +33,12 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBg);
 
     if (this.LevelSelect === "StartGame") {
-        gEngine.Core.changeScene(new FirstLevel(), true);
+        gEngine.Core.changeScene(new StartScene(), true);
     }
+    
+//    if (this.LevelSelect === "StartScene") {
+//        gEngine.Core.changeScene(new StartScene(), true);
+//    }
 };
 
 MyGame.prototype.initialize = function () {
@@ -69,6 +73,10 @@ MyGame.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
         this.startGameSelect();
     }
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.V)) {
+        this.LevelSelect = "StartScene";
+        gEngine.GameLoop.stop();
+    }
 };
 
 MyGame.prototype.startGameSelect = function () {
@@ -76,6 +84,7 @@ MyGame.prototype.startGameSelect = function () {
         gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
     
     this.LevelSelect = "StartGame";
+    console.log(this.LevelSelect);
     gEngine.GameLoop.stop();
 };
 

@@ -13,7 +13,6 @@ function Platform(t, atX, atY, w, h) {
     this.mPlatform.getXform().setPosition(atX, atY);
     this.mPlatform.getXform().setSize(w, h);
     ObjectProto.call(this, this.mPlatform);
-
     this.mVP = new VProcessor(this.getXform(), 0);
     this.mDestination = vec2.fromValues(0, 0);
     this.mToDes = false;
