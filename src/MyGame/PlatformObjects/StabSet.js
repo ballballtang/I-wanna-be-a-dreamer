@@ -74,3 +74,20 @@ StabSet.prototype.moveLeft = function(V, des){
         //-700,-270
     }
 };
+
+StabSet.prototype.moveRight = function(V){
+    var num = this.size();
+    var i;
+    for(i=0;i<num;i++){
+        this.getObjectAt(i).moveRight(V);
+        //-700,-270
+    }
+};
+StabSet.prototype.moveUp = function(V){
+    var num = this.size();
+    var i;
+    for(i=0;i<num;i++){
+        this.getObjectAt(i).moveUp(V);
+        //-700,-270
+    }
+};

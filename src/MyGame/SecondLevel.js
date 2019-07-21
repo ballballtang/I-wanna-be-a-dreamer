@@ -92,6 +92,9 @@ SecondLevel.prototype.unloadScene = function () {
     if (this.LevelSelect === "restart") {
         gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
     }
+    if (this.LevelSelect === "ThirdLevel") {
+        gEngine.Core.changeScene(new ThirdLevel(this.mHero,true), false);
+    }
     if (this.LevelSelect === "FirstLevel") {
         gEngine.Core.changeScene(new FirstLevel(this.mHero), false);
     }
@@ -208,17 +211,17 @@ SecondLevel.prototype.draw = function () {
 };
 
 SecondLevel.prototype.update = function () {
-    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
-        this.LevelSelect = "BossLevel";
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+        this.LevelSelect = "ThirdLevel";
         gEngine.GameLoop.stop();
-    }*/
+    }
 
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
     if (this.mHero.mIsGoingLeft) {
-        this.LevelSelect = "BossLevel";
+        this.LevelSelect = "ThirdLevel";
         gEngine.GameLoop.stop();
     }
     if (this.mHero.mIsGoingRight) {

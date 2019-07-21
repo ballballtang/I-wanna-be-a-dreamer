@@ -19,7 +19,7 @@ function BossLevel(aHero) {
 
     //the hint
     this.kPaper = "assets/clue_s.png";
-    this.kContent = "assets/clue_b2.png";
+    this.kContent = "assets/clue_b3.png";
 
     // The camera to view the scene
     this.mCamera = null;
@@ -92,22 +92,22 @@ BossLevel.prototype.initialize = function () {
     this.mBoss = new Boss(this.kTestTexture, 530, 266, 80, 80);
 
     //bounds
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 780));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 780));  //0
     //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, 0, 60, 675));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, -337.5, 1800, 60));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 337.5, 1400, 60));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, -337.5, 1800, 60)); //1
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 337.5, 1400, 60));  //2
 
     //platforms
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -280, 270, 60));
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -200, 270, 30));
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 280, 30));
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 300, 30));
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, 200, 240, 30));
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -280, 270, 60));  //3
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -200, 270, 30));  //3
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 280, 30)); //4
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 300, 30)); //5
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, 200, 240, 30)); //6
 
-    this.mPlatSet.addToSet(new Platform(this.kPaper, 400, -290, 30, 30)); //纸团 7,3
+    this.mPlatSet.addToSet(new Platform(this.kPaper, 400, -290, 30, 30)); //纸团 7
     this.mPaper = new Platform(this.kContent, 0, 0, 1000, 500);//纸团内容
     this.mPaper.setVisibility(false);
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, -300, 60, 70));//用于和Scene2平行
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, -300, 60, 70));//用于和Scene2平行 9
 
     this.mTraps.addToSet(new NormalPlatform(this.kPaper, 400, -290, 40, 40));//打开纸团
     var ss = this.mTraps.size();
