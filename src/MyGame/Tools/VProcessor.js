@@ -27,8 +27,8 @@ VProcessor.prototype.update = function() {
     vec2.scaleAndAdd(p, p, this.mV, dt);
     vec2.scaleAndAdd(p, p, this.mAddV, dt);
     
-    this.mLastFrameV[0] = this.mV[0] * dt;
-    this.mLastFrameV[1] = this.mV[1] * dt;
+    this.mLastFrameV[0] = (this.mV[0] + this.mAddV[0]) * dt;
+    this.mLastFrameV[1] = (this.mV[1] + this.mAddV[1]) * dt;
 };
 
 VProcessor.prototype.setV = function(x, y) {

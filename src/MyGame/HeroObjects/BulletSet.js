@@ -23,11 +23,11 @@ BulletSet.prototype.deleteBullet = function (index) {
     this.mSet.splice(index, 1);
 };
 
-BulletSet.prototype.clean = function() {
+BulletSet.prototype.clean = function () {
     this.mSet = [];
 }
 
-BulletSet.prototype.update = function (dir) {
+BulletSet.prototype.update = function (dir, canCtrl) {
     GameObjectSet.prototype.update.call(this);
     for (var i = 0; i < this.size(); i++) {
         if (this.getObjectAt(i).mIsDead) {
@@ -35,9 +35,11 @@ BulletSet.prototype.update = function (dir) {
             i--;
         }
     }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.C)) {
-        if (this.size() < 5) {
-            this.addABullet(dir);
+    if (canCtrl) {
+        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.C)) {
+            if (this.size() < 5) {
+                this.addABullet(dir);
+            }
         }
     }
 };

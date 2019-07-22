@@ -1,10 +1,11 @@
-function SolveCollision(Camera, Hero, MirrorHero, Platforms, Brokens, StabSets) {
+function SolveCollision(Camera, Hero, MirrorHero, Boss, Platforms, Brokens, StabSets) {
     this.mCamera = Camera;
     this.mHero = Hero;
     this.mBulletSet = Hero.mBulletSet;
     this.mMirrorHero = MirrorHero;
     if (this.mMirrorHero !== null)
         this.mMirrorBullet = MirrorHero.mBulletSet;
+    this.mBoss = Boss;
     this.mPlatforms = Platforms;
     this.mBrokens = Brokens;
     this.mStabSets = StabSets;
@@ -22,6 +23,11 @@ SolveCollision.prototype.update = function () {
         this.SolveBullets(this.mMirrorBullet, this.mMirrorHero.kMirror < 0);
         this.checkDeath(this.mMirrorHero);
         this.checkSceneChange(this.mMirrorHero);
+    }
+    if (this.mBoss !== null) {
+        if (this.mBoss.isVisible()) {
+            this.solveBoss();
+        }
     }
 };
 
@@ -131,8 +137,8 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                     aHero.mVP.cleanXV();
                 }
             }
-            if ((status & 4) && !(status & 8) && !hasLRCol) {
-                if (hBox.maxY() - dv[1] * 2 <= pBox.minY() - pv[1] + 0.1) {
+            if ((status & 4) && !(status & 8) /*&& !hasLRCol*/) {
+                if (/*hBox.maxY() - dv[1] * 2 <= pBox.minY() - pv[1] + 0.1*/ !hasLRCol) {
                     hPos[1] = pBox.minY() - dh;
                     aHero.mVP.cleanYV();
                     if (isMirror) {
@@ -147,8 +153,8 @@ SolveCollision.prototype.solveHero = function (aHero, isMirror) {
                     }
                 }
             }
-            if ((status & 8) && !(status & 4) && !hasLRCol) {
-                if (hBox.minY() - dv[1] * 2 >= pBox.maxY() - pv[1] - 0.1) {
+            if ((status & 8) && !(status & 4) /*&& !hasLRCol*/) {
+                if (/*hBox.minY() - dv[1] * 2 >= pBox.maxY() - pv[1] - 0.1*/ !hasLRCol) {
                     hPos[1] = pBox.maxY() + dh;
                     aHero.mVP.cleanYV();
                     if (!isMirror) {
@@ -226,3 +232,16 @@ SolveCollision.prototype.SolveBullets = function (aBulletSet, isMirror) {
         }
     }
 };
+
+SolveCollision.prototype.solveBoss = function() {
+    for (var i = 0; i < this.mBulletSet.size(); i++) {
+        var tb = this.mBulletSet.getObjectAt(i);
+        if (tb.mIsDead)
+            continue;
+
+        if (tb.pixelTouches(this.mBoss, [])) {
+            tb.mIsDead = true;
+            this.mBoss.DecBlood();
+        }
+    }
+}

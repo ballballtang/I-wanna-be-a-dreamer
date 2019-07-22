@@ -7,8 +7,8 @@
 
 /* global Scene, gEngine, vec2 */
 
-function BossLevel(aHero) {
-    this.kTestTexture = "assets/TestTexture.png";
+function BossLevel(aHero, showAnimation) {
+    //this.kTestTexture = "assets/TestTexture.png";
     this.kSceneObj = "assets/SceneObjects.png";
     this.kPlatTexture = "assets/platform.png";
     this.kBrokenTexture = "assets/broken.png";
@@ -16,12 +16,12 @@ function BossLevel(aHero) {
     this.kBullet = "assets/bullet.png";
     this.kHero = "assets/EmptyAction.png";
     this.kSeed = "assets/dreamSeed.png";
-    
-    //this.kWood = "assets/RigidShape/Wood.png";
-
+    this.kBoss = "assets/Dreamer.png";
+    this.kDialog = "assets/Dialogs.png";
     //the hint
     this.kPaper = "assets/clue_s.png";
     this.kContent = "assets/clue_b3.png";
+    this.kIce = "assets/RigidShape/Ice.png";
 
     // The camera to view the scene
     this.mCamera = null;
@@ -31,23 +31,27 @@ function BossLevel(aHero) {
     this.mHero = aHero ? aHero : null;
     this.mBoss = null;
     this.mPlatSet = new GameObjectSet();
+
+    this.mPaperBall = null;
     this.mPaper = null;
     this.mSeed = null; //梦想之种
+    this.mSentence = new GameObjectSet(); //sentence
+
     //Trap
     this.mTraps = new GameObjectSet();
     this.mTrapP = null;
-    //sentence
-    this.mSentence = new GameObjectSet();
+
     //判断camera shake
     this.mShake = false;
     //Tools
     this.mSolveCol = null;
     this.mShowDeath = null;
+    this.mShowAnim = showAnimation;
 }
 gEngine.Core.inheritPrototype(BossLevel, Scene);
 
 BossLevel.prototype.loadScene = function () {
-    gEngine.Textures.loadTexture(this.kTestTexture);
+    //gEngine.Textures.loadTexture(this.kTestTexture);
     gEngine.Textures.loadTexture(this.kSceneObj);
     gEngine.Textures.loadTexture(this.kPlatTexture);
     gEngine.Textures.loadTexture(this.kBrokenTexture);
@@ -55,14 +59,16 @@ BossLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBullet);
     gEngine.Textures.loadTexture(this.kHero);
     gEngine.Textures.loadTexture(this.kSeed);
-    //gEngine.Textures.loadTexture(this.kWood);
+    gEngine.Textures.loadTexture(this.kBoss);
+    gEngine.Textures.loadTexture(this.kDialog);
+
     gEngine.Textures.loadTexture(this.kPaper);
     gEngine.Textures.loadTexture(this.kContent);
-
+    gEngine.Textures.loadTexture(this.kIce);
 };
 
 BossLevel.prototype.unloadScene = function () {
-    gEngine.Textures.unloadTexture(this.kTestTexture);
+    //gEngine.Textures.unloadTexture(this.kTestTexture);
     gEngine.Textures.unloadTexture(this.kSceneObj);
     gEngine.Textures.unloadTexture(this.kPlatTexture);
     gEngine.Textures.unloadTexture(this.kBrokenTexture);
@@ -70,15 +76,16 @@ BossLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBullet);
     gEngine.Textures.unloadTexture(this.kHero);
     gEngine.Textures.unloadTexture(this.kSeed);
-    //gEngine.Textures.unloadTexture(this.kWood);
+    gEngine.Textures.unloadTexture(this.kBoss);
+    gEngine.Textures.unloadTexture(this.kDialog);
+
     gEngine.Textures.unloadTexture(this.kPaper);
     gEngine.Textures.unloadTexture(this.kContent);
+    gEngine.Textures.unloadTexture(this.kIce);
 
     if (this.LevelSelect === "restart") {
-        gEngine.Core.changeScene(new BossLevel(), true);
-    }
-    if (this.LevelSelect === "SecondLevel") {
-        gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
+        //gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
+        gEngine.Core.changeScene(new BossLevel(null, true), true);
     }
 };
 
@@ -93,50 +100,56 @@ BossLevel.prototype.initialize = function () {
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
     if (this.mHero === null)
-        this.mHero = new Hero(this.kHero, this.kBullet, -500,-200, 1);
+        this.mHero = new Hero(this.kHero, this.kBullet, -500, -200, 1);
     else
         this.mHero.cleanStatus(this.mCamera);
-    this.mBoss = new Boss(this.kTestTexture, 450, -150, 80, 80);
+    this.mBoss = new Boss(this.kBoss, 370, -150, 295.4, 179.2);
 
     //bounds
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 780));  //0
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, 0, 60, 675));
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, -337.5, 1800, 60)); //1
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 337.5, 1400, 60));  //2
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 780)); //0
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, 0, 60, 675));  //1
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, -337.5, 1800, 60)); //2
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 0, 337.5, 1400, 60, true)); //3
 
     //platforms
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -280, 270, 60));  //3
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -200, 270, 30));  //3
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 280, 30)); //4
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 300, 30)); //5
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, 200, 240, 30)); //6
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -200, 270, 30)); 
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 280, 30)); 
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 300, 30)); 
+    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, 200, 240, 30)); 
 
-    this.mPlatSet.addToSet(new Platform(this.kPaper, -250, -290, 30, 30)); //纸团 7
-    this.mPaper = new Platform(this.kContent, 0, 0, 1000, 500);//纸团内容
-    this.mPaper.setVisibility(false);
-    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, -300, 60, 70));//用于和Scene2平行 9
-    
+    if (this.mShowAnim) {
+        this.mPaperBall = new Platform(this.kPaper, -250, -290, 30, 30); //纸团
+        this.mPaper = new Platform(this.kContent, 0, 0, 1000, 500);//纸团内容
+        this.mPaper.setVisibility(false);
+
+        //seed
+        this.mSeed = new Platform(this.kSeed, 300, -210, 100, 50);   //seed
+        //sentence
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 45, -180, 271, 115, [0, 542, 1300, 1530]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 50, -185, 271, 117, [0, 542, 1814, 2048]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 40, -190, 271, 138.5, [0, 542, 1536, 1813]));
+        
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 100, 0, 270, 152, [545, 1085, 1744, 2048]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 90, -10, 270, 166.5, [561, 1101, 1409, 1742]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 100, 10, 270, 166.5, [561, 1101, 1074, 1407]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 95, -20, 270, 167, [1087, 1627, 1714, 2048]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 110, 15, 270, 166.5, [1103, 1643, 1379, 1712]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 90, -10, 270, 166.5, [1103, 1643, 1044, 1377]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 100, 0, 270, 166.5, [561, 1101, 739, 1072]));
+        this.mSentence.addToSet(new SpriteObj(this.kDialog, 100, 10, 270, 164, [1103, 1643, 712, 1040]));
+        for (var i = 0; i < this.mSentence.size(); i++) {
+            this.mSentence.getObjectAt(i).setVisibility(false);
+        }
+    }
+
     //traps
-    this.mTraps.addToSet(new NormalPlatform(this.kPaper, -250, -290, 40, 40));//打开纸团
-    var ss = this.mTraps.size();
-    var i;
-    for (i = 0; i < ss; i++) {
+    this.mTraps.addToSet(new Platform(this.kIce, -250, -290, 40, 40));//打开纸团
+    for (var i = 0; i < this.mTraps.size(); i++) {
         this.mTraps.getObjectAt(i).setVisibility(false);
     }//set invisible
-    
-    //seed
-    this.mSeed = new Platform(this.kSeed,390,-150,100,50);   //seed
-    //sentence
-    this.mSentence.addToSet(new Platform(this.kSeed,300,0,80,40));//0
-    this.mSentence.addToSet(new Platform(this.kSeed,300,-200,40,20));//1
-    var num = this.mSentence.size();
-    var i;
-    for(i=0;i<num;i++){
-        this.mSentence.getObjectAt(i).setVisibility(false);
-    }
-    
-    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mPlatSet.mSet, [], []);
-    this.mTrapP = new BossTrap(this.mTraps, this.mHero, this.mPlatSet, null, this.mSentence,this.mBoss,this.mSeed,[this.mPaper]);
+
+    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mBoss, this.mPlatSet.mSet, [], []);
+    this.mTrapP = new BossTrap(this.mTraps, this.mHero, this.mPlatSet, null, this.mSentence, this.mBoss, this.mSeed, [this.mPaper, this.mPaperBall]);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
 };
 
@@ -150,33 +163,35 @@ BossLevel.prototype.draw = function () {
 
     this.mPlatSet.draw(this.mCamera);
     this.mBoss.draw(this.mCamera);
-    this.mHero.draw(this.mCamera);
     this.mSeed.draw(this.mCamera);
+    this.mHero.draw(this.mCamera);
     this.mSentence.draw(this.mCamera);
-    //this.mHero.drawBBox(this.mCamera);
 
-    if (this.mPaper) this.mPaper.draw(this.mCamera);
+    if (this.mPaper) {
+        this.mPaperBall.draw(this.mCamera);
+        this.mPaper.draw(this.mCamera);
+    }
 
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
 };
 
 BossLevel.prototype.update = function () {
-    if (this.mBoss.isVisible()&& !this.mShake) {
-        //console.log("shaking");
+    if (this.mBoss.isVisible() && !this.mShake) {
         this.mCamera.shake(80, 80, 20, 30);
         this.mShake = true;
     }
 
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
+        gEngine.Mine.letsCheat();
+    }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
-    if (this.mHero.mIsGoingRight) {
-        this.LevelSelect = "SecondLevel";
-        gEngine.GameLoop.stop();
-    }
     if (this.mHero.mIsDead) {
+        this.mHero.update();
+        this.mSolveCol.update();
         return;
     }
 

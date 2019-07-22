@@ -171,7 +171,7 @@ SecondLevel.prototype.initialize = function () {
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, -486, -265));//看的见但是是一个假刺,不参与collision处理
     this.mStabSetSet.getObjectAt(10).setTouchable();
 
-    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
+    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, null, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
 
     //trapArea
@@ -215,10 +215,10 @@ SecondLevel.prototype.draw = function () {
 };
 
 SecondLevel.prototype.update = function () {
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "ThirdLevel";
         gEngine.GameLoop.stop();
-    }
+    }*/
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();

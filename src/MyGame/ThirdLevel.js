@@ -100,7 +100,7 @@ ThirdLevel.prototype.unloadScene = function () {
     }
     if (this.LevelSelect === "BossLevel") {
         gEngine.Mine.restartLevel = () => new BossLevel();
-        gEngine.Core.changeScene(new BossLevel(this.mMirrorHero, true), false);
+        gEngine.Core.changeScene(new BossLevel(null, true), false);
     }
     if (this.LevelSelect === "SecondLevel") {
         gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
@@ -189,7 +189,7 @@ ThirdLevel.prototype.initialize = function () {
     
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 4, -88, -36, false, true)); //门的上平台上的一排刺，一开始看不见 0
 
-    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
+    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, null, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
     this.mShowDeath.setVisibility(false);
 
@@ -254,10 +254,10 @@ ThirdLevel.prototype.doorOpen = function () {
 };
 
 ThirdLevel.prototype.update = function () {
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "BossLevel";
         gEngine.GameLoop.stop();
-    }
+    }*/
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();

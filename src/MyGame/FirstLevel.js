@@ -120,7 +120,7 @@ FirstLevel.prototype.initialize = function () {
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 4, -350, -307.5, false, false));
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, 50, -165, false, false));
 
-    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
+    this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, null, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mTips = new Sentence(this.kSentences);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
 };
@@ -148,14 +148,10 @@ FirstLevel.prototype.draw = function () {
 };
 
 FirstLevel.prototype.update = function () {
-    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
-        this.LevelSelect = "StartScene";
-        gEngine.GameLoop.stop();
-    }*/
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
-    }
+    }*/
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();
