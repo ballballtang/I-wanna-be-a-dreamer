@@ -22,15 +22,22 @@ gEngine.Mine = (function () {
         gEngine.Mine.saveStatus.tribleJump = true;
         document.getElementById("LeftSpan").style.display = "block";
         document.getElementById("RightSpan").style.display = "block";
-    }
+    };
+
+    var incDeath = function(){
+        gEngine.Mine.death += 1;
+    };
 
     var mPublic = {
         letsCheat: letsCheat,
+        incDeath : incDeath,
         saveStatus: {
             tribleJump: false,
             finishFirst: false,
             finishSecond: false,
         },
+        time : 0,
+        death : 0,
         restartLevel: () => new FirstLevel(),
     };
 

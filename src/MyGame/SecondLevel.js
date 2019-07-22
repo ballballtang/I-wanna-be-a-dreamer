@@ -224,6 +224,7 @@ SecondLevel.prototype.update = function () {
         gEngine.Mine.letsCheat();
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        gEngine.Mine.incDeath();
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
