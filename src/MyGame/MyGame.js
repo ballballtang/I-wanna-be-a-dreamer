@@ -12,7 +12,7 @@ function MyGame() {
 
     this.kBgClip = "assets/MEGALOVANIA.mp3";
     this.kBeginning = [];
-    for (var i = 0; i < 317; i++) {
+    for (var i = 0; i < 277; i++) {
         if (i < 10) {
             this.kBeginning[i] = "assets/Beginning/beginning000" + i + ".png";
         } else if (i < 100) {
@@ -36,6 +36,10 @@ MyGame.prototype.loadScene = function () {
 
     if (!(gEngine.ResourceMap.isAssetLoaded(this.kBgClip)))
         gEngine.AudioClips.loadAudio(this.kBgClip);
+    
+    for (var i = 0; i < 277; i++) {
+        gEngine.Textures.loadTexture(this.kBeginning[i]);
+    }
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -43,11 +47,11 @@ MyGame.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBg);
 
     if (this.LevelSelect === "StartGame") {
-        //gEngine.Core.changeScene(new StartScene(), true);
-        gEngine.Core.changeScene(new FirstLevel(), true);
+        gEngine.Core.changeScene(new StartScene(), true);
+        //gEngine.Core.changeScene(new FirstLevel(), true);
 
-        if (!gEngine.AudioClips.isBackgroundAudioPlaying())
-            gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
+        //if (!gEngine.AudioClips.isBackgroundAudioPlaying())
+        //    gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
     }
 };
 

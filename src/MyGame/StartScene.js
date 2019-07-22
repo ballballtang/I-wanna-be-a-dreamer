@@ -8,7 +8,7 @@
 function StartScene() {
     this.kBgClip = "assets/MEGALOVANIA.mp3";
     this.kBeginning = new Array();
-    for (var i = 0; i < 317; i++) {
+    for (var i = 0; i < 277; i++) {
         if (i < 10) {
             this.kBeginning[i] = "assets/Beginning/beginning000" + i + ".png";
         } else if (i < 100) {
@@ -30,13 +30,10 @@ function StartScene() {
 gEngine.Core.inheritPrototype(StartScene, Scene);
 
 StartScene.prototype.loadScene = function () {
-    for (var i = 0; i < 317 / 2; i++) {
-        gEngine.Textures.loadTexture(this.kBeginning[i]);
-    }
 };
 
 StartScene.prototype.unloadScene = function () {
-    for (var i = 0; i < 317 / 2; i++) {
+    for (var i = 0; i < 277; i++) {
         gEngine.Textures.unloadTexture(this.kBeginning[i]);
     }
     if (!gEngine.AudioClips.isBackgroundAudioPlaying())
@@ -52,7 +49,7 @@ StartScene.prototype.initialize = function () {
             );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     
-    for (var i = 0; i < 317 / 2; i++) {
+    for (var i = 0; i < 277; i++) {
         this.mBg[i] = new Platform(this.kBeginning[i], 0, 0, 1200, 675); //.setTexture
     }
 };
@@ -68,12 +65,12 @@ StartScene.prototype.draw = function () {
 
 StartScene.prototype.update = function () {
     this.mTimer += 1;
-    if (this.mTimer === 11 && this.mBgCount < 267) {
+    if (this.mTimer === 11 && this.mBgCount < 226) {
         this.mBgCount += 1;
         //this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
         this.mTimer = 0;
     }
-    if (this.mBgCount === 267) {
+    if (this.mBgCount === 226) {
         if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)) {
             this.mBgStart = true;
             this.mTimer = 0;
@@ -87,8 +84,8 @@ StartScene.prototype.update = function () {
         }
     }
     
-    //console.log(this.mBgCount);
-    if (this.mBgCount === 316 / 2) {
+    console.log(this.mBgCount);
+    if (this.mBgCount === 276) {
         gEngine.GameLoop.stop();
     }
 };
