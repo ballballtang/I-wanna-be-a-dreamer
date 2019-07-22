@@ -18,7 +18,7 @@ function StartScene() {
         }
     }
 
-    this.mBg = null;
+    this.mBg = [];
     this.mBgCount = 0;
     this.mBgStart = false;
     this.mTimer = 0;
@@ -30,10 +30,13 @@ function StartScene() {
 gEngine.Core.inheritPrototype(StartScene, Scene);
 
 StartScene.prototype.loadScene = function () {
+    for (var i = 0; i < 317 / 2; i++) {
+        gEngine.Textures.loadTexture(this.kBeginning[i]);
+    }
 };
 
 StartScene.prototype.unloadScene = function () {
-    for (var i = 0; i < 317; i++) {
+    for (var i = 0; i < 317 / 2; i++) {
         gEngine.Textures.unloadTexture(this.kBeginning[i]);
     }
     if (!gEngine.AudioClips.isBackgroundAudioPlaying())
@@ -48,7 +51,10 @@ StartScene.prototype.initialize = function () {
             [0, 0, 1200, 675]         // viewport (orgX, orgY, width, height)
             );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
-    this.mBg = new Platform(this.kBeginning[this.mBgCount], 0, 0, 1200, 675); //.setTexture
+    
+    for (var i = 0; i < 317 / 2; i++) {
+        this.mBg[i] = new Platform(this.kBeginning[i], 0, 0, 1200, 675); //.setTexture
+    }
 };
 
 StartScene.prototype.draw = function () {
@@ -57,32 +63,32 @@ StartScene.prototype.draw = function () {
 
     this.mCamera.setupViewProjection();
 
-    this.mBg.draw(this.mCamera);
+    this.mBg[this.mBgCount].draw(this.mCamera);
 };
 
 StartScene.prototype.update = function () {
     this.mTimer += 1;
     if (this.mTimer === 11 && this.mBgCount < 267) {
         this.mBgCount += 1;
-        this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
+        //this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
         this.mTimer = 0;
     }
-    /*if (this.mBgCount === 267) {
+    if (this.mBgCount === 267) {
         if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)) {
             this.mBgStart = true;
             this.mTimer = 0;
         }
-    }*/
+    }
     if (this.mBgStart) {
         if (this.mTimer === 12) {
             this.mBgCount += 1;
-            this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
+            //this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
             this.mTimer = 0;
         }
     }
-    this.mBg.update();
+    
     //console.log(this.mBgCount);
-    if (this.mBgCount === 316) {
+    if (this.mBgCount === 316 / 2) {
         gEngine.GameLoop.stop();
     }
 };
