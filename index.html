@@ -165,10 +165,14 @@
         "
         style = "height: 100%; margin: 0px; min-width: 1370px; min-height: 675px;"
         >
+        <span id="DeathNum" style="display: flex;position: absolute;top: 60px;left: 85px;font-size: 18px;">Death: 0 </span>
+        <span id="Time" style="position: absolute;top: 60px;left: 160px;font-size: 18px;"> </span>
         <div style="display: flex; height: 100%; justify-content:center; align-items: center">
             <img src="assets/html/cheat1.png" id="LeftSpan" />
+<!--            <span id="DeathNum" style="position: absolute;top: 60px;left: 85px;font-size: 18px;">Death: 0 </span>
+            <span id="Time" style="position: absolute;top: 60px;left: 160px;font-size: 18px;"> </span>-->
             <div id="LoadingIconParent" style="width: 1200px; height: 675px;">
-
+            
                 <canvas id="GLCanvas">
                     <!-- GLCanvas is the area we will draw in: a 640x480 area. -->
                     Your browser does not support the HTML5 canvas.
@@ -177,7 +181,9 @@
 
                 <script type="text/javascript"> gEngine.LoadingIconConfig.setup();</script>
             </div>
+
             <img src="assets/html/cheat2.png" id="RightSpan" />
         </div>
     </body>
+
 </html>

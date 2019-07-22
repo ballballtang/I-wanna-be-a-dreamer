@@ -36,6 +36,10 @@ Boss.prototype.DecBlood = function () {
     this.mBlood = this.mBlood - 5;
 };
 
+Boss.prototype.getBlood = function(){
+    return this.mBlood;
+};
+
 Boss.prototype.draw = function (aCamera) {
     GameObject.prototype.draw.call(this, aCamera);
     this.mDust.draw(aCamera);

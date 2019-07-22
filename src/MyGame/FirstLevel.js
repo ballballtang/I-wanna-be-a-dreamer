@@ -130,6 +130,8 @@ FirstLevel.prototype.initialize = function () {
     this.mTips = new Sentence(this.kSentences,this.kSceneObj2,this.kSentences2);
    
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
+    gEngine.Mine.gameStatus.start = true;
+    gEngine.Mine.timeStart();
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -159,7 +161,6 @@ FirstLevel.prototype.update = function () {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
     }*/
-    
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();
     }

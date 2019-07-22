@@ -26,17 +26,38 @@ gEngine.Mine = (function () {
 
     var incDeath = function(){
         gEngine.Mine.death += 1;
+        var a=document.getElementById("DeathNum");
+        a.innerHTML = "Death: "+ gEngine.Mine.death;
+    };
+    
+    var timeStart = function(){
+        gEngine.Mine.startTime = (new Date()).getTime();
+    };
+    
+    var timeSpend = function(){
+        var now = (new Date()).getTime();
+        console.log(now);
+        gEngine.Mine.spendTime = (now - gEngine.Mine.startTime)/1000;
+        var a=document.getElementById("Time");
+        a.innerHTML = "Time: "+ gEngine.Mine.spendTime + " sec";
     };
 
     var mPublic = {
         letsCheat: letsCheat,
         incDeath : incDeath,
+        timeStart: timeStart,
+        timeSpend: timeSpend,
         saveStatus: {
             tribleJump: false,
             finishFirst: false,
             finishSecond: false,
         },
-        time : 0,
+        gameStatus: {
+            start: false,
+            finish: false
+        },
+        startTime : null,
+        spendTime: 0,
         death : 0,
         restartLevel: () => new FirstLevel(),
     };

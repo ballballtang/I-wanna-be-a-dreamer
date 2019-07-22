@@ -151,6 +151,8 @@ BossLevel.prototype.initialize = function () {
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mBoss, this.mPlatSet.mSet, [], []);
     this.mTrapP = new BossTrap(this.mTraps, this.mHero, this.mPlatSet, null, this.mSentence, this.mBoss, this.mSeed, [this.mPaper, this.mPaperBall]);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
+    
+    
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -195,7 +197,10 @@ BossLevel.prototype.update = function () {
         this.mSolveCol.update();
         return;
     }
-
+    if(this.mBoss.getBlood() === 0 || gEngine.Mine.gameStatus.finish === false){
+        gEngine.Mine.gameStatus.finish = true;
+        gEngine.Mine.timeSpend();
+    }
     this.mTrapP.update();
     this.mBoss.update();
     this.mHero.update();
