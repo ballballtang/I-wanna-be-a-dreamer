@@ -9,8 +9,18 @@ function MyGame() {
     //this.kUIButton = "assets/UI/button.png";
     this.kUIButton = "assets/UI/SimpleButton.png";
     this.kBg = "assets/title.png";
-
+    
     this.kBgClip = "assets/MEGALOVANIA.mp3";
+    this.kBeginning = [];
+    for (var i = 0; i < 317; i++) {
+        if (i < 10) {
+            this.kBeginning[i] = "assets/Beginning/beginning000" + i + ".png";
+        } else if (i < 100) {
+            this.kBeginning[i] = "assets/Beginning/beginning00" + i + ".png";
+        } else {
+            this.kBeginning[i] = "assets/Beginning/beginning0" + i + ".png";
+        }
+    }
 
     this.mCamera = null;
     this.LevelSelect = null;
@@ -23,6 +33,9 @@ gEngine.Core.inheritPrototype(MyGame, Scene);
 MyGame.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kUIButton);
     gEngine.Textures.loadTexture(this.kBg);
+    for (var i = 0; i < 317; i++) {
+        gEngine.Textures.loadTexture(this.kBeginning[i]);
+    }
 
     if (!(gEngine.ResourceMap.isAssetLoaded(this.kBgClip)))
         gEngine.AudioClips.loadAudio(this.kBgClip);
@@ -35,10 +48,6 @@ MyGame.prototype.unloadScene = function () {
     if (this.LevelSelect === "StartGame") {
         gEngine.Core.changeScene(new StartScene(), true);
     }
-    
-//    if (this.LevelSelect === "StartScene") {
-//        gEngine.Core.changeScene(new StartScene(), true);
-//    }
 };
 
 MyGame.prototype.initialize = function () {
@@ -80,9 +89,6 @@ MyGame.prototype.update = function () {
 };
 
 MyGame.prototype.startGameSelect = function () {
-    if (!gEngine.AudioClips.isBackgroundAudioPlaying())
-        gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
-    
     this.LevelSelect = "StartGame";
     console.log(this.LevelSelect);
     gEngine.GameLoop.stop();

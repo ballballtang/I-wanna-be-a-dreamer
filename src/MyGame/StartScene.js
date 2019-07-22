@@ -5,19 +5,19 @@
  */
 /* global gEngine, Scene, vec2 */
 
-function StartScene(){
+function StartScene() {
+    this.kBgClip = "assets/MEGALOVANIA.mp3";
     this.kBeginning = new Array();
-    var i;
-    for(i=0;i<317;i++){
-        if(i<10){
-            this.kBeginning[i]="assets/Beginning/beginning000"+i+".png";
-        }else if(i<100){
-            this.kBeginning[i]="assets/Beginning/beginning00"+i+".png";
-        }else{
-            this.kBeginning[i]="assets/Beginning/beginning0"+i+".png";
+    for (var i = 0; i < 317; i++) {
+        if (i < 10) {
+            this.kBeginning[i] = "assets/Beginning/beginning000" + i + ".png";
+        } else if (i < 100) {
+            this.kBeginning[i] = "assets/Beginning/beginning00" + i + ".png";
+        } else {
+            this.kBeginning[i] = "assets/Beginning/beginning0" + i + ".png";
         }
-        
     }
+
     this.mBg = null;
     this.mBgCount = 0;
     this.mBgStart = false;
@@ -25,26 +25,23 @@ function StartScene(){
     this.mCamera = null;
     this.LevelSelect = null;
     //console.log(this.kBeginning[100]);
-    
-}
-gEngine.Core.inheritPrototype(StartScene,Scene);
 
-StartScene.prototype.loadScene = function(){
-    var i;
-    for(i=0;i<317;i++){
-        gEngine.Textures.loadTexture(this.kBeginning[i]);
-    }
+}
+gEngine.Core.inheritPrototype(StartScene, Scene);
+
+StartScene.prototype.loadScene = function () {
 };
 
-StartScene.prototype.unloadScene = function(){
-    var i;
-    for(i=0;i<317;i++){
+StartScene.prototype.unloadScene = function () {
+    for (var i = 0; i < 317; i++) {
         gEngine.Textures.unloadTexture(this.kBeginning[i]);
     }
-    gEngine.Core.changeScene(new FirstLevel(),true);
+    if (!gEngine.AudioClips.isBackgroundAudioPlaying())
+        gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
+    gEngine.Core.changeScene(new FirstLevel(), true);
 };
 
-StartScene.prototype.initialize = function(){
+StartScene.prototype.initialize = function () {
     this.mCamera = new Camera(
             vec2.fromValues(0, 0), // position of the camera
             1200, // width of camera
@@ -63,29 +60,29 @@ StartScene.prototype.draw = function () {
     this.mBg.draw(this.mCamera);
 };
 
-StartScene.prototype.update = function(){
+StartScene.prototype.update = function () {
     this.mTimer += 1;
-    if(this.mTimer === 11 && this.mBgCount<267){
+    if (this.mTimer === 11 && this.mBgCount < 267) {
         this.mBgCount += 1;
         this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
         this.mTimer = 0;
     }
-    if(this.mBgCount === 267){
-        if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)){
+    /*if (this.mBgCount === 267) {
+        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)) {
             this.mBgStart = true;
-            this.mTimer = 0; 
+            this.mTimer = 0;
         }
-    }
-    if(this.mBgStart){
-        if(this.mTimer === 12){
+    }*/
+    if (this.mBgStart) {
+        if (this.mTimer === 12) {
             this.mBgCount += 1;
             this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
             this.mTimer = 0;
         }
     }
     this.mBg.update();
-    console.log(this.mBgCount);
-    if(this.mBgCount === 316){
+    //console.log(this.mBgCount);
+    if (this.mBgCount === 316) {
         gEngine.GameLoop.stop();
     }
 };
