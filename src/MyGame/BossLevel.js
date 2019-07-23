@@ -42,7 +42,7 @@ function BossLevel(aHero, showAnimation) {
     this.mTraps = new GameObjectSet();
     this.mTrapP = null;
 
-    //判断camera shake
+    //判断camera shake 
     this.mShake = false;
     //Tools
     this.mSolveCol = null;
@@ -84,8 +84,7 @@ BossLevel.prototype.unloadScene = function () {
 
     gEngine.Textures.unloadTexture(this.kPaper);
     gEngine.Textures.unloadTexture(this.kContent);
-    gEngine.Textures.unloadTexture(this.kIce);
-
+    gEngine.Textures.unloadTexture(this.kIce); 
     if (this.LevelSelect === "restart") {
         gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
     }
@@ -159,6 +158,8 @@ BossLevel.prototype.initialize = function () {
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mBoss, this.mPlatSet.mSet, [], []);
     this.mTrapP = new BossTrap(this.mTraps, this.mHero, this.mPlatSet, null, this.mSentence, this.mBoss, this.mSeed, [this.mPaper, this.mPaperBall]);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
+    gEngine.Mine.gameStatus.finish = false;
+    
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -194,6 +195,7 @@ BossLevel.prototype.update = function () {
         gEngine.Mine.letsCheat();
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        gEngine.Mine.incDeath();
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
@@ -202,7 +204,11 @@ BossLevel.prototype.update = function () {
         this.mSolveCol.update();
         return;
     }
-
+    console.log(this.mBoss.getBlood());
+    console.log(gEngine.Mine.gameStatus.finish);
+    if(this.mBoss.mDeath){
+        gEngine.Mine.gameStatus.finish = true;   
+    }
     this.mTrapP.update();
     this.mBoss.update(this.mCamera);
     this.mHero.update();
@@ -210,4 +216,5 @@ BossLevel.prototype.update = function () {
     this.mCamera.update();
 
     this.mSolveCol.update();
+    gEngine.Mine.timeSpend();
 };

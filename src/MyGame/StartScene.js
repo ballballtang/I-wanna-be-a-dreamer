@@ -7,6 +7,7 @@
 
 function StartScene() {
     this.kBgClip = "assets/MEGALOVANIA.mp3";
+    this.kSentence = "assets/sentences2.png";
     this.kBeginning = new Array();
     for (var i = 0; i < 277; i++) {
         if (i < 10) {
@@ -24,15 +25,19 @@ function StartScene() {
     this.mTimer = 0;
     this.mCamera = null;
     this.LevelSelect = null;
+    //this.mSentence = null;
     //console.log(this.kBeginning[100]);
 
 }
 gEngine.Core.inheritPrototype(StartScene, Scene);
 
 StartScene.prototype.loadScene = function () {
+    gEngine.Textures.loadTexture(this.kSentence);
 };
 
 StartScene.prototype.unloadScene = function () {
+    gEngine.Textures.unloadTexture(this.kSentence);
+    gEngine.Mine.tipDisappear();
     for (var i = 0; i < 277; i++) {
         gEngine.Textures.unloadTexture(this.kBeginning[i]);
     }
@@ -52,6 +57,8 @@ StartScene.prototype.initialize = function () {
     for (var i = 0; i < 277; i++) {
         this.mBg[i] = new Platform(this.kBeginning[i], 0, 0, 1200, 675); //.setTexture
     }
+    gEngine.Mine.tipAppear();
+    //this.mSentence = new SpriteObj(this.kSentence, -200, 260, 560, 23.8, [0, 400, 30, 47]);
 };
 
 StartScene.prototype.draw = function () {
@@ -59,8 +66,10 @@ StartScene.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
 
     this.mCamera.setupViewProjection();
-
+    
     this.mBg[this.mBgCount].draw(this.mCamera);
+    //this.mSentence.draw(this.mCamera);
+    //this.mSentence.draw(this.mCamera);
 };
 
 StartScene.prototype.update = function () {
@@ -89,7 +98,11 @@ StartScene.prototype.update = function () {
     }
     
     console.log(this.mBgCount);
-    if (this.mBgCount === 276) {
+    if (this.mBgCount === 276 || gEngine.Input.isKeyClicked(gEngine.Input.keys.Control)) {
         gEngine.GameLoop.stop();
     }
+//    if(this.mBgCount === 31){
+//        this.mSentence.setVisibility(false);
+//    }
+
 };

@@ -263,6 +263,7 @@ ThirdLevel.prototype.update = function () {
         gEngine.Mine.letsCheat();
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        gEngine.Mine.incDeath();
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
@@ -300,4 +301,5 @@ ThirdLevel.prototype.update = function () {
     this.mButton.update();
     //console.log(this.mHero.getXform().getPosition());
     this.mSolveCol.update();
+    gEngine.Mine.timeSpend();
 };

@@ -20,6 +20,8 @@ function FirstLevel(aHero) {
     this.kBullet = "assets/bullet.png";
     this.kHero = "assets/EmptyAction.png";
     this.kSentences = "assets/sentences.png";
+    this.kSentences2 = "assets/sentences2.png";
+    this.kSceneObj2 = "assets/SceneObjects2.png";
     //this.kStabTexture = "assets/TestStab.png";
     //this.kWood = "assets/RigidShape/Wood.png";
     //this.kIce = "assets/RigidShape/Ice.png";
@@ -35,10 +37,10 @@ function FirstLevel(aHero) {
     this.mPlatSet = new GameObjectSet();
     this.mBrokeSet = new GameObjectSet();
     this.mStabSetSet = new GameObjectSet();
-
     //Tools
     this.mSolveCol = null;
     this.mTips = null;
+    this.mTips2 = null;
     this.mShowDeath = null;
 }
 gEngine.Core.inheritPrototype(FirstLevel, Scene);
@@ -52,6 +54,8 @@ FirstLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBullet);
     gEngine.Textures.loadTexture(this.kHero);
     gEngine.Textures.loadTexture(this.kSentences);
+    gEngine.Textures.loadTexture(this.kSentences2);
+    gEngine.Textures.loadTexture(this.kSceneObj2);
     //gEngine.Textures.loadTexture(this.kStabTexture);
     //gEngine.Textures.loadTexture(this.kWood);
     //gEngine.Textures.loadTexture(this.kIce);
@@ -67,6 +71,8 @@ FirstLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBullet);
     gEngine.Textures.unloadTexture(this.kHero);
     gEngine.Textures.unloadTexture(this.kSentences);
+    gEngine.Textures.unloadTexture(this.kSentences2);
+    gEngine.Textures.unloadTexture(this.kSceneObj2);
     //gEngine.Textures.unloadTexture(this.kStabTexture);
     //gEngine.Textures.unloadTexture(this.kWood);
     //gEngine.Textures.unloadTexture(this.kIce);
@@ -121,8 +127,11 @@ FirstLevel.prototype.initialize = function () {
     this.mStabSetSet.addToSet(new StabSet(this.kSceneObj, 1, 50, -165, false, false));
 
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, null, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
-    this.mTips = new Sentence(this.kSentences);
+    this.mTips = new Sentence(this.kSentences,this.kSceneObj2,this.kSentences2);
+   
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
+    gEngine.Mine.gameStatus.start = true;
+    gEngine.Mine.timeStart();
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -134,7 +143,7 @@ FirstLevel.prototype.draw = function () {
     this.mCamera.setupViewProjection();
     
     this.mTips.draw(this.mCamera);
-
+    
     this.mStabSetSet.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
     this.mBrokeSet.draw(this.mCamera);
@@ -157,6 +166,7 @@ FirstLevel.prototype.update = function () {
         gEngine.Mine.letsCheat();
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
+        gEngine.Mine.incDeath();
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
@@ -178,4 +188,5 @@ FirstLevel.prototype.update = function () {
 
     this.mTips.update(this.mHero.getXform());
     this.mSolveCol.update();
+    gEngine.Mine.timeSpend();
 };

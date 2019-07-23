@@ -22,15 +22,54 @@ gEngine.Mine = (function () {
         gEngine.Mine.saveStatus.tribleJump = true;
         document.getElementById("LeftSpan").style.display = "block";
         document.getElementById("RightSpan").style.display = "block";
-    }
+    };
 
+    var incDeath = function(){
+        gEngine.Mine.death += 1;
+        var a=document.getElementById("DeathNum");
+        a.innerHTML = "Death: "+ gEngine.Mine.death;
+    };
+    
+    var timeStart = function(){
+        gEngine.Mine.startTime = (new Date()).getTime();
+    };
+    
+    var timeSpend = function(){
+        if(!gEngine.Mine.gameStatus.finish){
+            var now = (new Date()).getTime();
+            console.log(now);
+            gEngine.Mine.spendTime = (Math.floor((now - gEngine.Mine.startTime)/1000 *100))/100;
+            var a=document.getElementById("Time");
+            a.innerHTML =  gEngine.Mine.spendTime ;
+        }
+    };
+
+    var tipDisappear = function(){
+        document.getElementById("Tip").style.display = "none";
+    };
+    
+    var tipAppear = function(){
+        document.getElementById("Tip").innerHTML = "Press Ctrl to skip";
+    };
     var mPublic = {
         letsCheat: letsCheat,
+        incDeath : incDeath,
+        timeStart: timeStart,
+        timeSpend: timeSpend,
+        tipDisappear: tipDisappear,
+        tipAppear: tipAppear,
         saveStatus: {
             tribleJump: false,
             finishFirst: false,
-            finishSecond: false,
+            finishSecond: false
         },
+        gameStatus: {
+            start: false,
+            finish: false
+        },
+        startTime : null,
+        spendTime: 0,
+        death : 0,
         restartLevel: () => new FirstLevel(),
     };
 
