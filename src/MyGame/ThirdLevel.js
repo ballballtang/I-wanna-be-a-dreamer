@@ -301,4 +301,5 @@ ThirdLevel.prototype.update = function () {
     this.mButton.update();
     //console.log(this.mHero.getXform().getPosition());
     this.mSolveCol.update();
+    gEngine.Mine.timeSpend();
 };

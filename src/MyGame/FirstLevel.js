@@ -187,4 +187,5 @@ FirstLevel.prototype.update = function () {
 
     this.mTips.update(this.mHero.getXform());
     this.mSolveCol.update();
+    gEngine.Mine.timeSpend();
 };

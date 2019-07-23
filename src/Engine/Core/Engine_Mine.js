@@ -35,22 +35,33 @@ gEngine.Mine = (function () {
     };
     
     var timeSpend = function(){
-        var now = (new Date()).getTime();
-        console.log(now);
-        gEngine.Mine.spendTime = (now - gEngine.Mine.startTime)/1000;
-        var a=document.getElementById("Time");
-        a.innerHTML = "Time: "+ gEngine.Mine.spendTime + " sec";
+        if(!gEngine.Mine.gameStatus.finish){
+            var now = (new Date()).getTime();
+            console.log(now);
+            gEngine.Mine.spendTime = (Math.floor((now - gEngine.Mine.startTime)/1000 *100))/100;
+            var a=document.getElementById("Time");
+            a.innerHTML =  gEngine.Mine.spendTime ;
+        }
     };
 
+    var tipDisappear = function(){
+        document.getElementById("Tip").style.display = "none";
+    };
+    
+    var tipAppear = function(){
+        document.getElementById("Tip").innerHTML = "Press Ctrl to skip";
+    };
     var mPublic = {
         letsCheat: letsCheat,
         incDeath : incDeath,
         timeStart: timeStart,
         timeSpend: timeSpend,
+        tipDisappear: tipDisappear,
+        tipAppear: tipAppear,
         saveStatus: {
             tribleJump: false,
             finishFirst: false,
-            finishSecond: false,
+            finishSecond: false
         },
         gameStatus: {
             start: false,

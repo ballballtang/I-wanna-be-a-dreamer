@@ -25,7 +25,7 @@ function StartScene() {
     this.mTimer = 0;
     this.mCamera = null;
     this.LevelSelect = null;
-    this.mSentence = null;
+    //this.mSentence = null;
     //console.log(this.kBeginning[100]);
 
 }
@@ -37,6 +37,7 @@ StartScene.prototype.loadScene = function () {
 
 StartScene.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kSentence);
+    gEngine.Mine.tipDisappear();
     for (var i = 0; i < 277; i++) {
         gEngine.Textures.unloadTexture(this.kBeginning[i]);
     }
@@ -56,8 +57,8 @@ StartScene.prototype.initialize = function () {
     for (var i = 0; i < 277; i++) {
         this.mBg[i] = new Platform(this.kBeginning[i], 0, 0, 1200, 675); //.setTexture
     }
-    
-    this.mSentence = new SpriteObj(this.kSentence, -200, 260, 560, 23.8, [0, 400, 30, 47]);
+    gEngine.Mine.tipAppear();
+    //this.mSentence = new SpriteObj(this.kSentence, -200, 260, 560, 23.8, [0, 400, 30, 47]);
 };
 
 StartScene.prototype.draw = function () {
@@ -67,7 +68,7 @@ StartScene.prototype.draw = function () {
     this.mCamera.setupViewProjection();
     
     this.mBg[this.mBgCount].draw(this.mCamera);
-    this.mSentence.draw(this.mCamera);
+    //this.mSentence.draw(this.mCamera);
     //this.mSentence.draw(this.mCamera);
 };
 
@@ -96,8 +97,8 @@ StartScene.prototype.update = function () {
     if (this.mBgCount === 276 || gEngine.Input.isKeyClicked(gEngine.Input.keys.Control)) {
         gEngine.GameLoop.stop();
     }
-    if(this.mBgCount === 31){
-        this.mSentence.setVisibility(false);
-    }
+//    if(this.mBgCount === 31){
+//        this.mSentence.setVisibility(false);
+//    }
 
 };
