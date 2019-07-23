@@ -33,6 +33,16 @@ function MyGame() {
             this.kBeginning[i] = "assets/Beginning/beginning0" + i + ".png";
         }
     }
+    this.kEnding = [];
+    for (var i = 0; i <266; i++) {
+        if (i < 10) {
+            this.kEnding[i] = "assets/Ending/ending000" + i + ".png";
+        } else if (i < 100) {
+            this.kEnding[i] = "assets/Ending/ending00" + i + ".png";
+        } else {
+            this.kEnding[i] = "assets/Ending/ending0" + i + ".png";
+        }
+    }
 
     this.mCamera = null;
     this.LevelSelect = null;
@@ -45,6 +55,9 @@ gEngine.Core.inheritPrototype(MyGame, Scene);
 MyGame.prototype.loadScene = function () {
     for (var i = 0; i < 277; i++) {
         gEngine.Textures.loadTexture(this.kBeginning[i]);
+    }
+    for (var i = 0; i < 266; i++) {
+        gEngine.Textures.loadTexture(this.kEnding[i]);
     }
     
     gEngine.Textures.loadTexture(this.kUIButton);

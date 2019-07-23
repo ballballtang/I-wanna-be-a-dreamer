@@ -175,9 +175,11 @@ Hero.prototype.update = function () {
             if (this.mAirFrames >= 3 && this.mJumpTime == 0)
                 this.mJumpTime = 1;
             this.mJumpTime++;
-            if (this.mJumpTime <= maxJump)
+            if (this.mJumpTime <= maxJump) {
                 if (this.kMirror > 0)
-                    gEngine.AudioClips.playACue(this.kJumpSound, 33);
+                    gEngine.AudioClips.playACue(this.kJumpSound, 32);
+            }
+            else this.mHoldSpace = 0;
         }
         if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= maxJump) {
             this.mHoldSpace--;

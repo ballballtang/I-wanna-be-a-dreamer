@@ -64,7 +64,7 @@ BossLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kSeed);
     gEngine.Textures.loadTexture(this.kBoss);
     gEngine.Textures.loadTexture(this.kBossBullet);
-    gEngine.Textures.loadTexture(this.kDialog);
+    if (this.mShowAnim) gEngine.Textures.loadTexture(this.kDialog);
 
     gEngine.Textures.loadTexture(this.kPaper);
     gEngine.Textures.loadTexture(this.kContent);
@@ -82,13 +82,15 @@ BossLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kSeed);
     gEngine.Textures.unloadTexture(this.kBoss);
     gEngine.Textures.unloadTexture(this.kBossBullet);
-    gEngine.Textures.unloadTexture(this.kDialog);
+    if (this.mShowAnim) gEngine.Textures.unloadTexture(this.kDialog);
 
     gEngine.Textures.unloadTexture(this.kPaper);
     gEngine.Textures.unloadTexture(this.kContent);
     gEngine.Textures.unloadTexture(this.kIce);
     if (this.LevelSelect === "restart") {
         gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
+    } else {
+        gEngine.Core.changeScene(new EndScene(), false);
     }
 };
 

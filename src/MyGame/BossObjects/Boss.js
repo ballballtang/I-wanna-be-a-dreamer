@@ -8,7 +8,7 @@
 
 function Boss(texture, bulletTex, stabTex, atX, atY, w, h, heroPos) {
     this.kHitSound = "assets/Sound/hit.mp3";
-    this.kEndBGM = "assets/Sound/endBGM.mp3";
+    //this.kEndBGM = "assets/Sound/endBGM.mp3";
     
     this.kBTex = bulletTex;
     this.kSTex = stabTex;
@@ -226,6 +226,7 @@ Boss.prototype.update = function (aCamera) {
     
     if (this.mParticleNum > 1000) {
         this.mDust.endLife();
+        gEngine.GameLoop.stop();
     }
     if (this.mParticleNum >= 0 && this.mParticleNum <= 1500)
         this.mParticleNum += 1;
@@ -235,8 +236,9 @@ Boss.prototype.update = function (aCamera) {
         this.mUIbar.setVisible(false);
         this.mDust.startLife();
         this.mParticleNum = 0;
-        gEngine.AudioClips.playBackgroundAudio(this.kEndBGM);
-        gEngine.AudioClips.incBackgroundVolume(-1.5);
+        //gEngine.AudioClips.playBackgroundAudio(this.kEndBGM);
+        //gEngine.AudioClips.incBackgroundVolume(-1.5);
+        gEngine.AudioClips.stopBackgroundAudio();
     }
 
     this.mUIbar.setCurrentValue(this.mBlood);

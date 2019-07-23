@@ -78,6 +78,7 @@ StartScene.prototype.update = function () {
         //this.mBg.mPlatform.setTexture(this.kBeginning[this.mBgCount]);
         this.mTimer = 0;
     }
+    //console.log(this.mTimer, this.mBgCount);
     if (this.mBgCount === 226) {
         if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)) {
             this.mBgStart = true;
