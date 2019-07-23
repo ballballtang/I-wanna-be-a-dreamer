@@ -17,6 +17,7 @@ function BossLevel(aHero, showAnimation) {
     this.kHero = "assets/EmptyAction.png";
     this.kSeed = "assets/dreamSeed.png";
     this.kBoss = "assets/Dreamer.png";
+    this.kBossBullet = "assets/dbullet.png";
     this.kDialog = "assets/Dialogs.png";
     //the hint
     this.kPaper = "assets/clue_s.png";
@@ -46,7 +47,7 @@ function BossLevel(aHero, showAnimation) {
     //Tools
     this.mSolveCol = null;
     this.mShowDeath = null;
-    this.mShowAnim = showAnimation;
+    this.mShowAnim = showAnimation ? showAnimation : false;
 }
 gEngine.Core.inheritPrototype(BossLevel, Scene);
 
@@ -60,6 +61,7 @@ BossLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kHero);
     gEngine.Textures.loadTexture(this.kSeed);
     gEngine.Textures.loadTexture(this.kBoss);
+    gEngine.Textures.loadTexture(this.kBossBullet);
     gEngine.Textures.loadTexture(this.kDialog);
 
     gEngine.Textures.loadTexture(this.kPaper);
@@ -77,6 +79,7 @@ BossLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kHero);
     gEngine.Textures.unloadTexture(this.kSeed);
     gEngine.Textures.unloadTexture(this.kBoss);
+    gEngine.Textures.unloadTexture(this.kBossBullet);
     gEngine.Textures.unloadTexture(this.kDialog);
 
     gEngine.Textures.unloadTexture(this.kPaper);
@@ -84,8 +87,7 @@ BossLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kIce);
 
     if (this.LevelSelect === "restart") {
-        //gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
-        gEngine.Core.changeScene(new BossLevel(null, true), true);
+        gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
     }
 };
 
@@ -103,7 +105,13 @@ BossLevel.prototype.initialize = function () {
         this.mHero = new Hero(this.kHero, this.kBullet, -500, -200, 1);
     else
         this.mHero.cleanStatus(this.mCamera);
-    this.mBoss = new Boss(this.kBoss, 370, -150, 295.4, 179.2);
+    this.mBoss = new Boss(this.kBoss, this.kBossBullet, this.kSceneObj, 370, -150, 295.4, 179.2, this.mHero.getXform().getPosition());
+    if (!this.mShowAnim) {
+        this.mBoss.setVisibility(true);
+        this.mBoss.mUIbar.setVisible(true);
+        this.mBoss.setMoveTo(350, 80);
+        this.mBoss.mMoveStatus = 0;
+    }
 
     //bounds
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 780)); //0
@@ -113,8 +121,8 @@ BossLevel.prototype.initialize = function () {
 
     //platforms
     //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 65, -200, 270, 30)); 
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 280, 30)); 
-    //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 300, 30)); 
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -350, -100, 100, 30));
+    this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -140, 50, 100, 30));
     //this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -300, 200, 240, 30)); 
 
     if (this.mShowAnim) {
@@ -128,7 +136,7 @@ BossLevel.prototype.initialize = function () {
         this.mSentence.addToSet(new SpriteObj(this.kDialog, 45, -180, 271, 115, [0, 542, 1300, 1530]));
         this.mSentence.addToSet(new SpriteObj(this.kDialog, 50, -185, 271, 117, [0, 542, 1814, 2048]));
         this.mSentence.addToSet(new SpriteObj(this.kDialog, 40, -190, 271, 138.5, [0, 542, 1536, 1813]));
-        
+
         this.mSentence.addToSet(new SpriteObj(this.kDialog, 100, 0, 270, 152, [545, 1085, 1744, 2048]));
         this.mSentence.addToSet(new SpriteObj(this.kDialog, 90, -10, 270, 166.5, [561, 1101, 1409, 1742]));
         this.mSentence.addToSet(new SpriteObj(this.kDialog, 100, 10, 270, 166.5, [561, 1101, 1074, 1407]));
@@ -163,13 +171,13 @@ BossLevel.prototype.draw = function () {
 
     this.mPlatSet.draw(this.mCamera);
     this.mBoss.draw(this.mCamera);
-    this.mSeed.draw(this.mCamera);
     this.mHero.draw(this.mCamera);
-    this.mSentence.draw(this.mCamera);
 
     if (this.mPaper) {
         this.mPaperBall.draw(this.mCamera);
         this.mPaper.draw(this.mCamera);
+        this.mSeed.draw(this.mCamera);
+        this.mSentence.draw(this.mCamera);
     }
 
     if (this.mHero.mIsDead)
@@ -196,7 +204,7 @@ BossLevel.prototype.update = function () {
     }
 
     this.mTrapP.update();
-    this.mBoss.update();
+    this.mBoss.update(this.mCamera);
     this.mHero.update();
     this.mPlatSet.update();
     this.mCamera.update();

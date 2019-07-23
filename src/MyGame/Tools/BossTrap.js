@@ -104,6 +104,8 @@ BossTrap.prototype.update = function () {
         }//当主角台词说完后boss出现，种子消失
         if (this.mEnterCount === 11 && !this.mSenEnd) {
             this.mBoss.mUIbar.setVisible(true);
+            this.mBoss.setMoveTo(350, 80);
+            this.mBoss.mMoveStatus = 0;
             this.mHero.setControl(true);
             this.mSenEnd = true;
         }//当boss台词说完后，开始移动

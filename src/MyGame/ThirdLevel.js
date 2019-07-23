@@ -100,7 +100,7 @@ ThirdLevel.prototype.unloadScene = function () {
     }
     if (this.LevelSelect === "BossLevel") {
         gEngine.Mine.restartLevel = () => new BossLevel();
-        gEngine.Core.changeScene(new BossLevel(null, true), false);
+        gEngine.Core.startScene(new BossLevel(null, true));
     }
     if (this.LevelSelect === "SecondLevel") {
         gEngine.Core.changeScene(new SecondLevel(this.mHero), false);
@@ -254,10 +254,10 @@ ThirdLevel.prototype.doorOpen = function () {
 };
 
 ThirdLevel.prototype.update = function () {
-    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "BossLevel";
         gEngine.GameLoop.stop();
-    }*/
+    }
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();

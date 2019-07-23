@@ -215,10 +215,10 @@ SecondLevel.prototype.draw = function () {
 };
 
 SecondLevel.prototype.update = function () {
-    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "ThirdLevel";
         gEngine.GameLoop.stop();
-    }*/
+    }
     
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();

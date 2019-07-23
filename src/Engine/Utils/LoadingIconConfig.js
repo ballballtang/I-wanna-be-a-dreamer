@@ -7,94 +7,99 @@
 /* find out more about jslint: http://www.jslint.com/help.html */
 
 
-var gEngine = gEngine || { };
+var gEngine = gEngine || {};
 
 gEngine.LoadingIconConfig = (function () {
-    
+
     /**
      * A varuable used to keep track of total # of loads necessary for the laoding bar
      * @memberOf gEngine.LoadingIconConfig
      */
-    var levelLoadCount=0;
-    
+    var levelLoadCount = 0;
+
     /**
      * Creates the necessary elements needed for the loading screen
      * @memberOf gEngine.LoadingIconConfig
      */
-var setup = function(){
-    var cwidth=document.getElementById("LoadingIconParent").style.width;
-    var cheight=document.getElementById("LoadingIconParent").style.height;
-    document.getElementById("GLCanvas").width=cwidth.substr(0,cwidth.length - 2);
-    document.getElementById("GLCanvas").height=cheight.substr(0,cheight.length - 2);
-    //document.write("<div class='LoadingSpinnerAnimation' id='LoadingSpinner'></div>");
-    document.write("<div id='LoadingSpinner'> <span></span><span></span><span></span><span></span><span></span><span></span><span></span> </div>");
-    document.write("<p class='LoadingDotsAnimation' id='LoadingDots'>Loading<span>.</span><span>.</span><span>.</span></p>");
-    document.write("<div id='LoadingScreenProgress'><div id='LoadingScreenBar'>&nbsp;&nbsp;0%</div></div>");
-};
+    var setup = function () {
+        var cwidth = document.getElementById("LoadingIconParent").style.width;
+        var cheight = document.getElementById("LoadingIconParent").style.height;
+        document.getElementById("GLCanvas").width = cwidth.substr(0, cwidth.length - 2);
+        document.getElementById("GLCanvas").height = cheight.substr(0, cheight.length - 2);
+        //document.write("<div class='LoadingSpinnerAnimation' id='LoadingSpinner'></div>");
+        document.write("<div id='LoadingSpinner'> <span></span><span></span><span></span><span></span><span></span><span></span><span></span> </div>");
+        document.write("<p class='LoadingDotsAnimation' id='LoadingDots'>Loading<span>.</span><span>.</span><span>.</span></p>");
+        document.write("<div id='LoadingScreenProgress'><div id='LoadingScreenBar'>&nbsp;&nbsp;0%</div></div>");
+    };
 
-/**
+    /**
      * Makes the screen black, and enters the loading screen
      * @memberOf gEngine.LoadingIconConfig
      */
-var start = function(){
-    document.getElementById("LoadingSpinner").style.display = "block";
-    document.getElementById("LoadingDots").style.display="block";
-    document.getElementById("LoadingScreenBar").style.display="block";
-    document.getElementById("LoadingScreenProgress").style.display="block";
-    gEngine.Core.clearCanvas([0,0,0,1]);
-};
-/**
+    var start = function () {
+        document.getElementById("LoadingSpinner").style.display = "block";
+        document.getElementById("LoadingDots").style.display = "block";
+        document.getElementById("LoadingScreenBar").style.display = "block";
+        document.getElementById("LoadingScreenProgress").style.display = "block";
+        gEngine.Core.clearCanvas([0, 0, 0, 1]);
+    };
+    /**
      * Resets the loading bar and exits the loading screen
      * @memberOf gEngine.LoadingIconConfig
      */
-var stop = function(){
-    levelLoadCount=0;
-    document.getElementById("LoadingScreenBar").style.width="0%";
-    document.getElementById("LoadingScreenBar").innerHTML = "&nbsp;&nbsp;0%";
-    document.getElementById("LoadingSpinner").style.display="none";
-    document.getElementById("LoadingDots").style.display="none";
-    document.getElementById("LoadingScreenBar").style.display="none";
-    document.getElementById("LoadingScreenProgress").style.display="none";
-};
+    var stop = function () {
+        levelLoadCount = 0;
+        document.getElementById("LoadingScreenBar").style.width = "0%";
+        document.getElementById("LoadingScreenBar").innerHTML = "&nbsp;&nbsp;0%";
+        document.getElementById("LoadingSpinner").style.display = "none";
+        document.getElementById("LoadingDots").style.display = "none";
+        document.getElementById("LoadingScreenBar").style.display = "none";
+        document.getElementById("LoadingScreenProgress").style.display = "none";
+    };
 
-/**
+    /**
      * Updates loading bar
      * @memberOf gEngine.LoadingIconConfig
      */
-var loadingUpdate = function() {
-    document.getElementById("LoadingScreenBar").style.width=Math.round(((levelLoadCount - gEngine.ResourceMap.getNumOutstandingLoads())/levelLoadCount)*100)-1 + "%";
-    document.getElementById("LoadingScreenBar").innerHTML = "&nbsp;&nbsp;" + (Math.round(((levelLoadCount - gEngine.ResourceMap.getNumOutstandingLoads())/levelLoadCount)*100)-1) + "%";
-};
+    var lastLevel = 0;
+    var loadingUpdate = function () {
+        var nowLevel = Math.round(((levelLoadCount - gEngine.ResourceMap.getNumOutstandingLoads()) / levelLoadCount) * 100) - 1;
+        if (nowLevel - lastLevel > 5) {
+            document.getElementById("LoadingScreenBar").style.width = nowLevel + "%";
+            document.getElementById("LoadingScreenBar").innerHTML = "&nbsp;&nbsp;" + nowLevel +"%";
+            lastLevel = nowLevel;
+        }
+    };
 
-var loadCountReset = function() {
+    var loadCountReset = function () {
         levelLoadCount = 0;
     };
-    
+
     /**
      * Checks if a level is currently loading
      * @memberOf gEngine.LoadingIconConfig
      */
-    var isLevelSet = function() {
-        return levelLoadCount!==0;
+    var isLevelSet = function () {
+        return levelLoadCount !== 0;
     };
-    
+
     /**
      * Returns the number of loads needed for the level
      * @memberOf gEngine.LoadingIconConfig
      */
-    var getLevelLoadCount = function() {
+    var getLevelLoadCount = function () {
         return levelLoadCount;
     };
-    
+
     /**
      * Sets the progress bar amount to the number of loads needed for the level
      * @memberOf gEngine.LoadingIconConfig
      */
-    var loadCountSet = function() {
+    var loadCountSet = function () {
         levelLoadCount = gEngine.ResourceMap.getNumOutstandingLoads();
     };
 
-var mPublic = {
+    var mPublic = {
         setup: setup,
         start: start,
         stop: stop,

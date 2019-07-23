@@ -64,6 +64,10 @@ StartScene.prototype.draw = function () {
 };
 
 StartScene.prototype.update = function () {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+        gEngine.GameLoop.stop();
+    }
+    
     this.mTimer += 1;
     if (this.mTimer === 11 && this.mBgCount < 226) {
         this.mBgCount += 1;
