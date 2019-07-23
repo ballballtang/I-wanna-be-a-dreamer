@@ -125,6 +125,7 @@ SecondLevel.prototype.initialize = function () {
         this.mHero.cleanStatus(this.mCamera);
         this.mHero.setMirror(1);
     }
+    
     //wall
     this.mWall =new Platform(this.kWall,0, 0, 1200, 675);
     //bounds
@@ -217,11 +218,10 @@ SecondLevel.prototype.draw = function () {
 
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
-    
 };
 
 SecondLevel.prototype.update = function () {
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.N) && gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
         this.LevelSelect = "ThirdLevel";
         gEngine.GameLoop.stop();
     }
@@ -242,6 +242,7 @@ SecondLevel.prototype.update = function () {
         this.LevelSelect = "FirstLevel";
         gEngine.GameLoop.stop();
     }
+    gEngine.Mine.timeSpend();
     if (this.mHero.mIsDead) {
         this.mHero.update();
         this.mSolveCol.update();
@@ -256,7 +257,6 @@ SecondLevel.prototype.update = function () {
     this.mButton.update();
     //console.log(this.mHero.getXform().getPosition());
     this.mSolveCol.update();
-    gEngine.Mine.timeSpend();
 };
 
 

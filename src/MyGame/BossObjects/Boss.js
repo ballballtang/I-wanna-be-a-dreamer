@@ -7,6 +7,9 @@
 /* global GameObject, gEngine */
 
 function Boss(texture, bulletTex, stabTex, atX, atY, w, h, heroPos) {
+    this.kHitSound = "assets/Sound/hit.mp3";
+    this.kEndBGM = "assets/Sound/endBGM.mp3";
+    
     this.kBTex = bulletTex;
     this.kSTex = stabTex;
     this.kHPos = heroPos;
@@ -55,6 +58,7 @@ Boss.prototype.decBlood = function () {
     }//to check the death
     this.mBlood = this.mBlood - 5;
     this.mBlink = 40;
+    gEngine.AudioClips.playACue(this.kHitSound, 15);
 };
 
 Boss.prototype.changeStatus = function () {
@@ -95,6 +99,8 @@ Boss.prototype.changeStatus = function () {
 }
 
 Boss.prototype.doAction = function() {
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 1.5 : 1;
+    
     switch (this.mMoveStatus) {
         case 100:
             this.mMoveTimer--;
@@ -115,10 +121,10 @@ Boss.prototype.doAction = function() {
             var rad = this.mMoveTimer / 40 * 2 * Math.PI;
             var nx = this.mCenter[0] + R * Math.cos(rad);
             var ny = this.mCenter[1] + R * Math.sin(rad);
-            if (this.mMoveTimer >= 20) {
+            if (this.mMoveTimer >= 30) {
                 this.getXform().setPosition(nx, ny);
                 
-                if (this.mMoveTimer % 3 === 0) {
+                if (this.mMoveTimer % Math.floor(3 / rate) === 0) {
                     var aBullet = new BossBullet(this.kBTex, this.mCenter[0] + 100 * Math.cos(rad), this.mCenter[1] + 100 * Math.sin(rad), this.mBSet);
                     aBullet.moveTowards(this.kHPos[0], this.kHPos[1]);
                     aBullet.setWait(30);
@@ -135,7 +141,7 @@ Boss.prototype.doAction = function() {
             if (this.getXform().getXPos() >= 430) this.mDelta = -Math.abs(this.mDelta);
             if (this.getXform().getXPos() <= -430) this.mDelta = Math.abs(this.mDelta);
             this.getXform().incXPosBy(this.mDelta);
-            if (this.mMoveTimer % 28 === 0) {
+            if (this.mMoveTimer % Math.floor(28 / rate) === 0) {
                 var pos = this.getXform().getPosition();
                 var aStabSet = new StabSet(this.kSTex, 1, pos[0] - 23, pos[1], false, true);
                 aStabSet.moveDown(280);
@@ -150,7 +156,7 @@ Boss.prototype.doAction = function() {
         case 3:
             ny = 120 * Math.sin(this.mMoveTimer / 45 * 2 * Math.PI);
             this.getXform().setYPos(ny);
-            if (this.mMoveTimer % 15 === 0) {
+            if (this.mMoveTimer % Math.floor(15 / rate) === 0) {
                 var aBullet = new BossBullet(this.kBTex, 580, Math.random() * 600 - 300, this.mBSet);
                 aBullet.moveLeft();
                 aBullet.setAdd(30);
@@ -187,7 +193,7 @@ Boss.prototype.setMoveTo = function(tx, ty) {
 }
 
 Boss.prototype.setMoveAround = function() {
-    this.mNextTimer = 170;
+    this.mNextTimer = 180;
 }
 
 Boss.prototype.setMoveLR = function(det) {
@@ -214,14 +220,9 @@ Boss.prototype.draw = function (aCamera) {
 };
 
 Boss.prototype.update = function (aCamera) {
-    /*if (gEngine.Input.isKeyClicked(gEngine.Input.keys.J)) {
-        this.setVisibility(true);
-        this.mUIbar.setVisible(true);
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.N) && gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
+        this.mDeath = true;
     }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.K)) {
-        this.DecBlood();
-    }*/
-    
     
     if (this.mParticleNum > 1000) {
         this.mDust.endLife();
@@ -234,6 +235,8 @@ Boss.prototype.update = function (aCamera) {
         this.mUIbar.setVisible(false);
         this.mDust.startLife();
         this.mParticleNum = 0;
+        gEngine.AudioClips.playBackgroundAudio(this.kEndBGM);
+        gEngine.AudioClips.incBackgroundVolume(-1.5);
     }
 
     this.mUIbar.setCurrentValue(this.mBlood);

@@ -109,6 +109,7 @@ FirstLevel.prototype.initialize = function () {
     else
         this.mHero.cleanStatus(this.mCamera);
     //this.mMirrorHero = new Hero(this.kHero, this.kBullet, 500, 200, -1);
+    //
     //wall
     this.mWall = new Platform(this.kWall,0, 0, 1200, 675);
     //bounds
@@ -134,9 +135,8 @@ FirstLevel.prototype.initialize = function () {
 
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, this.mMirrorHero, null, this.mPlatSet.mSet, this.mBrokeSet.mSet, this.mStabSetSet.mSet);
     this.mTips = new Sentence(this.kSentences,this.kSceneObj2,this.kSentences2);
-   
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
-    gEngine.Mine.gameStatus.start = true;
+    
     gEngine.Mine.timeStart();
 };
 
@@ -145,8 +145,8 @@ FirstLevel.prototype.initialize = function () {
 FirstLevel.prototype.draw = function () {
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
-
-	this.mCamera.setupViewProjection();
+    
+    this.mCamera.setupViewProjection();
 	
     this.mWall.draw(this.mCamera);
     this.mTips.draw(this.mCamera);
@@ -161,15 +161,14 @@ FirstLevel.prototype.draw = function () {
 
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
-    
 };
 
 FirstLevel.prototype.update = function () {
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.N) && gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
-	}
-	
+    }
+    
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();
     }
@@ -182,6 +181,7 @@ FirstLevel.prototype.update = function () {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
     }
+    gEngine.Mine.timeSpend();
     if (this.mHero.mIsDead) {
         this.mHero.update();
         this.mSolveCol.update();
@@ -196,5 +196,4 @@ FirstLevel.prototype.update = function () {
 
     this.mTips.update(this.mHero.getXform());
     this.mSolveCol.update();
-    gEngine.Mine.timeSpend();
 };

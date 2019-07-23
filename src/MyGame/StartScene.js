@@ -6,8 +6,10 @@
 /* global gEngine, Scene, vec2 */
 
 function StartScene() {
-    this.kBgClip = "assets/MEGALOVANIA.mp3";
     this.kSentence = "assets/sentences2.png";
+    
+    this.kLevelBGM = "assets/Sound/levelBGM.mp3";
+    
     this.kBeginning = new Array();
     for (var i = 0; i < 277; i++) {
         if (i < 10) {
@@ -25,9 +27,6 @@ function StartScene() {
     this.mTimer = 0;
     this.mCamera = null;
     this.LevelSelect = null;
-    //this.mSentence = null;
-    //console.log(this.kBeginning[100]);
-
 }
 gEngine.Core.inheritPrototype(StartScene, Scene);
 
@@ -37,12 +36,13 @@ StartScene.prototype.loadScene = function () {
 
 StartScene.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kSentence);
-    gEngine.Mine.tipDisappear();
     for (var i = 0; i < 277; i++) {
         gEngine.Textures.unloadTexture(this.kBeginning[i]);
     }
-    if (!gEngine.AudioClips.isBackgroundAudioPlaying())
-        gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
+    
+    gEngine.Mine.tipDisappear();
+    gEngine.AudioClips.playBackgroundAudio(this.kLevelBGM);
+    gEngine.AudioClips.incBackgroundVolume(-2);
     gEngine.Core.changeScene(new FirstLevel(), true);
 };
 
@@ -69,14 +69,9 @@ StartScene.prototype.draw = function () {
     
     this.mBg[this.mBgCount].draw(this.mCamera);
     //this.mSentence.draw(this.mCamera);
-    //this.mSentence.draw(this.mCamera);
 };
 
 StartScene.prototype.update = function () {
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
-        gEngine.GameLoop.stop();
-    }
-    
     this.mTimer += 1;
     if (this.mTimer === 11 && this.mBgCount < 226) {
         this.mBgCount += 1;
@@ -97,12 +92,11 @@ StartScene.prototype.update = function () {
         }
     }
     
-    console.log(this.mBgCount);
+    //console.log(this.mBgCount);
     if (this.mBgCount === 276 || gEngine.Input.isKeyClicked(gEngine.Input.keys.Control)) {
         gEngine.GameLoop.stop();
     }
-//    if(this.mBgCount === 31){
-//        this.mSentence.setVisibility(false);
-//    }
-
+    //if(this.mBgCount === 31){
+    //    this.mSentence.setVisibility(false);
+    //}
 };

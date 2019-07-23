@@ -23,6 +23,8 @@ function BossLevel(aHero, showAnimation) {
     this.kPaper = "assets/clue_s.png";
     this.kContent = "assets/clue_b3.png";
     this.kIce = "assets/RigidShape/Ice.png";
+    
+    this.kBossBGM = "assets/Sound/bossBGM.mp3";
 
     // The camera to view the scene
     this.mCamera = null;
@@ -84,7 +86,7 @@ BossLevel.prototype.unloadScene = function () {
 
     gEngine.Textures.unloadTexture(this.kPaper);
     gEngine.Textures.unloadTexture(this.kContent);
-    gEngine.Textures.unloadTexture(this.kIce); 
+    gEngine.Textures.unloadTexture(this.kIce);
     if (this.LevelSelect === "restart") {
         gEngine.Core.changeScene(gEngine.Mine.restartLevel(), true);
     }
@@ -158,8 +160,6 @@ BossLevel.prototype.initialize = function () {
     this.mSolveCol = new SolveCollision(this.mCamera, this.mHero, null, this.mBoss, this.mPlatSet.mSet, [], []);
     this.mTrapP = new BossTrap(this.mTraps, this.mHero, this.mPlatSet, null, this.mSentence, this.mBoss, this.mSeed, [this.mPaper, this.mPaperBall]);
     this.mShowDeath = new Platform(this.kYouDied, 0, 0, 450, 450);
-    gEngine.Mine.gameStatus.finish = false;
-    
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -175,10 +175,10 @@ BossLevel.prototype.draw = function () {
     this.mHero.draw(this.mCamera);
 
     if (this.mPaper) {
-        this.mPaperBall.draw(this.mCamera);
-        this.mPaper.draw(this.mCamera);
         this.mSeed.draw(this.mCamera);
         this.mSentence.draw(this.mCamera);
+        this.mPaperBall.draw(this.mCamera);
+        this.mPaper.draw(this.mCamera);
     }
 
     if (this.mHero.mIsDead)
@@ -189,25 +189,30 @@ BossLevel.prototype.update = function () {
     if (this.mBoss.isVisible() && !this.mShake) {
         this.mCamera.shake(80, 80, 20, 30);
         this.mShake = true;
+        if (!gEngine.AudioClips.isBackgroundAudioPlaying()) {
+            gEngine.AudioClips.playBackgroundAudio(this.kBossBGM);
+            gEngine.AudioClips.incBackgroundVolume(-2);
+        }
     }
 
-    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
-        gEngine.Mine.letsCheat();
-    }
+    /*if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
+     gEngine.Mine.letsCheat();
+     }*/
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.R)) {
         gEngine.Mine.incDeath();
         this.LevelSelect = "restart";
         gEngine.GameLoop.stop();
     }
+    gEngine.Mine.timeSpend();
     if (this.mHero.mIsDead) {
         this.mHero.update();
         this.mSolveCol.update();
         return;
     }
-    console.log(this.mBoss.getBlood());
-    console.log(gEngine.Mine.gameStatus.finish);
-    if(this.mBoss.mDeath){
-        gEngine.Mine.gameStatus.finish = true;   
+
+    //console.log(gEngine.Mine.gameStatus.finish);
+    if (this.mBoss.mDeath) {
+        gEngine.Mine.gameStatus.finish = true;
     }
     this.mTrapP.update();
     this.mBoss.update(this.mCamera);
@@ -216,5 +221,4 @@ BossLevel.prototype.update = function () {
     this.mCamera.update();
 
     this.mSolveCol.update();
-    gEngine.Mine.timeSpend();
 };

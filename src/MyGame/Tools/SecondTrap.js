@@ -5,6 +5,9 @@
  */
 
 function SecondTrap(TrapArea, Hero, MirrorHero, Platforms, Stabs, BrokenPlat, noCols) {
+    this.kGetSound = "assets/Sound/get.mp3";
+    this.kPaperSound = "assets/Sound/paper.mp3";
+
     this.mTrap = TrapArea;
     this.mHero = Hero;
     this.mMirrorHero = MirrorHero;
@@ -43,6 +46,8 @@ SecondTrap.prototype.isTrigger = function () {
 };
 
 SecondTrap.prototype.trapProcess = function () {
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 0.6 : 1;
+
     for (var num = 0; num < this.mTrap.size(); num++) {
         if (this.mTriggerOn[num]) {
             switch (num)
@@ -51,6 +56,7 @@ SecondTrap.prototype.trapProcess = function () {
                     if (this.mNoCols[1] && !this.mHasShownPaper) {
                         this.mNoCols[1].setVisibility(true);
                         this.mPlatforms.getObjectAt(22).setVisibility(false);
+                        gEngine.AudioClips.playACue(this.kPaperSound, 30);
                     }
                     this.mHasShownPaper = true;
 
@@ -66,18 +72,24 @@ SecondTrap.prototype.trapProcess = function () {
                     this.mMirrorHero.setMirror(1);
                     break;
                 case 2:
-                    this.mStabs.getObjectAt(4).moveRight(300);
+                    this.mStabs.getObjectAt(4).moveRight(300 * rate);
                     break;
                 case 3:
-                    this.mPlatforms.getObjectAt(19).setVisibility(false);
-                    this.mCollect1 = true;
+                    if (!this.mCollect1) {
+                        this.mPlatforms.getObjectAt(19).setVisibility(false);
+                        this.mCollect1 = true;
+                        gEngine.AudioClips.playACue(this.kGetSound, 27);
+                    }
                     break;
                 case 4:
-                    this.mPlatforms.getObjectAt(20).setVisibility(false);
-                    this.mCollect2 = true;
+                    if (!this.mCollect2) {
+                        this.mPlatforms.getObjectAt(20).setVisibility(false);
+                        this.mCollect2 = true;
+                        gEngine.AudioClips.playACue(this.kGetSound, 27);
+                    }
                     break;
                 case 5:
-                    this.mStabs.getObjectAt(7).moveUp(330);
+                    this.mStabs.getObjectAt(7).moveUp(330 * rate);
                     break;
                 case 6:
                     this.mStabs.getObjectAt(0).setVisibility(true);
@@ -99,7 +111,8 @@ SecondTrap.prototype.update = function () {
         this.mTimer += 1;
     }
     //console.log("mTimer: " + this.mTimer);
-    if (this.mTimer === 80) {
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 0.8 : 1;
+    if (this.mTimer === Math.floor(80 / rate)) {
         this.mPlatforms.getObjectAt(18).setVisibility(true);
         var mhx = this.mMirrorHero.getXform().getPosition()[0];
         if (this.mMirrorHero.pixelTouches(this.mPlatforms.getObjectAt(18), [])) {

@@ -5,6 +5,9 @@
  */
 
 function FirstTrap(TrapArea, Hero, Platforms, Stabs, noCols) {
+    this.kGetSound = "assets/Sound/get.mp3";
+    this.kPaperSound = "assets/Sound/paper.mp3";
+    
     this.mTrap = TrapArea;
     this.mHero = Hero;
     this.mPlatforms = Platforms;
@@ -33,10 +36,11 @@ FirstTrap.prototype.isTrigger = function () {
 };
 
 FirstTrap.prototype.trapProcess = function (num) {
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 0.6 : 1;
     switch (num)
     {
         case 0:
-            this.mPlatforms.getObjectAt(8).moveUp(90);
+            this.mPlatforms.getObjectAt(8).moveUp(90 * rate);
             this.mStabs.getObjectAt(8).setVisibility(true);
             break;
         case 1:
@@ -50,15 +54,16 @@ FirstTrap.prototype.trapProcess = function (num) {
             this.mStabs.getObjectAt(1).setVisibility(true);
             break;
         case 4:
-            this.mStabs.getObjectAt(3).getObjectAt(4).moveDown(300);
+            this.mStabs.getObjectAt(3).getObjectAt(4).moveDown(300 * rate);
             break;
         case 5:
-            this.mStabs.getObjectAt(7).moveLeft(240, 470);
+            this.mStabs.getObjectAt(7).moveLeft(240 * rate, 470);
             break;
         case 6:
             if (this.mNoCols[1] && !this.mHasShownPaper) {
                 this.mNoCols[1].setVisibility(true);
                 this.mPlatforms.getObjectAt(12).setVisibility(false);
+                gEngine.AudioClips.playACue(this.kPaperSound, 30);
             }
             this.mHasShownPaper = true;
             break;
@@ -81,7 +86,8 @@ FirstTrap.prototype.update = function () {
     if (this.mTime === true) {
         this.mTimer += 1;
     }
-    if (this.mTimer === 80) {
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 0.8 : 1;
+    if (this.mTimer === Math.floor(80 / rate)) {
         this.mStabs.getObjectAt(4).setVisibility(true);
     }
     if (this.mNoCols[1] && gEngine.Input.isKeyClicked(gEngine.Input.keys.Enter)) {
@@ -90,6 +96,8 @@ FirstTrap.prototype.update = function () {
     
     if (this.mNoCols[2].isVisible()) {
         if (this.mHero.pixelTouches(this.mNoCols[2], [])) {
+            gEngine.AudioClips.playACue(this.kGetSound, 27);
+            
             this.mNoCols[2].setVisibility(false);
             this.mStabs.getObjectAt(9).setTouchable();
         }

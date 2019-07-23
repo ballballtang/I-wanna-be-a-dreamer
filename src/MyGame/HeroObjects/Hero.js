@@ -3,6 +3,9 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function Hero(spriteTexture, bulletTexture, atX, atY, mirror, faceLeft) {
+    this.kJumpSound = "assets/Sound/jump.mp3";
+    this.kBloodSound = "assets/Sound/blood.mp3";
+
     this.kWidth = 33.6;
     this.kHeight = 48;
     this.kMirror = mirror;
@@ -119,6 +122,7 @@ Hero.prototype.youDied = function () {
     else
         this.getXform().incRotationByDegree(90);
     //this.getXform().incYPosBy(- (this.kHeight - this.kWidth * 0.89) / 2 * this.kMirror);
+    gEngine.AudioClips.playACue(this.kBloodSound, 32);
 };
 
 Hero.prototype.setMirror = function (mirror) {
@@ -166,12 +170,15 @@ Hero.prototype.update = function () {
             this.mVP.setXV(0);
         }
 
+        var maxJump = gEngine.Mine.saveStatus.tribleJump ? 3 : 2;
         if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
             if (this.mAirFrames >= 3 && this.mJumpTime == 0)
                 this.mJumpTime = 1;
             this.mJumpTime++;
+            if (this.mJumpTime <= maxJump)
+                if (this.kMirror > 0)
+                    gEngine.AudioClips.playACue(this.kJumpSound, 33);
         }
-        var maxJump = gEngine.Mine.saveStatus.tribleJump ? 3 : 2;
         if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Space) && this.mHoldSpace > 0 && this.mJumpTime <= maxJump) {
             this.mHoldSpace--;
             if (this.mJumpTime == 1)
@@ -183,37 +190,49 @@ Hero.prototype.update = function () {
             this.mHoldSpace = 10;
         }
     }
-    
+
     if (this.mInAir)
         this.mVP.setAddV(0, 0);
 
-    this.mBulletSet.update(this.mFacing, this.mControl);
+    this.mBulletSet.update(this.mFacing, this.mControl, this.kMirror);
     this.mVP.update();
     //console.log(this.mVP.mV);
     //console.log(this.getXform().getPosition()[0]);
     //console.log(this.getXform().getPosition()[1] - this.getXform().getHeight() / 2, this.mVP.mLastFrameV[1]);
 
     this.mKeepMoving++;
-    if (this.mIsShooting > 0) this.mIsShooting--;
-    if (this.mKeepMoving >= 5 * 6) this.mKeepMoving = 0;
-    if (this.mVP.mV[0] === 0) this.mKeepMoving = 0;
-    if (this.mFacing > 0) this.mTexDown = 177;
-    else this.mTexDown = 97;
+    if (this.mIsShooting > 0)
+        this.mIsShooting--;
+    if (this.mKeepMoving >= 5 * 6)
+        this.mKeepMoving = 0;
+    if (this.mVP.mV[0] === 0)
+        this.mKeepMoving = 0;
+    if (this.mFacing > 0)
+        this.mTexDown = 177;
+    else
+        this.mTexDown = 97;
 
     this.mTexLeft = Math.floor(this.mKeepMoving / 5) * 56;
     if (this.mAirFrames >= 3) {
-        if (this.mVP.mV[1] > 0) this.mTexLeft = 6 * 56;
-        if (this.mVP.mV[1] < 0) this.mTexLeft = 8 * 56;
-        if (Math.abs(this.mVP.mV[1]) <= 200) this.mTexLeft = 7 * 56;
+        if (this.mVP.mV[1] > 0)
+            this.mTexLeft = 6 * 56;
+        if (this.mVP.mV[1] < 0)
+            this.mTexLeft = 8 * 56;
+        if (Math.abs(this.mVP.mV[1]) <= 200)
+            this.mTexLeft = 7 * 56;
         //console.log(Math.abs(this.mVP.mV[1]));
     }
     if (this.mIsShooting) {
         this.mTexDown = 17;
-        if (this.mFacing > 0) this.mTexLeft = 0;
-        else this.mTexLeft = 56;
+        if (this.mFacing > 0)
+            this.mTexLeft = 0;
+        else
+            this.mTexLeft = 56;
     }
 
-    if (this.kMirror > 0) this.mHero.setTexture(this.kTex);
-    else this.mHero.setTexture(this.kRTex);
+    if (this.kMirror > 0)
+        this.mHero.setTexture(this.kTex);
+    else
+        this.mHero.setTexture(this.kRTex);
     this.mHero.setElementPixelPositions(this.mTexLeft, this.mTexLeft + 56, this.mTexDown, this.mTexDown + 78);
 };

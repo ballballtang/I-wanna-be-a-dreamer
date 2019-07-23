@@ -64,7 +64,7 @@ gEngine.LoadingIconConfig = (function () {
     var lastLevel = 0;
     var loadingUpdate = function () {
         var nowLevel = Math.round(((levelLoadCount - gEngine.ResourceMap.getNumOutstandingLoads()) / levelLoadCount) * 100) - 1;
-        if (nowLevel - lastLevel > 5) {
+        if (nowLevel - lastLevel >= 3) {
             document.getElementById("LoadingScreenBar").style.width = nowLevel + "%";
             document.getElementById("LoadingScreenBar").innerHTML = "&nbsp;&nbsp;" + nowLevel +"%";
             lastLevel = nowLevel;

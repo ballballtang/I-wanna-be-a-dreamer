@@ -7,6 +7,8 @@
  /* global gEngine */
 
 function BossTrap(TrapArea, Hero, Platforms, Stabs, Sentence, Boss, Seed, noCols) {
+    this.kPaperSound = "assets/Sound/paper.mp3";
+    
     this.mTrap = TrapArea;
     this.mHero = Hero;
     this.mPlatforms = Platforms;
@@ -48,6 +50,7 @@ BossTrap.prototype.trapProcess = function (num) {
             if (this.mNoCols[0] && !this.mHasShownPaper) {
                 this.mNoCols[0].setVisibility(true);
                 this.mNoCols[1].setVisibility(false);
+                gEngine.AudioClips.playACue(this.kPaperSound, 30);
 
                 this.mHero.mVP.setXV(0);
                 this.mHero.setControl(false);
@@ -65,7 +68,7 @@ BossTrap.prototype.sentenceProcess = function () {
     for (i = 0; i < num; i++) {
         this.mSenSet.getObjectAt(i).setVisibility(false);
     }
-    
+
     if (this.mEnterCount >= 0 && this.mEnterCount < num) {
         this.mSenSet.getObjectAt(this.mEnterCount).setVisibility(true);
     } else {

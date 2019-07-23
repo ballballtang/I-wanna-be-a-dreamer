@@ -104,6 +104,7 @@ ThirdLevel.prototype.unloadScene = function () {
     }
     if (this.LevelSelect === "BossLevel") {
         gEngine.Mine.restartLevel = () => new BossLevel();
+        gEngine.AudioClips.stopBackgroundAudio();
         gEngine.Core.startScene(new BossLevel(null, true));
     }
     if (this.LevelSelect === "SecondLevel") {
@@ -259,7 +260,7 @@ ThirdLevel.prototype.doorOpen = function () {
 };
 
 ThirdLevel.prototype.update = function () {
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.N) && gEngine.Input.isKeyClicked(gEngine.Input.keys.M)) {
         this.LevelSelect = "BossLevel";
         gEngine.GameLoop.stop();
     }
@@ -280,6 +281,7 @@ ThirdLevel.prototype.update = function () {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
     }
+    gEngine.Mine.timeSpend();
     if (this.mHero.mIsDead || this.mMirrorHero.mIsDead) {
         this.mShowDeath.setVisibility(true);
         if (this.mHero.mIsDead) {
@@ -306,5 +308,4 @@ ThirdLevel.prototype.update = function () {
     this.mButton.update();
     //console.log(this.mHero.getXform().getPosition());
     this.mSolveCol.update();
-    gEngine.Mine.timeSpend();
 };

@@ -14,8 +14,8 @@
  * Static refrence to gEngine
  * @type gEngine
  */
-var gEngine = gEngine || { };
-    // initialize the variable while ensuring it is not redefined
+var gEngine = gEngine || {};
+// initialize the variable while ensuring it is not redefined
 
 gEngine.Mine = (function () {
     var letsCheat = function () {
@@ -24,36 +24,40 @@ gEngine.Mine = (function () {
         document.getElementById("RightSpan").style.display = "block";
     };
 
-    var incDeath = function(){
+    var incDeath = function () {
         gEngine.Mine.death += 1;
-        var a=document.getElementById("DeathNum");
-        a.innerHTML = "Death: "+ gEngine.Mine.death;
+        var a = document.getElementById("DeathNum");
+        a.innerHTML = "Death: " + gEngine.Mine.death;
     };
-    
-    var timeStart = function(){
-        gEngine.Mine.startTime = (new Date()).getTime();
-    };
-    
-    var timeSpend = function(){
-        if(!gEngine.Mine.gameStatus.finish){
-            var now = (new Date()).getTime();
-            console.log(now);
-            gEngine.Mine.spendTime = (Math.floor((now - gEngine.Mine.startTime)/1000 *100))/100;
-            var a=document.getElementById("Time");
-            a.innerHTML =  gEngine.Mine.spendTime ;
+
+    var timeStart = function () {
+        if (!gEngine.Mine.gameStatus.start) {
+            gEngine.Mine.startTime = (new Date()).getTime();
+            gEngine.Mine.gameStatus.start = true;
         }
     };
 
-    var tipDisappear = function(){
-        document.getElementById("Tip").style.display = "none";
+    var timeSpend = function () {
+        if (!gEngine.Mine.gameStatus.finish) {
+            var now = (new Date()).getTime();
+            //console.log(now);
+            gEngine.Mine.spendTime = ((now - gEngine.Mine.startTime) / 1000).toFixed(2);
+            var a = document.getElementById("Time");
+            a.innerHTML = "Time: " + gEngine.Mine.spendTime;
+        }
     };
-    
-    var tipAppear = function(){
-        document.getElementById("Tip").innerHTML = "Press Ctrl to skip";
+
+    var tipDisappear = function () {
+        document.getElementById("Tip").innerHTML = "";
     };
+
+    var tipAppear = function () {
+        document.getElementById("Tip").innerHTML = "Press CTRL to skip";
+    };
+
     var mPublic = {
         letsCheat: letsCheat,
-        incDeath : incDeath,
+        incDeath: incDeath,
         timeStart: timeStart,
         timeSpend: timeSpend,
         tipDisappear: tipDisappear,
@@ -67,9 +71,9 @@ gEngine.Mine = (function () {
             start: false,
             finish: false
         },
-        startTime : null,
+        startTime: null,
         spendTime: 0,
-        death : 0,
+        death: 0,
         restartLevel: () => new FirstLevel(),
     };
 

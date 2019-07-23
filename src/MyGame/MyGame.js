@@ -9,8 +9,20 @@ function MyGame() {
     //this.kUIButton = "assets/UI/button.png";
     this.kUIButton = "assets/UI/SimpleButton.png";
     this.kBg = "assets/title.png";
-
-    this.kBgClip = "assets/MEGALOVANIA.mp3";
+    
+    this.kStartBGM = "assets/Sound/startBGM.mp3";
+    this.kLevelBGM = "assets/Sound/levelBGM.mp3";
+    this.kBossBGM = "assets/Sound/bossBGM.mp3";
+    this.kEndBGM = "assets/Sound/endBGM.mp3";
+    this.kButtonSound = "assets/Sound/button.mp3";
+    this.kGetSound = "assets/Sound/get.mp3";
+    this.kGunSound = "assets/Sound/gun.mp3";
+    this.kJumpSound = "assets/Sound/jump.mp3";
+    this.kPaperSound = "assets/Sound/paper.mp3";
+    this.kHitSound = "assets/Sound/hit.mp3";
+    this.kBreakSound = "assets/Sound/break.mp3";
+    this.kBloodSound = "assets/Sound/blood.mp3";
+    
     this.kBeginning = [];
     for (var i = 0; i < 277; i++) {
         if (i < 10) {
@@ -31,15 +43,37 @@ function MyGame() {
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
 MyGame.prototype.loadScene = function () {
-    gEngine.Textures.loadTexture(this.kUIButton);
-    gEngine.Textures.loadTexture(this.kBg);
-
-    if (!(gEngine.ResourceMap.isAssetLoaded(this.kBgClip)))
-        gEngine.AudioClips.loadAudio(this.kBgClip);
-    
     for (var i = 0; i < 277; i++) {
         gEngine.Textures.loadTexture(this.kBeginning[i]);
     }
+    
+    gEngine.Textures.loadTexture(this.kUIButton);
+    gEngine.Textures.loadTexture(this.kBg);
+
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kStartBGM)))
+        gEngine.AudioClips.loadAudio(this.kStartBGM);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kLevelBGM)))
+        gEngine.AudioClips.loadAudio(this.kLevelBGM);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kBossBGM)))
+        gEngine.AudioClips.loadAudio(this.kBossBGM);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kEndBGM)))
+        gEngine.AudioClips.loadAudio(this.kEndBGM);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kButtonSound)))
+        gEngine.AudioClips.loadAudio(this.kButtonSound);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kGetSound)))
+        gEngine.AudioClips.loadAudio(this.kGetSound);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kGunSound)))
+        gEngine.AudioClips.loadAudio(this.kGunSound);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kJumpSound)))
+        gEngine.AudioClips.loadAudio(this.kJumpSound);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kPaperSound)))
+        gEngine.AudioClips.loadAudio(this.kPaperSound);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kHitSound)))
+        gEngine.AudioClips.loadAudio(this.kHitSound);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kBreakSound)))
+        gEngine.AudioClips.loadAudio(this.kBreakSound);
+    if (!(gEngine.ResourceMap.isAssetLoaded(this.kBloodSound)))
+        gEngine.AudioClips.loadAudio(this.kBloodSound);
 };
 
 MyGame.prototype.unloadScene = function () {
@@ -48,10 +82,9 @@ MyGame.prototype.unloadScene = function () {
 
     if (this.LevelSelect === "StartGame") {
         gEngine.Core.changeScene(new StartScene(), true);
-        //gEngine.Core.changeScene(new FirstLevel(), true);
 
-        //if (!gEngine.AudioClips.isBackgroundAudioPlaying())
-        //    gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
+        gEngine.AudioClips.playBackgroundAudio(this.kStartBGM);
+        gEngine.AudioClips.incBackgroundVolume(-2);
     }
 };
 
@@ -87,15 +120,10 @@ MyGame.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
         this.startGameSelect();
     }
-    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.V)) {
-        this.LevelSelect = "StartScene";
-        gEngine.GameLoop.stop();
-    }
 };
 
 MyGame.prototype.startGameSelect = function () {
     this.LevelSelect = "StartGame";
-    //console.log(this.LevelSelect);
     gEngine.GameLoop.stop();
 };
 

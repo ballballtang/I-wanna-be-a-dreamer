@@ -8,12 +8,19 @@
 "use strict";
 
 function Button(t, atX, atY, w, h) {
+    this.kButtonSound = "assets/Sound/button.mp3";
     SpriteObj.call(this, t, atX, atY, w, h, [41, 80, 25, 64]);
+
+    this.mPushed = false;
 }
 gEngine.Core.inheritPrototype(Button, SpriteObj);
 
 Button.prototype.push = function () {
-    this.mObj.setElementPixelPositions(81, 120, 25, 64);
+    if (!this.mPushed) {
+        gEngine.AudioClips.playACue(this.kButtonSound, 30);
+        this.mObj.setElementPixelPositions(81, 120, 25, 64);
+        this.mPushed = true;
+    }
 }
 
 Button.prototype.draw = function (aCamera) {

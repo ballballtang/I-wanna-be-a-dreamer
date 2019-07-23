@@ -254,7 +254,7 @@ SolveCollision.prototype.solveBoss = function () {
         this.mHero.youDied();
         return;
     }
-
+    
     for (var i = 0; i < this.mBossBullet.size(); i++) {
         var tb = this.mBossBullet.getObjectAt(i);
         if (tb.mIsDead)

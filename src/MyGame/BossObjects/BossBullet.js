@@ -17,7 +17,8 @@ function BossBullet(spriteTexture, atX, atY, bset) {
     GameObject.call(this, this.mBossBullet);
     
     this.mVP = new VProcessor(this.getXform(), 0);
-    this.mVP.mMinV[0] = -500;
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 1.2 : 1;
+    this.mVP.mMinV[0] = -500 * rate;
     this.mWaitTimer = 0;
     this.mAddTimer = 0;
     this.mCircleTimer = 0;
@@ -31,7 +32,8 @@ BossBullet.prototype.moveTowards = function (tx, ty) {
     if (disH <= 1e-6)
         return;
     
-    var V = 250;
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 1.15 : 1;
+    var V = 250 * rate;
     this.mVP.setV(V * disX / disH, V * disY / disH);
 }
 
@@ -46,7 +48,8 @@ BossBullet.prototype.setWait = function (w) {
 }
 
 BossBullet.prototype.setAdd = function (w) {
-    this.mVP.setXV(-150);
+    var rate = gEngine.Mine.saveStatus.tribleJump ? 1.2 : 1;
+    this.mVP.setXV(-150 * rate);
     this.mAddTimer = w;
 }
 
@@ -75,8 +78,9 @@ BossBullet.prototype.update = function (aCamera) {
             var cx = this.getXform().getXPos();
             var cy = this.getXform().getYPos();
             this.mIsDead = true;
+            var rate = gEngine.Mine.saveStatus.tribleJump ? 1.5 : 1;
             var maxc = 15;
-            for (var i = 0; i < maxc; i++) {
+            for (var i = 0; i < maxc * rate; i++) {
                 var aBullet = new BossBullet(this.kBTex, cx, cy, this.kBSet);
                 aBullet.moveTowards(cx + Math.cos(2 * Math.PI * i / maxc) * 10, cy + Math.sin(2 * Math.PI * i / maxc) * 10);
                 this.kBSet.addToSet(aBullet);
