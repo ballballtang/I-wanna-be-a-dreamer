@@ -22,6 +22,8 @@ function FirstLevel(aHero) {
     this.kSentences = "assets/sentences.png";
     this.kSentences2 = "assets/sentences2.png";
     this.kSceneObj2 = "assets/SceneObjects2.png";
+    this.kWall = "assets/Wall_Level1.png";
+    
     //this.kStabTexture = "assets/TestStab.png";
     //this.kWood = "assets/RigidShape/Wood.png";
     //this.kIce = "assets/RigidShape/Ice.png";
@@ -30,7 +32,8 @@ function FirstLevel(aHero) {
     // The camera to view the scene
     this.mCamera = null;
     this.LevelSelect = null;
-
+    // backGround
+    this.mWall = null;
     // Objects
     this.mHero = aHero ? aHero : null;
     this.mMirrorHero = null;
@@ -56,6 +59,7 @@ FirstLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kSentences);
     gEngine.Textures.loadTexture(this.kSentences2);
     gEngine.Textures.loadTexture(this.kSceneObj2);
+    gEngine.Textures.loadTexture(this.kWall);
     //gEngine.Textures.loadTexture(this.kStabTexture);
     //gEngine.Textures.loadTexture(this.kWood);
     //gEngine.Textures.loadTexture(this.kIce);
@@ -73,6 +77,7 @@ FirstLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kSentences);
     gEngine.Textures.unloadTexture(this.kSentences2);
     gEngine.Textures.unloadTexture(this.kSceneObj2);
+    gEngine.Textures.unloadTexture(this.kWall);
     //gEngine.Textures.unloadTexture(this.kStabTexture);
     //gEngine.Textures.unloadTexture(this.kWood);
     //gEngine.Textures.unloadTexture(this.kIce);
@@ -104,7 +109,8 @@ FirstLevel.prototype.initialize = function () {
     else
         this.mHero.cleanStatus(this.mCamera);
     //this.mMirrorHero = new Hero(this.kHero, this.kBullet, 500, 200, -1);
-
+    //wall
+    this.mWall = new Platform(this.kWall,0, 0, 1200, 675);
     //bounds
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -600, -76.25, 60, 580, true));
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 600, 0, 60, 675, true));
@@ -140,8 +146,9 @@ FirstLevel.prototype.draw = function () {
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
 
-    this.mCamera.setupViewProjection();
-    
+	this.mCamera.setupViewProjection();
+	
+    this.mWall.draw(this.mCamera);
     this.mTips.draw(this.mCamera);
     
     this.mStabSetSet.draw(this.mCamera);
@@ -154,14 +161,15 @@ FirstLevel.prototype.draw = function () {
 
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
+    
 };
 
 FirstLevel.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.N)) {
         this.LevelSelect = "SecondLevel";
         gEngine.GameLoop.stop();
-    }
-    
+	}
+	
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.O) && gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         gEngine.Mine.letsCheat();
     }

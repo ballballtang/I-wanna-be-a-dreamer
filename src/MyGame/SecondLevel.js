@@ -26,12 +26,14 @@ function SecondLevel(aHero, hasPaper) {
     //this.kStabTexture = "assets/TestStab.png";
     //this.kWood = "assets/RigidShape/Wood.png";
     this.kIce = "assets/RigidShape/Ice.png";
+    this.kWall = "assets/Wall_Level2.png";
     //this.kDirt = "assets/RigidShape/Dirt.png";
 
     // The camera to view the scene
     this.mCamera = null;
     this.LevelSelect = null;
-
+    //Wall
+    this.mWall = null;
     // Objects
     this.mHero = aHero ? aHero : null;
     //TrapProcess
@@ -70,6 +72,7 @@ SecondLevel.prototype.loadScene = function () {
     //gEngine.Textures.loadTexture(this.kStabTexture);
     //gEngine.Textures.loadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
+    gEngine.Textures.loadTexture(this.kWall);
     //gEngine.Textures.loadTexture(this.kDirt);
 };
 
@@ -90,6 +93,7 @@ SecondLevel.prototype.unloadScene = function () {
     //gEngine.Textures.unloadTexture(this.kStabTexture);
     //gEngine.Textures.unloadTexture(this.kWood);
     gEngine.Textures.unloadTexture(this.kIce);
+    gEngine.Textures.unloadTexture(this.kWall);
     //gEngine.Textures.unloadTexture(this.kDirt);
 
     if (this.LevelSelect === "restart") {
@@ -121,7 +125,8 @@ SecondLevel.prototype.initialize = function () {
         this.mHero.cleanStatus(this.mCamera);
         this.mHero.setMirror(1);
     }
-
+    //wall
+    this.mWall =new Platform(this.kWall,0, 0, 1200, 675);
     //bounds
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -500, 110, 270, 126));//左边的胖平台
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 589, 70, 250, 290));//右边的大平台
@@ -198,7 +203,7 @@ SecondLevel.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
 
     this.mCamera.setupViewProjection();
-    
+    this.mWall.draw(this.mCamera);
     this.mNoRoad.draw(this.mCamera);
     this.mStabSetSet.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
@@ -212,6 +217,7 @@ SecondLevel.prototype.draw = function () {
 
     if (this.mHero.mIsDead)
         this.mShowDeath.draw(this.mCamera);
+    
 };
 
 SecondLevel.prototype.update = function () {

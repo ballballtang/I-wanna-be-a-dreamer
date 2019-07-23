@@ -27,12 +27,14 @@ function ThirdLevel(aHero, hasPaper) {
     //this.kStabTexture = "assets/TestStab.png";
     //this.kWood = "assets/RigidShape/Wood.png";
     this.kIce = "assets/RigidShape/Ice.png";
+    this.kWall = "assets/Wall_Level3.png";
     //this.kDirt = "assets/RigidShape/Dirt.png";
 
     // The camera to view the scene
     this.mCamera = null;
     this.LevelSelect = null;
-
+    //wall
+    this.mWall = null;
     // Objects
     this.mHero = aHero ? aHero : null;
     this.mMirrorHero = null;
@@ -70,6 +72,7 @@ ThirdLevel.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kPaper);
     gEngine.Textures.loadTexture(this.kContent);
     gEngine.Textures.loadTexture(this.kNoRoad);
+    gEngine.Textures.loadTexture(this.kWall);
     //gEngine.Textures.loadTexture(this.kStabTexture);
     //gEngine.Textures.loadTexture(this.kWood);
     gEngine.Textures.loadTexture(this.kIce);
@@ -90,6 +93,7 @@ ThirdLevel.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kPaper);
     gEngine.Textures.unloadTexture(this.kContent);
     gEngine.Textures.unloadTexture(this.kNoRoad);
+    gEngine.Textures.unloadTexture(this.kWall);
     //gEngine.Textures.unloadTexture(this.kStabTexture);
     //gEngine.Textures.unloadTexture(this.kWood);
     gEngine.Textures.unloadTexture(this.kIce);
@@ -122,7 +126,8 @@ ThirdLevel.prototype.initialize = function () {
     else
         this.mHero.cleanStatus(this.mCamera);
     this.mMirrorHero = new Hero(this.kHero, this.kBullet, -460, 250, -1, true);
-
+    //wall
+    this.mWall = new Platform(this.kWall,0, 0, 1200, 675);
     //bounds
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, -590, 240, 30, 1400, true));//左边界 0
     this.mPlatSet.addToSet(new NormalPlatform(this.kPlatTexture, 589, 200, 30, 240, true));//右边的边界 1
@@ -223,7 +228,7 @@ ThirdLevel.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
 
     this.mCamera.setupViewProjection();
-
+    this.mWall.draw(this.mCamera);
     this.mStabSetSet.draw(this.mCamera);
     this.mPlatSet.draw(this.mCamera);
     this.mBrokeSet.draw(this.mCamera);
