@@ -49,6 +49,7 @@ function MyGame() {
 
     this.mBg = null;
     this.UIButton = null;
+    this.UIButton2 = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -99,6 +100,9 @@ MyGame.prototype.unloadScene = function () {
         gEngine.AudioClips.playBackgroundAudio(this.kStartBGM);
         gEngine.AudioClips.incBackgroundVolume(-2);
     }
+    if (this.LevelSelect === "Staff") {
+        gEngine.Core.changeScene(new EndScene(), false);
+    }
 };
 
 MyGame.prototype.initialize = function () {
@@ -114,6 +118,7 @@ MyGame.prototype.initialize = function () {
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
     this.UIButton = new UIButton(this.startGameSelect, this, [260, 280], [200, 60], "Start Game", 24);
+    this.UIButton2 = new UIButton(this.staffSelect, this, [260, 200], [200, 60], "Staff", 24);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -125,11 +130,13 @@ MyGame.prototype.draw = function () {
     this.mCamera.setupViewProjection();
 
     this.UIButton.draw(this.mCamera);
+    this.UIButton2.draw(this.mCamera);
     this.mBg.draw(this.mCamera);
 };
 
 MyGame.prototype.update = function () {
     this.UIButton.update();
+    this.UIButton2.update();
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
         this.startGameSelect();
     }
@@ -137,6 +144,11 @@ MyGame.prototype.update = function () {
 
 MyGame.prototype.startGameSelect = function () {
     this.LevelSelect = "StartGame";
+    gEngine.GameLoop.stop();
+};
+
+MyGame.prototype.staffSelect = function () {
+    this.LevelSelect = "Staff";
     gEngine.GameLoop.stop();
 };
 
